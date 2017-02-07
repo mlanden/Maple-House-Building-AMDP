@@ -1,4 +1,4 @@
-package compOsiteobjectDomain;
+package compositeObjectDomain;
 
 public class Door extends AtomicObject{
 	

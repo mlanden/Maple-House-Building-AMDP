@@ -1,8 +1,8 @@
-package compOsiteobjectDomain;
+package compositeObjectDomain;
 
-import static compOsiteobjectDomain.CompObjDomain.VAR_TYPE;
-import static compOsiteobjectDomain.CompObjDomain.VAR_X;
-import static compOsiteobjectDomain.CompObjDomain.VAR_Y;
+import static compositeObjectDomain.CompObjDomain.VAR_TYPE;
+import static compositeObjectDomain.CompObjDomain.VAR_X;
+import static compositeObjectDomain.CompObjDomain.VAR_Y;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

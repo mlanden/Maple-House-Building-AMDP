@@ -1,4 +1,4 @@
-package compOsiteobjectDomain;
+package compositeObjectDomain;
 
 import java.awt.Component;
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ import burlap.shell.visual.VisualExplorer;
 import burlap.statehashing.HashableStateFactory;
 import burlap.statehashing.simple.SimpleHashableStateFactory;
 import burlap.visualizer.Visualizer;
-import compOsiteobjectDomain.CompObjDomain.GridWorldModel;
+import compositeObjectDomain.CompObjDomain.GridWorldModel;
 
 public class CompObjDomain implements DomainGenerator {
 

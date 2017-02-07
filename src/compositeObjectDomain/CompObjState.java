@@ -1,4 +1,4 @@
-package compOsiteobjectDomain;
+package compositeObjectDomain;
 
 import java.util.ArrayList;
 import java.util.Arrays;

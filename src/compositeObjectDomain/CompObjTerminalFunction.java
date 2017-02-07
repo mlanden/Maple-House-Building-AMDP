@@ -1,4 +1,4 @@
-package compOsiteobjectDomain;
+package compositeObjectDomain;
 
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.state.State;

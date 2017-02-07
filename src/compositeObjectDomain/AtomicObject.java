@@ -1,4 +1,4 @@
-package compOsiteobjectDomain;
+package compositeObjectDomain;
 
 import static burlap.domain.singleagent.gridworld.GridWorldDomain.VAR_TYPE;
 
