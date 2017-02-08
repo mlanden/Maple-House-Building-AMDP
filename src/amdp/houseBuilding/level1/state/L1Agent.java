@@ -1,17 +1,16 @@
 package amdp.houseBuilding.level1.state;
 
-import java.util.Arrays;
+import java.util.Arrays; 
 import java.util.List;
 
 import amdp.houseBuilding.level1.domain.L1DomainGenerator;
 import burlap.mdp.core.oo.state.ObjectInstance;
-import burlap.mdp.core.state.State;
 import burlap.mdp.core.state.UnknownKeyException;
 import compositeObjectDomain.CompObjDomain;
 
 public class L1Agent implements ObjectInstance{
 
-	protected int x, y;
+	public int x, y;
 	protected String name;
 	private static final List<Object> keys = Arrays.<Object>asList
 			(CompObjDomain.VAR_X, CompObjDomain.VAR_Y);
@@ -53,7 +52,7 @@ public class L1Agent implements ObjectInstance{
 		return L1DomainGenerator.CLASS_AGENT;
 	}
 
-	public ObjectInstance copyWithName(String newName) {
+	public L1Agent copyWithName(String newName) {
 		return new L1Agent(x, y, newName);
 	}
 

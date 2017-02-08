@@ -682,7 +682,7 @@ public class CompObjDomain implements DomainGenerator {
 			
 			for(Wall w: walls)
 			{
-				if(w.length() >= wallSize)
+				if((int) w.get("length") >= wallSize)
 					return true;
 			}
 			

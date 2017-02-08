@@ -1,6 +1,6 @@
 package compositeObjectDomain;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,9 +17,9 @@ import static amdp.houseBuilding.level1.domain.L1DomainGenerator.LENGTH;
 
 public class Wall implements ObjectInstance{
 	
-	private List<AtomicObject> doors = new ArrayList<AtomicObject>();
-	private int startX, startY, endX, endY, length;
-	private String name;
+	public List<AtomicObject> doors = new ArrayList<AtomicObject>();
+	public int startX, startY, endX, endY, length;
+	protected String name;
 	private static final List<Object> keys = Arrays.<Object>asList
 			(DOORS, START_X, START_Y, END_X, END_Y, LENGTH);
 	
@@ -92,11 +92,11 @@ public class Wall implements ObjectInstance{
 		return CLASS_WALL;
 	}
 
-	public ObjectInstance copyWithName(String newName) {
+	public Wall copyWithName(String newName) {
 		return new Wall(startX, startY, endX, endY, length, newName);
 	}
 
-
+	
 	public String name(){
 		return name;
 	}
