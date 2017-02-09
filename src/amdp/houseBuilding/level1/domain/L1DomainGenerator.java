@@ -35,9 +35,7 @@ public class L1DomainGenerator implements DomainGenerator{
 	public static final String ACTION_EAST = 	"east";
 	public static final String ACTION_SOUTH = 	"south";
 	public static final String ACTION_WEST = 	"west";
-	
 
-	
 	protected int goalLength;
 	protected RewardFunction rf;
 	protected TerminalFunction tf;
@@ -48,7 +46,14 @@ public class L1DomainGenerator implements DomainGenerator{
     	stocastic = stoc;
     }
     
-	public OODomain generateDomain() {
+    public RewardFunction getRF(){
+    	return rf;
+    }
+    
+    public TerminalFunction getTF(){
+    	return tf;
+    }
+	public OOSADomain generateDomain() {
 		OOSADomain domain = new OOSADomain();
 		
 		//may want to pass into constructer

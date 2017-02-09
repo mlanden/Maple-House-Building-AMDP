@@ -16,7 +16,7 @@ public class L1Agent implements ObjectInstance{
 			(CompObjDomain.VAR_X, CompObjDomain.VAR_Y);
 	
 	public L1Agent(){
-		name = "L0Agent";
+		name = "L1Agent";
 	}
 	
 	public L1Agent(int x, int y){

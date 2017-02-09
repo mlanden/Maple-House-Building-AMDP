@@ -17,7 +17,8 @@ public class L1WallRewardFunction implements RewardFunction{
 	}
 	
 	public double reward(State s, Action a, State sprime) {
-		List<Wall> walls = ((L1State) s).walls;
+		List<Wall> walls = ((L1State) sprime
+				).walls;
 		for(Wall w : walls){
 			return 100;
 		}

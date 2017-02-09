@@ -16,6 +16,7 @@ import burlap.mdp.core.state.State;
 import burlap.mdp.core.state.StateUtilities;
 import burlap.mdp.core.state.UnknownKeyException;
 import compositeObjectDomain.AtomicObject;
+import compositeObjectDomain.Block;
 import compositeObjectDomain.Wall;
 
 import static amdp.houseBuilding.level1.domain.L1DomainGenerator.CLASS_AGENT;
@@ -208,5 +209,59 @@ public class L1State implements MutableOOState{
 		this.walls = new ArrayList<Wall>();
 		return walls;
 	}
-	public 
+	
+	public void addObject(AtomicObject b){
+		boolean add = false;
+		
+		//the point next to a wall
+		int newx = 0, newy = 0;
+		//check if the block is next to a wall
+		for(Wall w : walls){
+			int dx = w.endX - w.startX;
+			int dy = w.endY - w.startY;
+			
+			//before start of wall
+			if(dx == 0)
+				newx = w.startX;
+			else
+				newx = w.startX - 1;
+			
+			if(dy == 0)
+				newy = w.startY;
+			else
+				newy = w.startY - 1;
+			
+			if(newx == b.x && newy == b.y){
+				//extend wall
+				w.startX = newx;
+				w.startY = newy;
+				w.length++;
+				add = true;
+				continue;
+			}
+			
+			//after wall
+			if(dx == 0)
+				newx = w.endX;
+			else
+				newx = w.endX + 1;
+			
+			if(dy == 0)
+				newy = w.endY;
+			else
+				newy = w.endY + 1;
+			
+			if(newx == b.x && newy == b.y){
+				w.endX = newx;
+				w.endY = newy;
+				w.length++;
+				add = true;
+				continue;
+			}
+		}
+		
+		if(!add){
+			walls.add(new Wall(b.x, b.y, b.x, b.y, 1, "wall" + walls.size()));
+		}
+	}
 }

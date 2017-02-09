@@ -9,6 +9,7 @@ import burlap.mdp.core.StateTransitionProb;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.statemodel.FullStateModel;
+import compositeObjectDomain.Block;
 
 import static amdp.houseBuilding.level1.domain.L1DomainGenerator.ACTION_NORTH;
 import static amdp.houseBuilding.level1.domain.L1DomainGenerator.ACTION_EAST;
@@ -76,6 +77,9 @@ public class L1Model implements FullStateModel{
 			L1State newS = ((L1State)s).copy();
 			L1Agent agent = newS.touchAgent();
 			int[][] map = newS.getMap();
+			int x = agent.x;
+			int y = agent.y;
+			
 			if(i <= WEST_ID){
 				int dx = 0, dy = 0;
 				if(i == NORTH_ID){
@@ -91,9 +95,7 @@ public class L1Model implements FullStateModel{
 					dx = -1;
 					dy = 0;
 				}
-				int x = agent.x;
-				int y = agent.y;
-				
+						
 				int nx = x + dx;
 				int ny = y + dy;
 				
@@ -106,8 +108,11 @@ public class L1Model implements FullStateModel{
 				agent.x = nx;
 				agent.y = ny;
 			}else if(i == PUTBLOCK_ID){
-				
+				Block bk = new Block(x, y);
+				map[x][y] = 1;
+				newS.addObject(bk);
 			}
+			
 			stp.add(new StateTransitionProb(newS, transitionProbabilities[actionInx][i]));
 		}
 		return stp;

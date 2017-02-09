@@ -248,7 +248,7 @@ public class CompObjDomain implements DomainGenerator {
 				);
 		return pfs;
 	}
-
+	
 	@Override
 	public OOSADomain generateDomain() {
 		OOSADomain domain = new OOSADomain();

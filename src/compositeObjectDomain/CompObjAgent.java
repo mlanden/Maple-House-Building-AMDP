@@ -59,7 +59,6 @@ public class CompObjAgent implements ObjectInstance{
 		if(!(variableKey instanceof String)){
 			throw new RuntimeException("GridAgent variable key must be a string");
 		}
-
 		String key = (String)variableKey;
 		if(key.equals(CompObjDomain.VAR_X)){
 			return x;
