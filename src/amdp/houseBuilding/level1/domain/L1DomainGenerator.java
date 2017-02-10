@@ -5,10 +5,12 @@ import java.util.List;
 
 import amdp.houseBuilding.level1.state.L1Agent;
 import burlap.mdp.auxiliary.DomainGenerator;
+import burlap.mdp.auxiliary.common.NullTermination;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.action.UniversalActionType;
 import burlap.mdp.core.oo.OODomain;
 import burlap.mdp.core.oo.propositional.PropositionalFunction;
+import burlap.mdp.singleagent.common.UniformCostRF;
 import burlap.mdp.singleagent.model.FactoredModel;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
@@ -17,7 +19,7 @@ import compositeObjectDomain.Wall;
 public class L1DomainGenerator implements DomainGenerator{
 
 	//object classes
-	public static final String CLASS_AGENT = 	"L0_Agent";
+	public static final String CLASS_AGENT = 	"L1_Agent";
 	public static final String CLASS_WALL = 	"wall";
 	
 	//wall properties
@@ -53,16 +55,17 @@ public class L1DomainGenerator implements DomainGenerator{
     public TerminalFunction getTF(){
     	return tf;
     }
+    
 	public OOSADomain generateDomain() {
 		OOSADomain domain = new OOSADomain();
 		
 		//may want to pass into constructer
 		if(rf == null){
-			rf = new L1WallRewardFunction(goalLength);
+			rf = new UniformCostRF();
 		}
 		
 		if(tf == null){
-			tf = new L1WallTerminalFunction(goalLength);
+			tf = new NullTermination();
 		}
 		
 		domain.addStateClass(CLASS_AGENT, L1Agent.class).addStateClass(CLASS_WALL, Wall.class);

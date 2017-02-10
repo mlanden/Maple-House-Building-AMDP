@@ -3,6 +3,7 @@ package amdp.houseBuilding.level1.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import amdp.cleanupamdpdomains.cleanupamdp.CleanupDriver.l1PolicyGenerator;
 import amdp.houseBuilding.level1.state.L1Agent;
 import amdp.houseBuilding.level1.state.L1State;
 import burlap.mdp.core.StateTransitionProb;
@@ -76,7 +77,7 @@ public class L1Model implements FullStateModel{
 		for(int i = 0; i < numActions; i++){
 			L1State newS = ((L1State)s).copy();
 			L1Agent agent = newS.touchAgent();
-			int[][] map = newS.getMap();
+			int[][] map = (int[][])newS.get(L1DomainGenerator.MAP);
 			int x = agent.x;
 			int y = agent.y;
 			

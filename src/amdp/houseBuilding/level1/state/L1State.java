@@ -30,6 +30,7 @@ import static amdp.houseBuilding.level1.domain.L1DomainGenerator.START_Y;
 import static amdp.houseBuilding.level1.domain.L1DomainGenerator.END_X;
 import static amdp.houseBuilding.level1.domain.L1DomainGenerator.END_Y;
 import static amdp.houseBuilding.level1.domain.L1DomainGenerator.LENGTH;
+import static amdp.houseBuilding.level1.domain.L1DomainGenerator.MAP;
 
 public class L1State implements MutableOOState{
 
@@ -105,13 +106,13 @@ public class L1State implements MutableOOState{
 		if(wallIndex != -1){
 			return walls.get(wallIndex).get(key.obVarKey);
 		}
+		if(key.obName.equals(map)){
+			return map;
+		}
+		
 		return new UnknownKeyException(variableKey);
 	}
 
-	public int[][] getMap(){
-		return map;
-	}
-	
 	public List<Object> variableKeys() {
 		return OOStateUtilities.flatStateKeys(this);
 	}

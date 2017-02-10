@@ -23,16 +23,14 @@ public class makeWallTask extends NonPrimitiveTaskNode{
 	RewardFunction rf;
 	TerminalFunction tf;
 	L1ProjectionFunction l1sp = new L1ProjectionFunction();
-	List<GroundedTask> groundedTasks = new ArrayList<GroundedTask>();
-		
-	public makeWallTask(OOSADomain houseL0Domain, List<String[]> params, TaskNode[] subtasks, 
+	ActionType action;
+	
+	public makeWallTask(ActionType at, OOSADomain houseL0Domain, TaskNode[] subtasks, 
 			RewardFunction r, TerminalFunction t){
 		this.rf = r; 
 		this.tf = t;
 		this.childTaskNodes = subtasks;
-		for(String[] param : params){
-			groundedTasks.add(new GroundedTask(this, new SimpleAction(name)))
-		}
+	
 	}
 
 	public boolean terminal(State s, Action action) {
@@ -41,9 +39,9 @@ public class makeWallTask extends NonPrimitiveTaskNode{
 
 	public List<GroundedTask> getApplicableGroundedTasks(State s) {
 		List<GroundedTask> groundedTasks = new ArrayList<GroundedTask>();
-		for(GroundedTask t : childTaskNodes){
-			if(!this.terminal(s, ))
-//			groundedTasks.add(new g)
+		List<Action> acts = action.allApplicableActions(s);
+		for(Action a : acts){
+			groundedTasks.add(new GroundedTask(this, a));
 		}
 		return groundedTasks;
 	}
