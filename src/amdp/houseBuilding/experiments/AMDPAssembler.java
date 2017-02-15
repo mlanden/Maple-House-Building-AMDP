@@ -3,14 +3,18 @@ package amdp.houseBuilding.experiments;
 import amdp.amdpframework.TaskNode; 
 import amdp.houseBuilding.taskNodes.RootTaskNode;
 import amdp.houseBuilding.level1.domain.L1DomainGenerator;
+import amdp.houseBuilding.level1.domain.L1WallRewardFunction;
+import amdp.houseBuilding.level1.domain.L1WallTerminalFunction;
 import amdp.houseBuilding.level1.state.L1ProjectionFunction;
 import amdp.houseBuilding.level1.state.L1State;
 import amdp.houseBuilding.level2.domain.L2DomainGenerator;
 import amdp.houseBuilding.taskNodes.MoveTask;
 import amdp.houseBuilding.taskNodes.PutBlockTask;
 import amdp.houseBuilding.taskNodes.makeWallTask;
+import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.action.ActionType;
 import burlap.mdp.core.state.State;
+import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
 import compositeObjectDomain.CompObjDomain;
 import compositeObjectDomain.CompObjState;
@@ -28,7 +32,9 @@ public class AMDPAssembler {
 		L1ProjectionFunction l1sp = new L1ProjectionFunction();
 		L1State l1State = l1sp.mapState(initial);
 		
-		L2DomainGenerator l2DomGen = new L2DomainGenerator();
+		RewardFunction rf1 = new L1WallRewardFunction(goalLength);
+		TerminalFunction tf1 = new L1WallTerminalFunction(goalLength);
+		L2DomainGenerator l2DomGen = new L2DomainGenerator(rf1, tf1);
 		OOSADomain l2Dom = l2DomGen.generateDomain();
 		
 		ActionType aNorth = base.getAction(CompObjDomain.ACTION_NORTH);

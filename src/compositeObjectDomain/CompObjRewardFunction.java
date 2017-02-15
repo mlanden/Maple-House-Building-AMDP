@@ -23,7 +23,7 @@ public class CompObjRewardFunction implements RewardFunction{
 		
 		for(Wall w: walls)
 		{
-			if(w.length() >= wallSize)
+			if( (int) w.get("length") >= wallSize)
 				return 1000;
 		}
 		return -1;

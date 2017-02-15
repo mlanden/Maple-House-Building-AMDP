@@ -54,7 +54,7 @@ public class MapToWallComp {
 				doors.add(a);
 			}
 		}
-		return new Wall(startX, startY, endX, endY, components.size(), doors);
+		return new Wall(startX, startY, endX, endY, components.size(), doors, "wall");
 	}
 
 }

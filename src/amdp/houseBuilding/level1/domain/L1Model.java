@@ -44,7 +44,7 @@ public class L1Model implements FullStateModel{
 	private void stocasticProbabilities(){
 		for(int target = 0; target < numActions; target++){
 			for(int execute = 0; execute < numActions; execute++){
-				transitionProbabilities[target][execute] = target == execute ? 0.8 : 0.2 / numActions;
+				transitionProbabilities[target][execute] = target == execute ? 0.8 : 0.2 / ( numActions - 1);
 			}
 		}
 	}

@@ -50,6 +50,7 @@ public class makeWallTask extends NonPrimitiveTaskNode{
 		return rf;
 	}
 
+	//NOT RIGHT FIX
 	public Object parametersSet(State s) {
 		return new String[]{"1"};
 	}

@@ -78,18 +78,24 @@ public class L2DomainGenerator implements DomainGenerator{
 			int hei = map[0].length;
 			for(int stX = 0; stX < wid; stX++){
 				for(int stY = 0; stY < hei; stY++){
-					for(int edX = 0; edX < wid; edX++){
-						for(int edY = 0; edY < hei; edY++){
-							actions.add(new MakeWallAction("wall(" + stX + ',' + stY + ',' + edX + ',' + edY));
+					for(int edX = stX; edX < wid; edX++){
+						for(int edY = stY; edY < hei; edY++){
+							String name = "wall(" + stX + ',' + stY + ',' + edX + ',' + edY;
+							actions.add(new MakeWallAction(name, stX, stY, edX, edY));
 						}
 					}
 				}
 			}
 			return actions;
 		}
-
+		//FIX ME!!!!!!!!!!!!!!!!!
 		public Action associatedAction(String strRep) {
-			return new MakeWallAction(strRep);
+			String[] nam = strRep.split("_");
+			int sx = Integer.parseInt(nam[1]);
+			int sy = Integer.parseInt(nam[2]);
+			int ex = Integer.parseInt(nam[3]);
+			int ey = Integer.parseInt(nam[4]);
+			return new MakeWallAction(strRep, sx, sy, ex, ey);
 		}
 
 		public String typeName() {
@@ -99,17 +105,27 @@ public class L2DomainGenerator implements DomainGenerator{
 		public class MakeWallAction implements Action{
 			
 			protected String wallName;
-			public MakeWallAction(String wName){
+			public int startX, startY, endX, endY, length;
+			public MakeWallAction(String wName, int sx, int sy, int ex, int ey){
 				wallName = wName;
+				startX = sx;
+				startY = sy;
+				endX = ex;
+				endY = ey;
+				int dx = endX - startX, dy = endY - startY;
+				if(dx == 0)
+					length = dy;
+				else 
+					length = dx;
 			}
 			
 			public String actionName() {
-				return ACTION_MAKEWALL + "_" + wallName;
+				return ACTION_MAKEWALL + "_" + startX + "_" + startY + "_" + endX + "_" + endY;
 			}
 
 
 			public Action copy() {
-				return new MakeWallAction(wallName);
+				return new MakeWallAction(wallName, startX, startY, endX, endY);
 			}
 			
 			public String toString() {
