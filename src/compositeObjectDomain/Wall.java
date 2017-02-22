@@ -1,19 +1,19 @@
 package compositeObjectDomain;
 
+import static amdp.house.level1.MakeWall.CLASS_WALL;
+import static amdp.house.level1.MakeWall.DOORS;
+import static amdp.house.level1.MakeWall.END_X;
+import static amdp.house.level1.MakeWall.END_Y;
+import static amdp.house.level1.MakeWall.LENGTH;
+import static amdp.house.level1.MakeWall.START_X;
+import static amdp.house.level1.MakeWall.START_Y;
+
 import java.util.ArrayList; 
 import java.util.Arrays;
 import java.util.List;
 
 import burlap.mdp.core.oo.state.ObjectInstance;
 import burlap.mdp.core.state.UnknownKeyException;
-
-import static amdp.houseBuilding.level1.domain.L1DomainGenerator.CLASS_WALL;
-import static amdp.houseBuilding.level1.domain.L1DomainGenerator.DOORS;
-import static amdp.houseBuilding.level1.domain.L1DomainGenerator.START_X;
-import static amdp.houseBuilding.level1.domain.L1DomainGenerator.START_Y;
-import static amdp.houseBuilding.level1.domain.L1DomainGenerator.END_X;
-import static amdp.houseBuilding.level1.domain.L1DomainGenerator.END_Y;
-import static amdp.houseBuilding.level1.domain.L1DomainGenerator.LENGTH;
 
 public class Wall implements ObjectInstance{
 	

@@ -14,7 +14,7 @@ public class CompObjAgent implements ObjectInstance{
 	protected String name;
 	protected ArrayList<AtomicObject> selection;
 	protected ArrayList<Wall> walls;
-	private final static List<Object> keys = Arrays.<Object>asList(CompObjDomain.VAR_X, CompObjDomain.VAR_Y);
+	private final static List<Object> keys = Arrays.<Object>asList(CompObjDomainGenerator.VAR_X, CompObjDomainGenerator.VAR_Y);
 	
 	public CompObjAgent()
 	{
@@ -60,10 +60,10 @@ public class CompObjAgent implements ObjectInstance{
 			throw new RuntimeException("GridAgent variable key must be a string");
 		}
 		String key = (String)variableKey;
-		if(key.equals(CompObjDomain.VAR_X)){
+		if(key.equals(CompObjDomainGenerator.VAR_X)){
 			return x;
 		}
-		else if(key.equals(CompObjDomain.VAR_Y)){
+		else if(key.equals(CompObjDomainGenerator.VAR_Y)){
 			return y;
 		}
 		else if(key.equals("Walls"))
@@ -86,7 +86,7 @@ public class CompObjAgent implements ObjectInstance{
 
 	@Override
 	public String className() {
-		return CompObjDomain.CLASS_AGENT;
+		return CompObjDomainGenerator.CLASS_AGENT;
 	}
 
 	@Override

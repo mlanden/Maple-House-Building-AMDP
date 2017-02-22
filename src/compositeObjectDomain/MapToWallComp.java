@@ -12,8 +12,8 @@ public class MapToWallComp {
 		startX = startY = endX = endY = -1;
 		for(AtomicObject a: components)
 		{
-			int x = (Integer) a.get(CompObjDomain.VAR_X);
-			int y = (Integer) a.get(CompObjDomain.VAR_Y);
+			int x = (Integer) a.get(CompObjDomainGenerator.VAR_X);
+			int y = (Integer) a.get(CompObjDomainGenerator.VAR_Y);
 			if(startX == -1)
 			{
 				startX = x;

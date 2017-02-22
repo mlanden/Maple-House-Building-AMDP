@@ -6,7 +6,7 @@ import java.util.List;
 import amdp.amdpframework.GroundedTask;
 import amdp.amdpframework.NonPrimitiveTaskNode;
 import amdp.amdpframework.TaskNode;
-import amdp.houseBuilding.level1.state.L1ProjectionFunction;
+import amdp.house.level1.MakeWallProjector;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.action.ActionType;
@@ -16,13 +16,13 @@ import burlap.mdp.core.oo.OODomain;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
-import compositeObjectDomain.CompObjDomain;
+import compositeObjectDomain.CompObjDomainGenerator;
 
 public class makeWallTask extends NonPrimitiveTaskNode{
 
 	RewardFunction rf;
 	TerminalFunction tf;
-	L1ProjectionFunction l1sp = new L1ProjectionFunction();
+	MakeWallProjector l1sp = new MakeWallProjector();
 	ActionType action;
 	
 	public makeWallTask(ActionType at, OOSADomain houseL0Domain, TaskNode[] subtasks, 

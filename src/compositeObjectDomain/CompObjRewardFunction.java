@@ -18,7 +18,7 @@ public class CompObjRewardFunction implements RewardFunction{
 	
 	@Override
 	public double reward(State s, Action a, State sprime) {
-		CompObjAgent agent = (CompObjAgent) s.get(CompObjDomain.CLASS_AGENT);
+		CompObjAgent agent = (CompObjAgent) s.get(CompObjDomainGenerator.CLASS_AGENT);
 		List<Wall> walls = (List<Wall>) agent.get("Walls");
 		
 		for(Wall w: walls)

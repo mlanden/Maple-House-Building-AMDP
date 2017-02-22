@@ -8,18 +8,18 @@ import java.util.List;
 import burlap.mdp.core.oo.state.ObjectInstance;
 import burlap.mdp.core.state.State;
 
-public class AtomicObject implements ObjectInstance, Comparable<AtomicObject>{
+public class AtomicObject implements ObjectInstance, Comparable<AtomicObject> {
 	
 	protected String className;
 	protected String name;
 	public int type;
 	public int x, y;
 	
-	protected final static List<Object> keys = Arrays.<Object>asList(CompObjDomain.VAR_X, CompObjDomain.VAR_Y);
+	protected final static List<Object> keys = Arrays.<Object>asList(CompObjDomainGenerator.VAR_X, CompObjDomainGenerator.VAR_Y);
 	
 	public AtomicObject()
 	{
-		className = CompObjDomain.CLASS_ATOMICOBJECT;
+		className = CompObjDomainGenerator.CLASS_ATOMICOBJECT;
 	}
 	
 	public AtomicObject(int x, int y)
@@ -62,10 +62,10 @@ public class AtomicObject implements ObjectInstance, Comparable<AtomicObject>{
 		}
 
 		String key = (String)variableKey;
-		if(key.equals(CompObjDomain.VAR_X)){
+		if(key.equals(CompObjDomainGenerator.VAR_X)){
 			return x;
 		}
-		else if(key.equals(CompObjDomain.VAR_Y)){
+		else if(key.equals(CompObjDomainGenerator.VAR_Y)){
 			return y;
 		}
 		else if(key.equals(VAR_TYPE)){
@@ -97,10 +97,29 @@ public class AtomicObject implements ObjectInstance, Comparable<AtomicObject>{
 
 	@Override
 	public int compareTo(AtomicObject a) {
-		if((Integer)a.get(CompObjDomain.VAR_X) != this.x)
-			return ((Integer)x).compareTo((Integer)a.get(CompObjDomain.VAR_X));
+		if((Integer)a.get(CompObjDomainGenerator.VAR_X) != this.x)
+			return ((Integer)x).compareTo((Integer)a.get(CompObjDomainGenerator.VAR_X));
 		else
-			return ((Integer)y).compareTo((Integer)a.get(CompObjDomain.VAR_Y));
+			return ((Integer)y).compareTo((Integer)a.get(CompObjDomainGenerator.VAR_Y));
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null) return false;
+		if (getClass() != o.getClass()) return false;
+		AtomicObject other = (AtomicObject) o;
+		if (!this.name.equals(other.name)) {
+			return false;
+		} else if (!this.className.equals(other.className)) {
+			return false;
+		} else if (this.type != other.type) {
+			return false;
+		} else if (this.x != other.x) {
+			return false;
+		} else if (this.y != other.y) {
+			return false;
+		}
+		return true;
+	}
 }

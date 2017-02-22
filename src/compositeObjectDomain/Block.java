@@ -8,7 +8,7 @@ public class Block extends AtomicObject{
 		//className = "Block";
 		type = 0;
 	}
-	
+		
 	public Block(int x, int y)
 	{
 		super(x, y);

@@ -48,9 +48,9 @@ import burlap.shell.visual.VisualExplorer;
 import burlap.statehashing.HashableStateFactory;
 import burlap.statehashing.simple.SimpleHashableStateFactory;
 import burlap.visualizer.Visualizer;
-import compositeObjectDomain.CompObjDomain.GridWorldModel;
+import compositeObjectDomain.CompObjDomainGenerator.GridWorldModel;
 
-public class CompObjDomain implements DomainGenerator {
+public class CompObjDomainGenerator implements DomainGenerator {
 
 	public static final String VAR_X = "x";
 	
@@ -111,7 +111,7 @@ public class CompObjDomain implements DomainGenerator {
 	protected RewardFunction rf;
 	protected static TerminalFunction tf;
 	
-	public CompObjDomain(int height, int width)
+	public CompObjDomainGenerator(int height, int width)
 	{
 		this.height = height;
 		this.width = width;
@@ -119,7 +119,7 @@ public class CompObjDomain implements DomainGenerator {
 		makeEmptyMap();
 	}
 	
-	public CompObjDomain(int [][] map)
+	public CompObjDomainGenerator(int [][] map)
 	{
 		height = map.length;
 		width = map[0].length;
@@ -721,7 +721,7 @@ public class CompObjDomain implements DomainGenerator {
 	
 	public static void main(String[] args) {
 		
-		CompObjDomain cod = new CompObjDomain(10, 10);
+		CompObjDomainGenerator cod = new CompObjDomainGenerator(10, 10);
 
 		String outputPath = "output/";
 

@@ -1,8 +1,8 @@
 package compositeObjectDomain;
 
-import static compositeObjectDomain.CompObjDomain.VAR_TYPE;
-import static compositeObjectDomain.CompObjDomain.VAR_X;
-import static compositeObjectDomain.CompObjDomain.VAR_Y;
+import static compositeObjectDomain.CompObjDomainGenerator.VAR_TYPE;
+import static compositeObjectDomain.CompObjDomainGenerator.VAR_X;
+import static compositeObjectDomain.CompObjDomainGenerator.VAR_Y;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -73,8 +73,8 @@ public class CompObjVisualizer {
 			
 			r.addStatePainter(new MapPainter(map));
 			OOStatePainter oopainter = new OOStatePainter();
-			oopainter.addObjectClassPainter(CompObjDomain.CLASS_ATOMICOBJECT, new AtomicObjectPainter(map));
-			oopainter.addObjectClassPainter(CompObjDomain.CLASS_AGENT, new CellPainter(1, Color.gray, map));
+			oopainter.addObjectClassPainter(CompObjDomainGenerator.CLASS_ATOMICOBJECT, new AtomicObjectPainter(map));
+			oopainter.addObjectClassPainter(CompObjDomainGenerator.CLASS_AGENT, new CellPainter(1, Color.gray, map));
 			r.addStatePainter(oopainter);
 			
 			return r;
@@ -92,8 +92,8 @@ public class CompObjVisualizer {
 			
 			//r.addStatePainter(new MapPainter(map));
 			OOStatePainter oopainter = new OOStatePainter();
-			oopainter.addObjectClassPainter(CompObjDomain.CLASS_ATOMICOBJECT, new AtomicObjectPainter(map));
-			oopainter.addObjectClassPainter(CompObjDomain.CLASS_AGENT, new CellPainter(1, Color.gray, map));
+			oopainter.addObjectClassPainter(CompObjDomainGenerator.CLASS_ATOMICOBJECT, new AtomicObjectPainter(map));
+			oopainter.addObjectClassPainter(CompObjDomainGenerator.CLASS_AGENT, new CellPainter(1, Color.gray, map));
 			r.addStatePainter(oopainter);
 			
 			return r;

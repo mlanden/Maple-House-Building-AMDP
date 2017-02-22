@@ -3,9 +3,9 @@ package amdp.houseBuilding.taskNodes;
 import amdp.amdpframework.PrimitiveTaskNode;
 import burlap.mdp.core.action.ActionType;
 
-public class PutBlockTask extends PrimitiveTaskNode{
+public class BuildTask extends PrimitiveTaskNode {
 
-	public PutBlockTask(ActionType action){
+	public BuildTask(ActionType action){
 		this.setActionType(action);
 	}
 }
