@@ -156,5 +156,11 @@ public class MakeRoomState implements MutableOOState {
     	points.add(index, copy);
     	return copy;
 	}
+	
+	public String toString() {
+		String out = "MakeRoomState, has walls: ";
+		out += walls.size();
+		return out;
+	}
 
 }

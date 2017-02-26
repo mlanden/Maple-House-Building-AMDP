@@ -1,4 +1,4 @@
-package amdp.houseBuilding.taskNodes;
+package amdp.house;
 
 import amdp.amdpframework.GroundedTask;
 import amdp.amdpframework.NonPrimitiveTaskNode;
@@ -55,4 +55,9 @@ public class RootTaskNode extends NonPrimitiveTaskNode {
     public RewardFunction rewardFunction(Action action) {
         return rf;
     }
+
+	@Override
+	public String toString() {
+		return getName();
+	}
 }

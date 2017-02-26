@@ -8,6 +8,7 @@ import java.util.Map;
 
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
+import amdp.house.objects.HPoint;
 import amdp.house.objects.HWall;
 import burlap.mdp.core.oo.state.MutableOOState;
 import burlap.mdp.core.oo.state.ObjectInstance;
@@ -19,25 +20,36 @@ public class MakeWallState implements MutableOOState{
 	public static IntPair pair = new IntPair(0, 0);
 	
 	private HAgent agent;
-	private Map<IntPair, HBlock> blocks = new HashMap<IntPair, HBlock>();
+	private Map<IntPair, HPoint> points;
+	private Map<IntPair, HBlock> blocks;
 	private List<HWall> walls;
 	private int width;
 	private int height;
 	
+	// empty state
 	public MakeWallState(int width, int height, int agentX, int agentY) {
 		this.width = width;
 		this.height = height;
 		agent = new HAgent(agentX, agentY);
+		points = new HashMap<IntPair, HPoint>();
 		blocks = new HashMap<IntPair, HBlock> ();
 		walls = new ArrayList<HWall>();
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				String name = HPoint.CLASS_POINT+"_"+i+"_"+j;
+				addObject(new HPoint(name, i, j, false));
+			}
+		}
 	}
 	
-	public MakeWallState(int width, int height, HAgent agent, Map<IntPair, HBlock> blocks, List<HWall> walls) {
+	// copy constructor
+	public MakeWallState(int width, int height, HAgent agent, Map<IntPair, HBlock> blocks, List<HWall> walls, Map<IntPair,HPoint> points) {
 		this.width = width;
 		this.height = height;
 		this.agent = agent;
 		this.blocks = blocks;
 		this.walls = walls;
+		this.points = points;
 	}
 	
 	// assumes that 0,0 is the lower left corner
@@ -58,6 +70,13 @@ public class MakeWallState implements MutableOOState{
 		pair.x = nx;
 		pair.y = ny;
 		HBlock found = blocks.get(pair);
+		return found;
+	}
+	
+	public HPoint getPointAt(int nx, int ny) {
+		pair.x = nx;
+		pair.y = ny;
+		HPoint found = points.get(pair);
 		return found;
 	}
 	
@@ -84,6 +103,7 @@ public class MakeWallState implements MutableOOState{
 	public int numObjects() {
 		int numObjects = 0;
 		numObjects += agent != null ? 1 : 0;
+		numObjects += points.size();
 		numObjects += blocks.size();
 		numObjects += walls.size();
 		return numObjects;
@@ -101,6 +121,7 @@ public class MakeWallState implements MutableOOState{
 	public List<ObjectInstance> objects() {
 		List<ObjectInstance> objects = new ArrayList<ObjectInstance>();
 		objects.add(agent);
+		objects.addAll(points.values());
 		objects.addAll(blocks.values());
 		objects.addAll(walls);
 		return objects;
@@ -111,6 +132,8 @@ public class MakeWallState implements MutableOOState{
 			return Arrays.<ObjectInstance>asList(agent);
 		} else if(HBlock.CLASS_BLOCK.equals(oclass)) {
 			return new ArrayList<ObjectInstance>(blocks.values());
+		} else if(HPoint.CLASS_POINT.equals(oclass)) {
+			return new ArrayList<ObjectInstance>(points.values());
 		} else if(HWall.CLASS_WALL.equals(oclass)) {
 			return new ArrayList<ObjectInstance>(walls);
 		} else {
@@ -152,13 +175,27 @@ public class MakeWallState implements MutableOOState{
 		return copy;
 	} 
 	
+	public Map<IntPair, HPoint> touchPoints() {
+    	this.points = new HashMap<IntPair,HPoint>(this.points);
+    	return this.points;
+	}
+	
+	public HPoint touchPoint(int nx, int ny) {
+		IntPair key = new IntPair(nx, ny);
+		HPoint copy = (HPoint) points.get(key).copy();
+		touchPoints().remove(key);
+		points.put(key, copy);
+		key = null;
+    	return copy;
+	}
+
 	public HAgent touchAgent() {
 		this.agent = (HAgent) agent.copy();
 		return this.agent;
 	}
 
 	public MakeWallState copy() {
-		return new MakeWallState(width, height, touchAgent(), touchBlocks(), touchWalls());
+		return new MakeWallState(width, height, touchAgent(), touchBlocks(), touchWalls(), touchPoints());
 	}
 
 	@Override
@@ -188,6 +225,12 @@ public class MakeWallState implements MutableOOState{
 			List<HWall> walls = this.touchWalls();
 			walls.add((HWall)o);
 			this.walls = walls;
+		} else if (o instanceof HPoint) {
+			HPoint point = (HPoint)o;
+			int x = (Integer) point.get(HPoint.ATT_X);
+			int y = (Integer) point.get(HPoint.ATT_Y);
+			IntPair key = new IntPair(x, y);
+			touchPoints().put(key, point);
 		} else {
 			throw new RuntimeException("not implemented");
 		}

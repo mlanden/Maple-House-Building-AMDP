@@ -7,7 +7,7 @@ import burlap.mdp.singleagent.model.RewardFunction;
 
 public class MakeWallRF implements RewardFunction {
 
-	public MakeWallTF tf;
+	private MakeWallTF tf;
 	public double rewardGoal;
 	public double rewardDefault;
 	public double rewardFailure;
@@ -17,6 +17,10 @@ public class MakeWallRF implements RewardFunction {
 		this.rewardGoal = rewardGoal;
 		this.rewardDefault = rewardDefault;
 		this.rewardFailure = rewardFailure;
+	}
+	
+	public void setTF(MakeWallTF tf) {
+		this.tf = tf;
 	}
 
 	@Override

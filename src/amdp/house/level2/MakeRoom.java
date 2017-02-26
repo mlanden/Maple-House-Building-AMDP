@@ -22,7 +22,6 @@ import burlap.statehashing.simple.SimpleHashableStateFactory;
 
 public class MakeRoom implements DomainGenerator {
 
-
 	public static final String ACTION_MAKE_WALL = "makeWall";
 	public static final int NUM_ACTIONS = 1;
 

@@ -5,49 +5,60 @@ import java.util.List;
 import amdp.house.objects.HBlock;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HWall;
+import amdp.house.pfs.OldHasWall;
+import amdp.house.pfs.IsContiguous;
+import burlap.mdp.auxiliary.common.GoalConditionTF;
+import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.oo.state.ObjectInstance;
 import burlap.mdp.core.state.State;
-import compositeobject.IsContiguous;
 
 public class MakeWallTF implements TerminalFunction {
 
-	public HPoint wallStart;
-	public HPoint wallEnd;
-	public IsContiguous isContiguous;
+	private HasWall goal;
 	
-	public MakeWallTF(HPoint wallStart, HPoint wallEnd){
-		this.wallStart = wallStart;
-		this.wallEnd = wallEnd;
-		this.isContiguous = new IsContiguous();
+	public MakeWallTF(HasWall goal){
+		this.goal = goal;
 	}
 	
-	public boolean satisfiesGoal(MakeWallState state) {
-		if (isContiguous.isTrue(state, wallStart, wallEnd)) {
-			// honestly do not think that this is the best spot for this
-			// but whatever... 
-			HWall wall = new HWall("wall", wallStart, wallEnd);
-			state.addObject(wall);
-			return true;
-		}
-		return false;
+	public void setGoal(HasWall goal) {
+		this.goal = goal;
 	}
 	
-	public boolean goesTooFar(MakeWallState state) {
-		int aX = (Integer) wallStart.get(HPoint.ATT_X);
-		int aY = (Integer) wallStart.get(HPoint.ATT_Y);
-		int bX = (Integer) wallEnd.get(HPoint.ATT_X);
-		int bY = (Integer) wallEnd.get(HPoint.ATT_Y);
-		List<ObjectInstance> blocks = state.objectsOfClass(HBlock.CLASS_BLOCK);
+	public double getBudget(MakeWallState state) {
+//		HPoint wallStart = (HPoint) state.object(goal.getStartName());
+//		HPoint wallEnd = (HPoint) state.object(goal.getEndName());
+//		int aX = (Integer) wallStart.get(HPoint.ATT_X);
+//		int aY = (Integer) wallStart.get(HPoint.ATT_Y);
+//		int bX = (Integer) wallEnd.get(HPoint.ATT_X);
+//		int bY = (Integer) wallEnd.get(HPoint.ATT_Y);
+		int aX = goal.aX;
+		int aY = goal.aY;
+		int bX = goal.bX;
+		int bY = goal.bY;
 		// blocks are budgeted to be chebyshev distance * budgetScalar
 		double budgetScalar = 1.1;
 		double distance = Math.max(Math.abs(bX-aX),Math.abs(bY-aY));
-		if (blocks.size() > distance * budgetScalar) {
+		double budget = distance * budgetScalar;
+		return budget;
+	}
+	
+	public boolean goesTooFar(MakeWallState state) {
+		List<ObjectInstance> blocks = state.objectsOfClass(HBlock.CLASS_BLOCK);
+		if (blocks.size() > getBudget(state)) {
 			return true;
 		}
 		return false;
 	}
 	
+	public boolean satisfiesGoal(MakeWallState state) {
+		if (goal == null) {
+			throw new RuntimeException("not implemented");
+		}
+		return goal.satisfies(state);
+	}
+	
+	@Override
 	public boolean isTerminal(State s) {
 		MakeWallState state = (MakeWallState) s;
 		

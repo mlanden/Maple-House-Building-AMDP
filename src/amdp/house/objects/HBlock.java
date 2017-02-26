@@ -8,6 +8,9 @@ public class HBlock extends HPoint {
 	
 	public HBlock(String name, int x, int y, boolean giveNewID) {
 		super(name, x, y, giveNewID);
+		
+		// redo name/ID system to just use the block_x_y as name
+		
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package compositeobject;
+package amdp.house.pfs;
 
 import burlap.mdp.core.oo.propositional.PropositionalFunction;
 import burlap.mdp.core.oo.state.OOState;
@@ -12,6 +12,7 @@ import java.util.List;
 import amdp.house.level1.MakeWallState;
 import amdp.house.objects.HBlock;
 import amdp.house.objects.HPoint;
+import amdp.house.objects.HWall;
 
 /**
  * Created by khalil8500 on 2/6/2017.
@@ -36,13 +37,6 @@ public class IsContiguous extends PropositionalFunction
 		int aY = (Integer) wallStart.get(HPoint.ATT_Y);
 		int bX = (Integer) wallEnd.get(HPoint.ATT_X);
 		int bY = (Integer) wallEnd.get(HPoint.ATT_Y);
-		
-
-		/*if (state.blockAt(aX, aY) && state.blockAt(bX, bY)) {
-        	return true;
-		}
-		
-		return false;/**/
 		
 		if (!state.blockAt(aX, aY) || !state.blockAt(bX, bY)) {
         	return false;
@@ -84,8 +78,14 @@ public class IsContiguous extends PropositionalFunction
 
     @Override
     public boolean isTrue(OOState s, String... params) {
-        HPoint wallStart = (HPoint) s.object(params[0]);
-        HPoint wallEnd = (HPoint) s.object(params[1]);
+    	HWall wall = (HWall) s.object(params[0]);
+    	return isTrue(s, wall);
+    }
+    
+    public boolean isTrue(OOState s, HWall wall) {
+        HPoint wallStart = (HPoint) wall.get(HWall.ATT_START);
+        HPoint wallEnd = (HPoint) wall.get(HWall.ATT_END);
         return isTrue(s, wallStart, wallEnd);
     }
+    
 }

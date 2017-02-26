@@ -7,6 +7,10 @@ import amdp.amdpframework.AMDPAgent;
 import amdp.amdpframework.AMDPPolicyGenerator;
 import amdp.amdpframework.GroundedTask;
 import amdp.amdpframework.TaskNode;
+import amdp.house.level1.TaskLeaf;
+import amdp.house.level1.Z_HasWallPF;
+import amdp.house.level1.Z_HasWallSCT;
+import amdp.house.level1.HasWall;
 import amdp.house.level1.MakeWall;
 import amdp.house.level1.MakeWallRF;
 import amdp.house.level1.MakeWallState;
@@ -14,8 +18,6 @@ import amdp.house.level1.MakeWallTF;
 import amdp.house.level2.MakeRoom;
 import amdp.house.level2.MakeRoomTF;
 import amdp.house.objects.HPoint;
-import amdp.houseBuilding.taskNodes.BuildTask;
-import amdp.houseBuilding.taskNodes.MoveTask;
 import amdp.taxiamdpdomains.testingtools.BoundedRTDPForTests;
 import amdp.taxiamdpdomains.testingtools.MutableGlobalInteger;
 import burlap.behavior.policy.Policy;
@@ -33,8 +35,6 @@ import burlap.mdp.singleagent.oo.OOSADomain;
 import burlap.statehashing.HashableStateFactory;
 import burlap.statehashing.simple.SimpleHashableStateFactory;
 
-
-
 public class AMDPAssembler { 
 
 	// bad -- fix this location
@@ -48,14 +48,14 @@ public class AMDPAssembler {
 		
 		int width = 2;
 		int height = 2;
-		HPoint wallStart = new HPoint("wStart", 0, 0, false);
-		HPoint wallEnd = new HPoint("wEnd", 1, 1, false);
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory(true);
-		final MakeWallTF tfWall = new MakeWallTF(wallStart, wallEnd);
+//		Z_HasWallSCT goal = null; // no specific goal yet
+		HasWall goal = new HasWall(0,0,0,1);
+		final MakeWallTF tfWall = new MakeWallTF(goal);
 		double rewardGoal = 1000;
 		double rewardDefault = -.1;
 		double rewardFailure = rewardDefault * 2;
-		RewardFunction rfWall = new MakeWallRF(tfWall, rewardGoal, rewardDefault, rewardFailure);
+		MakeWallRF rfWall = new MakeWallRF(tfWall, rewardGoal, rewardDefault, rewardFailure);
 		MakeWall genWall = new MakeWall(rfWall, tfWall, width, height);
 		OOSADomain domainWall = genWall.generateDomain();
 		OOSADomain domainEnv = genWall.generateDomain();
@@ -71,8 +71,6 @@ public class AMDPAssembler {
 		pgList.add(0, new MakeWallPolicyGenerator(domainWall));
 		pgList.add(1, new MakeRoomPolicyGenerator(domainRoom));
 
-				
-		
 		// makeWall actions
 		ActionType aNorth = domainWall.getAction(MakeWall.ACTION_NORTH);
 		ActionType aSouth = domainWall.getAction(MakeWall.ACTION_SOUTH);
@@ -83,11 +81,11 @@ public class AMDPAssembler {
 		// makeRoom actions
 		ActionType makeWall = domainRoom.getAction(MakeRoom.ACTION_MAKE_WALL);
 		
-		TaskNode northTask = new MoveTask(aNorth);
-		TaskNode southTask = new MoveTask(aSouth);
-		TaskNode eastTask = new MoveTask(aEast);
-		TaskNode westTask = new MoveTask(aWest);
-		TaskNode buildTask = new BuildTask(aBuild);
+		TaskNode northTask = new TaskLeaf(aNorth);
+		TaskNode southTask = new TaskLeaf(aSouth);
+		TaskNode eastTask = new TaskLeaf(aEast);
+		TaskNode westTask = new TaskLeaf(aWest);
+		TaskNode buildTask = new TaskLeaf(aBuild);
 		
 		TaskNode[] makeWallSubtasks = new TaskNode[]{northTask, eastTask, southTask, westTask, buildTask};
 		
@@ -95,8 +93,9 @@ public class AMDPAssembler {
 			@Override
 			public boolean isTrue(OOState s, String... params) {
 				return tfWall.satisfiesGoal((MakeWallState)s);
-			}
+			}	
 		};
+//		PropositionalFunction hasWallPF = new HasWallPF("hasWallPF", new String[]{HPoint.CLASS_POINT, HPoint.CLASS_POINT});
 		
 		TaskNode makeWallTask = new SinglePFTaskNode(
 				"makeWallAMDP",
@@ -104,7 +103,16 @@ public class AMDPAssembler {
 				genWall.generateDomain(),
 				makeWallSubtasks,
 				hasWallPF
-				);
+		);
+				
+//		TaskNode makeWallTask = new Z_MakeWallTaskNode(
+//				"makeWallAMDP",
+//				new ActionType[]{makeWall},
+//				genWall.generateDomain(),
+//				makeWallSubtasks,
+//				tfWall,
+//				rfWall
+//				);
 		
 		TaskNode[] makeRoomSubtasks = new TaskNode[]{makeWallTask};
 		
@@ -128,39 +136,24 @@ public class AMDPAssembler {
             int numUpdates = brtdpList.get(i).getNumberOfBellmanUpdates();
             count+= numUpdates;
         }
-
-//      System.out.println(e.actionSequence);
-//    System.out.println(PolicyUtils.rollout(brtdpList.get(0).planFromState(pgList.get(1).generateAbstractState(initial)),envN));
-//      System.out.println(PolicyUtils.rollout(brtdpList.get(0).planFromState(pgList.get(1).generateAbstractState(initial)), pgList.get(1).generateAbstractState(initial), pgList.get(1).model));
-      Policy bl1 = brtdpList.get(1).planFromState(initial);
-      AMDPPolicyGenerator pg1 = pgList.get(1);
-      State absInitial = pg1.generateAbstractState(initial);
-      Policy bl0 = brtdpList.get(0).planFromState(absInitial);
-      System.out.println(PolicyUtils.rollout(bl1, initial, domainEnv.getModel()).actionSequence);
-      System.out.println(PolicyUtils.rollout(bl0, absInitial, domainRoom.getModel()).actionSequence);
-      System.out.println(e.discountedReturn(1.));
-      System.out.println(count);
-      System.out.println("Total planners used: " + brtdpList.size());
-      System.out.println("House with AMDPs \nBackups by individual planners:");
-      for(BoundedRTDPForTests b:brtdpList){
-          System.out.println(b.getNumberOfBellmanUpdates());
-      }
-      return makeRoomTask;
+        Policy bl1 = brtdpList.get(1).planFromState(initial);
+        AMDPPolicyGenerator pg1 = pgList.get(1);
+        State absInitial = pg1.generateAbstractState(initial);
+        Policy bl0 = brtdpList.get(0).planFromState(absInitial);
+        System.out.println(PolicyUtils.rollout(bl1, initial, domainEnv.getModel()).actionSequence);
+        System.out.println(PolicyUtils.rollout(bl0, absInitial, domainRoom.getModel()).actionSequence);
+        System.out.println(e.discountedReturn(1.));
+        System.out.println(count);
+        System.out.println("Total planners used: " + brtdpList.size());
+        System.out.println("House with AMDPs \nBackups by individual planners:");
+        for(BoundedRTDPForTests b:brtdpList){
+            System.out.println(b.getNumberOfBellmanUpdates());
+        }
+        return makeRoomTask;
 	}
-	
 
-
-
-
-        
-        
 	public static void main(String[] args) {
-		
 		AMDPAssembler.assembleAMDP();
-
     }
-	
-	
-		
 	
 }

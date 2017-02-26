@@ -24,7 +24,7 @@ public class MakeWallPolicyGenerator implements AMDPPolicyGenerator {
 
     @Override
     public Policy generatePolicy(State s, GroundedTask gt) {
-
+    	
         domain = ((NonPrimitiveTaskNode)gt.getT()).domain();
         domain.setModel(new FactoredModel(((FactoredModel)domain.getModel()).getStateModel(),gt.rewardFunction(), gt.terminalFunction()));
 

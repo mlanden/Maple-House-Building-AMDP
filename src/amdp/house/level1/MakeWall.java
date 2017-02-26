@@ -6,6 +6,7 @@ import java.util.List;
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
 import amdp.house.objects.HPoint;
+import amdp.house.objects.HWall;
 import burlap.behavior.policy.Policy;
 import burlap.behavior.policy.PolicyUtils;
 import burlap.behavior.singleagent.Episode;
@@ -92,14 +93,15 @@ public class MakeWall implements DomainGenerator{
 
 	public static void main(String[] args) {
 		
-		HPoint wallStart = new HPoint("wStart", 0, 0, false);
-		HPoint wallEnd = new HPoint("wEnd", 4, 4, false);
-		
+//		HPoint wallStart = new HPoint("point_0_0", 0, 0, false);
+//		HPoint wallEnd = new HPoint("point_4_4", 4, 4, false);
+//		HWall wall = new HWall("goalWall", wallStart, wallEnd);
 		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory(true);
-		MakeWallTF tf = new MakeWallTF(wallStart, wallEnd);
-		double rewardGoal = 1000;
-		double rewardDefault = -.1;
+		HasWall goal = new HasWall(0,0,0,1);
+		MakeWallTF tf = new MakeWallTF(goal);
+		double rewardGoal = 1.0;
+		double rewardDefault = -.0001;
 		double rewardFailure = rewardDefault * 2;
 		RewardFunction rf = new MakeWallRF(tf, rewardGoal, rewardDefault, rewardFailure);
 		int width = 5;
@@ -112,11 +114,11 @@ public class MakeWall implements DomainGenerator{
 		
 		double lowerVInit = 0.;
 		double upperVInit = 1.;
-		double maxDiff = 0.001;
-		double gamma = 0.9;
-		int maxSteps = 1000;
+		double maxDiff = rewardGoal / 10000.0;
+		double gamma = 0.99;
+		int maxSteps = 30;
 		int maxRollouts = 65536;
-		int maxRolloutDepth = -1;
+		int maxRolloutDepth = maxSteps;
 		BoundedRTDP brtdp =
 				new BoundedRTDP(domain, gamma, hashingFactory, 
 				new ConstantValueFunction(lowerVInit),
@@ -142,6 +144,7 @@ public class MakeWall implements DomainGenerator{
 		System.out.println(OOStateUtilities.ooStateToString((OOState) ea.stateSequence.get(ea.stateSequence.size()-1)));
 		OOState last = ((OOState) ea.stateSequence.get(ea.stateSequence.size()-1));
 		System.out.println(last.objectsOfClass(HBlock.CLASS_BLOCK).size() + " blocks");
+		System.out.println(ea.actionSequence);
 		
 	}
 

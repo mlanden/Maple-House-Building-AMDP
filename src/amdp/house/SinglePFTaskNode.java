@@ -97,5 +97,10 @@ public class SinglePFTaskNode extends NonPrimitiveTaskNode {
 //        }
 //        return params;
 	}
+	
+	@Override
+	public String toString() {
+		return getName();
+	}
 
 }
