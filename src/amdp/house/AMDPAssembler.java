@@ -7,17 +7,15 @@ import amdp.amdpframework.AMDPAgent;
 import amdp.amdpframework.AMDPPolicyGenerator;
 import amdp.amdpframework.GroundedTask;
 import amdp.amdpframework.TaskNode;
-import amdp.house.level1.TaskLeaf;
-import amdp.house.level1.Z_HasWallPF;
-import amdp.house.level1.Z_HasWallSCT;
-import amdp.house.level1.HasWall;
 import amdp.house.level1.MakeWall;
 import amdp.house.level1.MakeWallRF;
-import amdp.house.level1.MakeWallState;
 import amdp.house.level1.MakeWallTF;
+import amdp.house.level1.TaskLeaf;
 import amdp.house.level2.MakeRoom;
+import amdp.house.level2.MakeRoomRF;
 import amdp.house.level2.MakeRoomTF;
 import amdp.house.objects.HPoint;
+import amdp.house.objects.HWall;
 import amdp.taxiamdpdomains.testingtools.BoundedRTDPForTests;
 import amdp.taxiamdpdomains.testingtools.MutableGlobalInteger;
 import burlap.behavior.policy.Policy;
@@ -25,7 +23,6 @@ import burlap.behavior.policy.PolicyUtils;
 import burlap.behavior.singleagent.Episode;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.action.ActionType;
-import burlap.mdp.core.oo.propositional.PropositionalFunction;
 import burlap.mdp.core.oo.state.OOState;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.common.UniformCostRF;
@@ -46,23 +43,26 @@ public class AMDPAssembler {
 
 	public static TaskNode assembleAMDP(){
 		
-		int width = 2;
-		int height = 2;
+		// goal is to build this wall
+		HPoint start = new HPoint("wallStart", 0, 0, false);
+		HPoint end = new HPoint("wallEnd", 3, 2, false);
+		HWall goal = new HWall("goalWall", start, end, false);
+		
+		int width = 5;
+		int height = 5;
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory(true);
-//		Z_HasWallSCT goal = null; // no specific goal yet
-		HasWall goal = new HasWall(0,0,0,1);
-		final MakeWallTF tfWall = new MakeWallTF(goal);
+		TerminalFunction tfWall = new MakeWallTF();
 		double rewardGoal = 1000;
 		double rewardDefault = -.1;
 		double rewardFailure = rewardDefault * 2;
-		MakeWallRF rfWall = new MakeWallRF(tfWall, rewardGoal, rewardDefault, rewardFailure);
+		RewardFunction rfWall = new MakeWallRF((MakeWallTF) tfWall, rewardGoal, rewardDefault, rewardFailure);
 		MakeWall genWall = new MakeWall(rfWall, tfWall, width, height);
 		OOSADomain domainWall = genWall.generateDomain();
 		OOSADomain domainEnv = genWall.generateDomain();
-		OOState initial = genWall.getInitialState();
+		OOState initial = genWall.getInitialState(goal);
 
-		RewardFunction rfRoom = new UniformCostRF();
-		TerminalFunction tfRoom = new MakeRoomTF();
+		TerminalFunction tfRoom = new MakeRoomTF(goal);
+		RewardFunction rfRoom = new MakeRoomRF((MakeRoomTF) tfRoom, 1000.0, 0.0, 0.0);
 		MakeRoom genRoom = new MakeRoom(rfRoom, tfRoom, width, height);
 		OOSADomain domainRoom = genRoom.generateDomain();
 		OOState initialStateRoom = genRoom.getInitialState();
@@ -89,30 +89,14 @@ public class AMDPAssembler {
 		
 		TaskNode[] makeWallSubtasks = new TaskNode[]{northTask, eastTask, southTask, westTask, buildTask};
 		
-		PropositionalFunction hasWallPF = new PropositionalFunction("hasWall",new String[]{}) {
-			@Override
-			public boolean isTrue(OOState s, String... params) {
-				return tfWall.satisfiesGoal((MakeWallState)s);
-			}	
-		};
-//		PropositionalFunction hasWallPF = new HasWallPF("hasWallPF", new String[]{HPoint.CLASS_POINT, HPoint.CLASS_POINT});
-		
-		TaskNode makeWallTask = new SinglePFTaskNode(
+		TaskNode makeWallTask = new MakeWallTaskNode(
 				"makeWallAMDP",
 				new ActionType[]{makeWall},
 				genWall.generateDomain(),
 				makeWallSubtasks,
-				hasWallPF
+				(MakeWallTF) tfWall,
+				(MakeWallRF) rfWall
 		);
-				
-//		TaskNode makeWallTask = new Z_MakeWallTaskNode(
-//				"makeWallAMDP",
-//				new ActionType[]{makeWall},
-//				genWall.generateDomain(),
-//				makeWallSubtasks,
-//				tfWall,
-//				rfWall
-//				);
 		
 		TaskNode[] makeRoomSubtasks = new TaskNode[]{makeWallTask};
 		
@@ -136,12 +120,12 @@ public class AMDPAssembler {
             int numUpdates = brtdpList.get(i).getNumberOfBellmanUpdates();
             count+= numUpdates;
         }
-        Policy bl1 = brtdpList.get(1).planFromState(initial);
+        Policy bottom = brtdpList.get(1).planFromState(initial);
         AMDPPolicyGenerator pg1 = pgList.get(1);
         State absInitial = pg1.generateAbstractState(initial);
-        Policy bl0 = brtdpList.get(0).planFromState(absInitial);
-        System.out.println(PolicyUtils.rollout(bl1, initial, domainEnv.getModel()).actionSequence);
-        System.out.println(PolicyUtils.rollout(bl0, absInitial, domainRoom.getModel()).actionSequence);
+        Policy top = brtdpList.get(0).planFromState(absInitial);
+        System.out.println(PolicyUtils.rollout(bottom, initial, domainEnv.getModel()).actionSequence);
+        System.out.println(PolicyUtils.rollout(top, absInitial, domainRoom.getModel()).actionSequence);
         System.out.println(e.discountedReturn(1.));
         System.out.println(count);
         System.out.println("Total planners used: " + brtdpList.size());

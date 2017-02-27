@@ -96,9 +96,14 @@ public class MakeRoom implements DomainGenerator {
 	
 	public static void main(String[] args) {
 		
+		// goal is to build this wall
+		HPoint start = new HPoint("wallStart", 0, 0, false);
+		HPoint end = new HPoint("wallEnd", 4, 2, false);
+		HWall goal = new HWall("goalWall", start, end, false);
+		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory();
-		RewardFunction rf = new UniformCostRF();
-		TerminalFunction tf = new MakeRoomTF();
+		MakeRoomTF tf = new MakeRoomTF(goal);
+		MakeRoomRF rf = new MakeRoomRF(tf, 1000.0, 0.0, 0.0);
 		int width = 5;
 		int height = 5;
 		MakeRoom gen = new MakeRoom(rf, tf, width, height);

@@ -22,18 +22,20 @@ public class MakeWallState implements MutableOOState{
 	private HAgent agent;
 	private Map<IntPair, HPoint> points;
 	private Map<IntPair, HBlock> blocks;
-	private List<HWall> walls;
+//	private List<HWall> walls;
+	private HWall wall;
 	private int width;
 	private int height;
 	
 	// empty state
-	public MakeWallState(int width, int height, int agentX, int agentY) {
+	public MakeWallState(int width, int height, int agentX, int agentY, HWall wall) {
 		this.width = width;
 		this.height = height;
+		this.wall = wall;
 		agent = new HAgent(agentX, agentY);
 		points = new HashMap<IntPair, HPoint>();
 		blocks = new HashMap<IntPair, HBlock> ();
-		walls = new ArrayList<HWall>();
+//		walls = new ArrayList<HWall>();
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				String name = HPoint.CLASS_POINT+"_"+i+"_"+j;
@@ -43,12 +45,12 @@ public class MakeWallState implements MutableOOState{
 	}
 	
 	// copy constructor
-	public MakeWallState(int width, int height, HAgent agent, Map<IntPair, HBlock> blocks, List<HWall> walls, Map<IntPair,HPoint> points) {
+	public MakeWallState(int width, int height, HAgent agent, Map<IntPair, HBlock> blocks, HWall wall, Map<IntPair,HPoint> points) {
 		this.width = width;
 		this.height = height;
 		this.agent = agent;
 		this.blocks = blocks;
-		this.walls = walls;
+		this.wall = wall;
 		this.points = points;
 	}
 	
@@ -105,7 +107,7 @@ public class MakeWallState implements MutableOOState{
 		numObjects += agent != null ? 1 : 0;
 		numObjects += points.size();
 		numObjects += blocks.size();
-		numObjects += walls.size();
+		numObjects += wall != null ? 1 : 0;
 		return numObjects;
 	}
 	
@@ -123,7 +125,8 @@ public class MakeWallState implements MutableOOState{
 		objects.add(agent);
 		objects.addAll(points.values());
 		objects.addAll(blocks.values());
-		objects.addAll(walls);
+//		objects.addAll(walls);
+		objects.add(wall);
 		return objects;
 	}
 	
@@ -135,26 +138,32 @@ public class MakeWallState implements MutableOOState{
 		} else if(HPoint.CLASS_POINT.equals(oclass)) {
 			return new ArrayList<ObjectInstance>(points.values());
 		} else if(HWall.CLASS_WALL.equals(oclass)) {
-			return new ArrayList<ObjectInstance>(walls);
+//			return new ArrayList<ObjectInstance>(walls);
+			return Arrays.<ObjectInstance>asList(wall);
 		} else {
 			throw new RuntimeException("not implemented");
 		}
 	}
 	
-	public int getNumWalls() {
-		return walls.size();
-	}
+//	public int getNumWalls() {
+//		return walls.size();
+//	}
 
-	public List<HWall> touchWalls() {
-    	this.walls = new ArrayList<HWall>(this.walls);
-    	return this.walls;
-	}
+//	public List<HWall> touchWalls() {
+//    	this.walls = new ArrayList<HWall>(this.walls);
+//    	return this.walls;
+//	}
 	
-	public HWall touchWall(int index) {
-    	HWall copy = (HWall) walls.get(index).copy();
-    	touchWalls().remove(index);
-    	walls.add(index, copy);
-    	return copy;
+//	public HWall touchWall(int index) {
+//    	HWall copy = (HWall) walls.get(index).copy();
+//    	touchWalls().remove(index);
+//    	walls.add(index, copy);
+//    	return copy;
+//	}
+	
+	public HWall touchWall() {
+		this.wall = this.wall.copy();
+		return this.wall;
 	}
 	
 	public int getNumBlocks() {
@@ -195,7 +204,8 @@ public class MakeWallState implements MutableOOState{
 	}
 
 	public MakeWallState copy() {
-		return new MakeWallState(width, height, touchAgent(), touchBlocks(), touchWalls(), touchPoints());
+		return new MakeWallState(width, height, touchAgent(), touchBlocks(), touchWall(), touchPoints());
+//		return new MakeWallState(width, height, touchAgent(), touchBlocks(), touchWalls(), touchPoints());
 	}
 
 	@Override
@@ -222,9 +232,10 @@ public class MakeWallState implements MutableOOState{
 			IntPair key = new IntPair(x, y);
 			touchBlocks().put(key, block);
 		} else if (o instanceof HWall) {
-			List<HWall> walls = this.touchWalls();
-			walls.add((HWall)o);
-			this.walls = walls;
+//			List<HWall> walls = this.touchWalls();
+//			walls.add((HWall)o);
+//			this.walls = walls;
+			throw new RuntimeException("not implemented");
 		} else if (o instanceof HPoint) {
 			HPoint point = (HPoint)o;
 			int x = (Integer) point.get(HPoint.ATT_X);
@@ -247,11 +258,21 @@ public class MakeWallState implements MutableOOState{
 		throw new RuntimeException("not implemented");
 	}
 
-	public HWall getFirstWall() {
-		if (walls.size() < 1) {
-			return null;
-		}
-		return walls.get(0);
+	public HWall getWall() {
+		return wall;
+	}
+
+//	public HWall getFirstWall() {
+//		if (walls.size() < 1) {
+//			return null;
+//		}
+//		return walls.get(0);
+//	}
+	
+	public String toString() {
+		String out = "";
+		out += "blocks: " + blocks.size() + ", wall finished: " + wall.get(HWall.ATT_FINISHED);
+		return out;
 	}
 	
 }

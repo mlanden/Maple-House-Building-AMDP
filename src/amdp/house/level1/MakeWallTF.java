@@ -5,7 +5,6 @@ import java.util.List;
 import amdp.house.objects.HBlock;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HWall;
-import amdp.house.pfs.OldHasWall;
 import amdp.house.pfs.IsContiguous;
 import burlap.mdp.auxiliary.common.GoalConditionTF;
 import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
@@ -14,30 +13,21 @@ import burlap.mdp.core.oo.state.ObjectInstance;
 import burlap.mdp.core.state.State;
 
 public class MakeWallTF implements TerminalFunction {
-
-	private HasWall goal;
 	
-	public MakeWallTF(HasWall goal){
-		this.goal = goal;
-	}
-	
-	public void setGoal(HasWall goal) {
-		this.goal = goal;
+	public MakeWallTF() {
+		
 	}
 	
 	public double getBudget(MakeWallState state) {
-//		HPoint wallStart = (HPoint) state.object(goal.getStartName());
-//		HPoint wallEnd = (HPoint) state.object(goal.getEndName());
-//		int aX = (Integer) wallStart.get(HPoint.ATT_X);
-//		int aY = (Integer) wallStart.get(HPoint.ATT_Y);
-//		int bX = (Integer) wallEnd.get(HPoint.ATT_X);
-//		int bY = (Integer) wallEnd.get(HPoint.ATT_Y);
-		int aX = goal.aX;
-		int aY = goal.aY;
-		int bX = goal.bX;
-		int bY = goal.bY;
+		HWall goal = state.getWall();
+		HPoint wallStart = (HPoint) goal.get(HWall.ATT_START);
+		HPoint wallEnd = (HPoint) goal.get(HWall.ATT_END);
+		int aX = (Integer) wallStart.get(HPoint.ATT_X);
+		int aY = (Integer) wallStart.get(HPoint.ATT_Y);
+		int bX = (Integer) wallEnd.get(HPoint.ATT_X);
+		int bY = (Integer) wallEnd.get(HPoint.ATT_Y);
 		// blocks are budgeted to be chebyshev distance * budgetScalar
-		double budgetScalar = 1.1;
+		double budgetScalar = 1.1;//1.1;
 		double distance = Math.max(Math.abs(bX-aX),Math.abs(bY-aY));
 		double budget = distance * budgetScalar;
 		return budget;
@@ -52,10 +42,11 @@ public class MakeWallTF implements TerminalFunction {
 	}
 	
 	public boolean satisfiesGoal(MakeWallState state) {
-		if (goal == null) {
-			throw new RuntimeException("not implemented");
+		HWall goal = state.getWall();
+		if ((boolean) goal.get(HWall.ATT_FINISHED)) {
+			return true;
 		}
-		return goal.satisfies(state);
+		return false;
 	}
 	
 	@Override

@@ -72,4 +72,8 @@ public class HPoint extends MutableObject implements MutableObjectInstance, Comp
 		}
 	}
 	
+	public String toString() {
+		return "(" + get(ATT_X) + ", " + get(ATT_Y) + ")";
+	}
+	
 }

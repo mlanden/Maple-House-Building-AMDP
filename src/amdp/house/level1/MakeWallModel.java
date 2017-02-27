@@ -5,6 +5,7 @@ import java.util.List;
 
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
+import amdp.house.objects.HWall;
 import burlap.mdp.core.StateTransitionProb;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.oo.state.ObjectInstance;
@@ -13,6 +14,8 @@ import burlap.mdp.singleagent.model.statemodel.FullStateModel;
 
 public class MakeWallModel implements FullStateModel {
 
+	public HasFinishedWall hasFinishedWall = new HasFinishedWall();
+	
 	@Override
 	public State sample(State s, Action a) {
 		s = s.copy();
@@ -72,6 +75,10 @@ public class MakeWallModel implements FullStateModel {
 		} else {
 			HBlock newBlock = new HBlock(HBlock.CLASS_BLOCK, newX, newY, true);
 			s = state.addObject((ObjectInstance)newBlock);
+			if(hasFinishedWall.satisfies(state)) {
+				HWall wall = state.touchWall();
+				wall.set(HWall.ATT_FINISHED, true);
+			}
 		}
 		return s;
 	}

@@ -86,20 +86,19 @@ public class MakeWall implements DomainGenerator{
 		return pfs;
 	}
 	
-	public MakeWallState getInitialState() {
-		MakeWallState state = new MakeWallState(width, height, 0, 0);
+	public MakeWallState getInitialState(HWall goalWall) {
+		MakeWallState state = new MakeWallState(width, height, 0, 0, goalWall);
 		return state;
 	}
 
 	public static void main(String[] args) {
 		
-//		HPoint wallStart = new HPoint("point_0_0", 0, 0, false);
-//		HPoint wallEnd = new HPoint("point_4_4", 4, 4, false);
-//		HWall wall = new HWall("goalWall", wallStart, wallEnd);
+		HPoint wallStart = new HPoint("pointStart", 0, 0, false);
+		HPoint wallEnd = new HPoint("pointEnd", 3, 3, false);
+		HWall wall = new HWall("goalWall", wallStart, wallEnd, false);
 		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory(true);
-		HasWall goal = new HasWall(0,0,0,1);
-		MakeWallTF tf = new MakeWallTF(goal);
+		MakeWallTF tf = new MakeWallTF();
 		double rewardGoal = 1.0;
 		double rewardDefault = -.0001;
 		double rewardFailure = rewardDefault * 2;
@@ -108,7 +107,7 @@ public class MakeWall implements DomainGenerator{
 		int height = 5;
 		MakeWall gen = new MakeWall(rf, tf, width, height);
 		OOSADomain domain = gen.generateDomain();
-		OOState initial = gen.getInitialState();
+		OOState initial = gen.getInitialState(wall);
 
 //		System.out.println(OOStateUtilities.ooStateToString(initial));
 		

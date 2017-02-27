@@ -33,7 +33,7 @@ public class MakeRoomModel implements FullStateModel {
 		HPoint pointB = (HPoint) state.object(action.getObjectParameters()[1]);
 		int numWalls = state.getNumWalls();
 		String name = HWall.CLASS_WALL + numWalls;
-		HWall wall = new HWall(name, pointA, pointB);
+		HWall wall = new HWall(name, pointA, pointB, true);
 		state.addObject(wall);
 		return s;
 	}

@@ -27,4 +27,13 @@ public class IntPair{
 		IntPair o = (IntPair)other;
 		return this.x == o.x && this.y == o.y;
 	}
+	
+	public String toString() {
+		return x + " " + y;
+	}
+
+	public static IntPair interpolate(IntPair a, IntPair b) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

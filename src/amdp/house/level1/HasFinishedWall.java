@@ -5,27 +5,26 @@ import java.util.List;
 
 import amdp.house.level1.MakeWallState;
 import amdp.house.objects.HPoint;
+import amdp.house.objects.HWall;
 import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
+import burlap.mdp.core.oo.state.OOStateUtilities;
 import burlap.mdp.core.state.State;
+import burlap.mdp.core.state.StateUtilities;
 import utils.IntPair;
 
-public class Z_HasWallSCT implements StateConditionTest {
+public class HasFinishedWall implements StateConditionTest {
 
-	private String startName;
-	private String endName;
 	private List<IntPair> others;
 	
-	public Z_HasWallSCT(String startName, String endName) {
-		this.startName = startName;
-		this.endName = endName;
+	public HasFinishedWall() {
 		this.others = new ArrayList<IntPair>();
 	}
 	
 	@Override
 	public boolean satisfies(State s) {
 		MakeWallState state = (MakeWallState) s;
-		HPoint start = (HPoint) state.object(startName);
-		HPoint end = (HPoint) state.object(endName);
+		HPoint start = (HPoint) state.getWall().get(HWall.ATT_START);
+		HPoint end = (HPoint) state.getWall().get(HWall.ATT_END);
 		// sort
 		HPoint temp;
         if (start.compareTo(end) > 0) {
@@ -35,6 +34,45 @@ public class Z_HasWallSCT implements StateConditionTest {
 		int aY = (Integer) start.get(HPoint.ATT_Y);
 		int bX = (Integer) end.get(HPoint.ATT_X);
 		int bY = (Integer) end.get(HPoint.ATT_Y);
+		
+		if (!state.blockAt(aX, aY)) {
+			return false;
+		}
+		
+		if (!state.blockAt(bX, bY)) {
+			return false;
+		}
+		return checkLineMinimal(state, aX, aY, bX, bY);
+//		return checkLineSuperCovered(state, aX, aY, bX, bY);
+	}
+	
+	public static double interpolate(double a, double b, double degree) {
+		return a + (degree * (b - a));
+	}
+	
+	public boolean checkLineMinimal(MakeWallState state, int aX, int aY, int bX, int bY) {
+		if (others.size() < 1) {
+			double dX = bX - aX;
+			double dY = bY - aY;
+			double distance = Math.max(Math.abs(dX), Math.abs(dY));
+			for (double step = 0; step <= distance; step++) {
+				double degree = distance == 0 ? 0.0 : step / distance;
+				double interpX = interpolate(aX, bX, degree);
+				double interpY = interpolate(aY, bY, degree);
+				IntPair rounded = new IntPair((int) Math.round(interpX), (int) Math.round(interpY));
+				others.add(rounded);
+			}
+		}
+		for (IntPair point : others) {
+			if (!state.blockAt(point.x, point.y)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean checkLineSuperCovered(MakeWallState state, int aX, int aY, int bX, int bY) {
+//		others.clear(); // comment this out to have it not recompute every time
 		if (others.size() < 1) {
 			double dX = bX - aX;
 			double dY = bY - aY;
@@ -66,27 +104,12 @@ public class Z_HasWallSCT implements StateConditionTest {
 				others.add(new IntPair(p.x, p.y));
 			}
 		}
-
-		if (!state.blockAt(aX, aY)) {
-			return false;
-		}
-		if (!state.blockAt(bX, bY)) {
-			return false;
-		}
 		for (IntPair point : others) {
 			if (!state.blockAt(point.x, point.y)) {
 				return false;
 			}
 		}
 		return true;
-	}
-
-	public String getStartName() {
-		return startName;
-	}
-	
-	public String getEndName() {
-		return endName;
 	}
 
 }

@@ -125,8 +125,18 @@ public class MakeRoomState implements MutableOOState {
 		throw new RuntimeException("not implemented");
 	}
 
-	public boolean hasWall() {
-		return walls.size() > 0;
+	public boolean hasWall(HWall wall) {
+		HPoint start = (HPoint) wall.get(HWall.ATT_START);
+		HPoint end = (HPoint) wall.get(HWall.ATT_END);
+		for (HWall other : walls) {
+			HPoint oStart = (HPoint) other.get(HWall.ATT_START);
+			HPoint oEnd = (HPoint) other.get(HWall.ATT_END);
+			if (start.compareTo(oStart) == 0
+			 && end.compareTo(oEnd) == 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public int getNumWalls() {
