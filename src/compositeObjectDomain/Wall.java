@@ -1,12 +1,12 @@
 package compositeObjectDomain;
 
-import static amdp.house.level1.MakeWall.CLASS_WALL;
-import static amdp.house.level1.MakeWall.DOORS;
-import static amdp.house.level1.MakeWall.END_X;
-import static amdp.house.level1.MakeWall.END_Y;
-import static amdp.house.level1.MakeWall.LENGTH;
-import static amdp.house.level1.MakeWall.START_X;
-import static amdp.house.level1.MakeWall.START_Y;
+import static amdp.house.level2.MakeWall.CLASS_WALL;
+import static amdp.house.level2.MakeWall.DOORS;
+import static amdp.house.level2.MakeWall.END_X;
+import static amdp.house.level2.MakeWall.END_Y;
+import static amdp.house.level2.MakeWall.LENGTH;
+import static amdp.house.level2.MakeWall.START_X;
+import static amdp.house.level2.MakeWall.START_Y;
 
 import java.util.ArrayList; 
 import java.util.Arrays;

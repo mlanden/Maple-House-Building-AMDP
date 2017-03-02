@@ -1,8 +1,9 @@
-package amdp.house.level1;
+package amdp.house.level2;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import amdp.house.base.PointParameterizedActionType;
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
 import amdp.house.objects.HPoint;
@@ -16,26 +17,25 @@ import burlap.mdp.auxiliary.DomainGenerator;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.action.UniversalActionType;
 import burlap.mdp.core.oo.OODomain;
+import burlap.mdp.core.oo.ObjectParameterizedAction;
 import burlap.mdp.core.oo.propositional.PropositionalFunction;
 import burlap.mdp.core.oo.state.OOState;
 import burlap.mdp.core.oo.state.OOStateUtilities;
+import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.common.GoalBasedRF;
 import burlap.mdp.singleagent.common.UniformCostRF;
 import burlap.mdp.singleagent.model.FactoredModel;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
+import burlap.mdp.singleagent.oo.ObjectParameterizedActionType;
 import burlap.statehashing.HashableStateFactory;
 import burlap.statehashing.simple.SimpleHashableStateFactory;
 
 public class MakeWall implements DomainGenerator{
 	
 	//actions
-	public static final String ACTION_BUILD = "build";
-	public static final String ACTION_NORTH = "north";
-	public static final String ACTION_EAST = "east";
-	public static final String ACTION_SOUTH = "south";
-	public static final String ACTION_WEST = "west";
-	public static final int NUM_ACTIONS = 5;
+	public static final String ACTION_MAKE_BLOCK = "makeBlock";
+	public static final int NUM_ACTIONS = 1;
 
 	protected RewardFunction rf;
 	protected TerminalFunction tf;
@@ -61,20 +61,17 @@ public class MakeWall implements DomainGenerator{
 	public OOSADomain generateDomain() {
 		OOSADomain domain = new OOSADomain();
 		
-		domain.addStateClass(HBlock.CLASS_BLOCK, HBlock.class);
 		domain.addStateClass(HAgent.CLASS_AGENT, HAgent.class);
+		domain.addStateClass(HPoint.CLASS_POINT, HPoint.class);
+		domain.addStateClass(HBlock.CLASS_BLOCK, HBlock.class);
+		domain.addStateClass(HWall.CLASS_WALL, HWall.class);
 		
 		MakeWallModel model = new MakeWallModel();
 		FactoredModel fmodel = new FactoredModel(model, rf, tf);
 		domain.setModel(fmodel);
 		
 		//actions
-		domain.addActionTypes(
-				new UniversalActionType(ACTION_NORTH),
-				new UniversalActionType(ACTION_EAST),
-				new UniversalActionType(ACTION_SOUTH),
-				new UniversalActionType(ACTION_WEST),
-				new UniversalActionType(ACTION_BUILD));
+		domain.addActionTypes(new PointParameterizedActionType(ACTION_MAKE_BLOCK));
 		
 		OODomain.Helper.addPfsToDomain(domain, generatePfs(domain));
 		
@@ -90,17 +87,18 @@ public class MakeWall implements DomainGenerator{
 		MakeWallState state = new MakeWallState(width, height, 0, 0, goalWall);
 		return state;
 	}
-
+	
 	public static void main(String[] args) {
 		
 		HPoint wallStart = new HPoint("pointStart", 0, 0, false);
-		HPoint wallEnd = new HPoint("pointEnd", 3, 3, false);
+		HPoint wallEnd = new HPoint("pointEnd", 2, 2, false);
 		HWall wall = new HWall("goalWall", wallStart, wallEnd, false);
 		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory(true);
 		MakeWallTF tf = new MakeWallTF();
+		double goalDefaultRatio = 1000.0;
 		double rewardGoal = 1.0;
-		double rewardDefault = -.0001;
+		double rewardDefault = -rewardGoal / goalDefaultRatio;
 		double rewardFailure = rewardDefault * 2;
 		RewardFunction rf = new MakeWallRF(tf, rewardGoal, rewardDefault, rewardFailure);
 		int width = 5;
@@ -113,9 +111,9 @@ public class MakeWall implements DomainGenerator{
 		
 		double lowerVInit = 0.;
 		double upperVInit = 1.;
-		double maxDiff = rewardGoal / 10000.0;
+		double maxDiff = rewardGoal / goalDefaultRatio;
 		double gamma = 0.99;
-		int maxSteps = 30;
+		int maxSteps = width+height;
 		int maxRollouts = 65536;
 		int maxRolloutDepth = maxSteps;
 		BoundedRTDP brtdp =

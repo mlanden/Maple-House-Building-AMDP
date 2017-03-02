@@ -1,16 +1,19 @@
-package amdp.house.level1;
+package amdp.house.level2;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
+import amdp.house.objects.HPoint;
 import amdp.house.objects.HWall;
 import burlap.mdp.core.StateTransitionProb;
 import burlap.mdp.core.action.Action;
+import burlap.mdp.core.oo.ObjectParameterizedAction;
 import burlap.mdp.core.oo.state.ObjectInstance;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.statemodel.FullStateModel;
+import burlap.mdp.singleagent.oo.ObjectParameterizedActionType;
 
 public class MakeWallModel implements FullStateModel {
 
@@ -20,27 +23,22 @@ public class MakeWallModel implements FullStateModel {
 	public State sample(State s, Action a) {
 		s = s.copy();
 		String name = a.actionName();
-		if (name.equals(MakeWall.ACTION_NORTH)
- 		 || name.equals(MakeWall.ACTION_SOUTH)
- 		 || name.equals(MakeWall.ACTION_EAST)
-		 || name.equals(MakeWall.ACTION_WEST)) {
-			int direction = actionInd(name);
-			int [] delta = MakeWallModel.movementDirectionFromIndex(direction);
-			return move(s, delta[0], delta[1]);
-		} else if (name.equals(MakeWall.ACTION_BUILD)) {
-			return build(s, 0, 0);
+		if (name.equals(MakeWall.ACTION_MAKE_BLOCK)) {
+			return makeBlock(s, a);
 		}
 		throw new RuntimeException("Unknown action " + name);
 	}
 	
-	public State move(State s, int dx, int dy) {
+	public State makeBlock(State s, Action a) {
 		MakeWallState state = (MakeWallState) s;
+		ObjectParameterizedAction action = (ObjectParameterizedAction)a;
+		String[] params = action.getObjectParameters();
+		HPoint destination = (HPoint) state.object(params[0]);
+		int newX = (int) destination.get(HPoint.ATT_X);
+		int newY = (int) destination.get(HPoint.ATT_Y);
 		
 		int agentX = (Integer) state.getAgent().get(HAgent.ATT_X);
 		int agentY = (Integer) state.getAgent().get(HAgent.ATT_Y);
-
-		int newX = agentX+dx;
-		int newY = agentY+dy;
 
 		// must stay within grid
 		if(state.isOutOfBounds(newX, newY)){
@@ -51,6 +49,8 @@ public class MakeWallModel implements FullStateModel {
 		HAgent nAgent = state.touchAgent();
 		nAgent.set(HAgent.ATT_X, newX);
 		nAgent.set(HAgent.ATT_Y, newY);
+		
+		s = build(s, 0, 0);
 		
 		return s;
 	}
@@ -73,7 +73,11 @@ public class MakeWallModel implements FullStateModel {
 		if (!state.isOpen(newX, newY)){
 			// do nothing
 		} else {
-			HBlock newBlock = new HBlock(HBlock.CLASS_BLOCK, newX, newY, true);
+//			HBlock newBlock = new HBlock(HBlock.CLASS_BLOCK, newX, newY, true);
+			// the name of the new object should be unique to that object
+			// that is, no two, newly added objects should ever have same name/ID
+			String blockName = HBlock.CLASS_BLOCK + "_" + newX + "_" + newY;
+			HBlock newBlock = new HBlock(blockName, newX, newY, true, false);
 			s = state.addObject((ObjectInstance)newBlock);
 			if(hasFinishedWall.satisfies(state)) {
 				HWall wall = state.touchWall();
@@ -120,49 +124,11 @@ public class MakeWallModel implements FullStateModel {
 
 
 	protected int actionInd(String name){
-		if(name.equals(MakeWall.ACTION_NORTH)){
+		if(name.equals(MakeWall.ACTION_MAKE_BLOCK)){
 			return 0;
-		} else if(name.equals(MakeWall.ACTION_SOUTH)){
-			return 1;
-		} else if(name.equals(MakeWall.ACTION_EAST)){
-			return 2;
-		} else if(name.equals(MakeWall.ACTION_WEST)){
-			return 3;
-		} else if(name.equals(MakeWall.ACTION_BUILD)){
-			return 4;
 		} else {
 			throw new RuntimeException("Unknown action " + name);
 		}
 	}
 
-	protected static int [] movementDirectionFromIndex(int i){
-
-		int [] result = null;
-		
-		switch (i) {
-			case 0:
-				result = new int[]{0,1};
-				break;
-
-			case 1:
-				result = new int[]{0,-1};
-				break;
-
-			case 2:
-				result = new int[]{1,0};
-				break;
-
-			case 3:
-				result = new int[]{-1,0};
-				break;
-				
-			case 4:
-				result = new int[]{0,0};
-
-			default:
-				break;
-		}
-
-		return result;
-	}
 }

@@ -1,16 +1,24 @@
 package amdp.house.objects;
 
+import java.util.Arrays;
+import java.util.List;
+
 import burlap.mdp.core.oo.state.ObjectInstance;
 
 public class HBlock extends HPoint {
 
 	public static final String CLASS_BLOCK = "block";
+	public static final String ATT_FINISHED = "finished";
 	
-	public HBlock(String name, int x, int y, boolean giveNewID) {
+	private final static List<Object> keys = Arrays.<Object>asList(
+			HPoint.ATT_X,
+			HPoint.ATT_Y,
+			HBlock.ATT_FINISHED
+	);
+	
+	public HBlock(String name, int x, int y, boolean finished, boolean giveNewID) {
 		super(name, x, y, giveNewID);
-		
-		// redo name/ID system to just use the block_x_y as name
-		
+		this.set(ATT_FINISHED, finished);
 	}
 
 	@Override
@@ -24,6 +32,7 @@ public class HBlock extends HPoint {
 				objectName,
 				(Integer) get(HPoint.ATT_X),
 				(Integer) get(HPoint.ATT_Y),
+				(Boolean) get(ATT_FINISHED),
 				false
 		);
 	}

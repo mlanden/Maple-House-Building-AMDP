@@ -1,9 +1,10 @@
-package amdp.house.level2;
+package amdp.house.level3;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import amdp.house.objects.HPoint;
+import amdp.house.objects.HRoom;
 import amdp.house.objects.HWall;
 import burlap.mdp.core.StateTransitionProb;
 import burlap.mdp.core.action.Action;
@@ -13,6 +14,8 @@ import burlap.mdp.singleagent.model.statemodel.FullStateModel;
 
 public class MakeRoomModel implements FullStateModel {
 
+	public HasFinishedRoom hasFinishedRoom = new HasFinishedRoom();
+	
 	@Override
 	public State sample(State s, Action a) {
 		s = s.copy();
@@ -35,6 +38,11 @@ public class MakeRoomModel implements FullStateModel {
 		String name = HWall.CLASS_WALL + numWalls;
 		HWall wall = new HWall(name, pointA, pointB, true);
 		state.addObject(wall);
+		if (hasFinishedRoom.satisfies(state)) {
+			HRoom room = state.touchRoom();
+			room.set(HRoom.ATT_FINISHED, true);
+		}
+		
 		return s;
 	}
 	

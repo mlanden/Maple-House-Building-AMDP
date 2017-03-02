@@ -1,9 +1,9 @@
-package amdp.house.level1;
+package amdp.house.level2;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import amdp.house.level1.MakeWallState;
+import amdp.house.level2.MakeWallState;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HWall;
 import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;

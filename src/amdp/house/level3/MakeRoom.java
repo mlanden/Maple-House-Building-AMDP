@@ -1,6 +1,10 @@
-package amdp.house.level2;
+package amdp.house.level3;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import amdp.house.objects.HPoint;
+import amdp.house.objects.HRoom;
 import amdp.house.objects.HWall;
 import burlap.behavior.policy.Policy;
 import burlap.behavior.policy.PolicyUtils;
@@ -79,46 +83,47 @@ public class MakeRoom implements DomainGenerator {
 			if (pointA == null || pointB == null) {
 				return false;
 			}
-			
-//			int aX = (Integer) pointA.get(HPoint.ATT_X);
-//			int aY = (Integer) pointA.get(HPoint.ATT_Y);
-//			int bX = (Integer) pointB.get(HPoint.ATT_X);
-//			int bY = (Integer) pointB.get(HPoint.ATT_Y);
-			
 			return true;
 		}
 	}
 	
-	public MakeRoomState getInitialState() {
-		MakeRoomState state = new MakeRoomState(width, height);
+	public MakeRoomState getInitialState(HRoom goal) {
+		MakeRoomState state = new MakeRoomState(width, height, goal);
 		return state;
 	}
 	
 	public static void main(String[] args) {
 		
-		// goal is to build this wall
-		HPoint start = new HPoint("wallStart", 0, 0, false);
-		HPoint end = new HPoint("wallEnd", 4, 2, false);
-		HWall goal = new HWall("goalWall", start, end, false);
+		// goal is to build this room
+		HPoint p0 = new HPoint("p0", 0, 0, false);
+		HPoint p1 = new HPoint("p1", 0, 2, false);
+		HPoint p2 = new HPoint("p2", 2, 2, false);
+		HPoint p3 = new HPoint("p3", 2, 0, false);
+		List<HPoint> corners = new ArrayList<HPoint>();
+		corners.add(p0); corners.add(p1);  corners.add(p2); corners.add(p3);
+		HRoom goal = new HRoom("goalRoom", corners, false);
 		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory();
-		MakeRoomTF tf = new MakeRoomTF(goal);
-		MakeRoomRF rf = new MakeRoomRF(tf, 1000.0, 0.0, 0.0);
+		MakeRoomTF tf = new MakeRoomTF();
+		double rewardGoal = 1.0;
+		double rewardDefault = -rewardGoal / 10000.0;
+		double rewardFailure = rewardDefault * 2;
+		MakeRoomRF rf = new MakeRoomRF(tf, rewardGoal, rewardDefault, rewardFailure);
 		int width = 5;
 		int height = 5;
 		MakeRoom gen = new MakeRoom(rf, tf, width, height);
 		OOSADomain domain = gen.generateDomain();
-		OOState initial = gen.getInitialState();
+		OOState initial = gen.getInitialState(goal);
 
 //		System.out.println(OOStateUtilities.ooStateToString(initial));
 		
 		double lowerVInit = 0.;
 		double upperVInit = 1.;
-		double maxDiff = 0.1;
-		double gamma = 0.95;
-		int maxSteps = 1001;
-		int maxRollouts = 16384;//4096;
-		int maxRolloutDepth = 128;
+		double maxDiff = rewardGoal / 10000.0;
+		double gamma = 0.99;
+		int maxSteps = 30;
+		int maxRollouts = 65536;//4096;
+		int maxRolloutDepth = maxSteps;
 		BoundedRTDP brtdp =
 				new BoundedRTDP(domain, gamma, hashingFactory, 
 				new ConstantValueFunction(lowerVInit),

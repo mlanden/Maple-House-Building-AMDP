@@ -36,5 +36,5 @@ public class HAgent extends HPoint {
 				(Integer) get(HAgent.ATT_Y)
 		);
 	}
-
+	
 }
