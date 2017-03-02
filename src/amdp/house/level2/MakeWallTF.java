@@ -13,13 +13,19 @@ public class MakeWallTF implements TerminalFunction {
 	
 	public HasFinishedWall hasFinishedWall = new HasFinishedWall();
 	
-	public MakeWallTF() {
-
+	protected HWall goal;
+	
+	public MakeWallTF(HWall goal) {
+		this.goal = goal;
+	}
+	
+	public HWall getGoal() {
+		return goal;
 	}
 	
 	public double getBudget(MakeWallState state) {
-		HPoint wallStart = (HPoint) state.getGoalWall().get(HWall.ATT_START);
-		HPoint wallEnd = (HPoint) state.getGoalWall().get(HWall.ATT_END);
+		HPoint wallStart = (HPoint) getGoal().get(HWall.ATT_START);
+		HPoint wallEnd = (HPoint) getGoal().get(HWall.ATT_END);
 		int aX = (Integer) wallStart.get(HPoint.ATT_X);
 		int aY = (Integer) wallStart.get(HPoint.ATT_Y);
 		int bX = (Integer) wallEnd.get(HPoint.ATT_X);
@@ -40,15 +46,20 @@ public class MakeWallTF implements TerminalFunction {
 	}
 	
 	public boolean satisfiesGoal(MakeWallState state) {
-		HWall goal =  state.getGoalWall();
+		HWall goal = getGoal();
+		if (hasFinishedWall.satisfies(state, goal)) {
+			return true;
+		}
+		return false;
+//		HWall goal =  state.getGoalWall();
 //		if (goal == null) {
 //			System.err.println("Warning: goal wall is null");
 //			return false;
 //		}
-		if ((boolean) goal.get(HWall.ATT_FINISHED)) {
-			return true;
-		}
-		return false;
+//		if ((boolean) goal.get(HWall.ATT_FINISHED)) {
+//			return true;
+//		}
+//		return false;
 	}
 	
 	@Override

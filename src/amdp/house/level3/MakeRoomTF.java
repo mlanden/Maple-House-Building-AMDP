@@ -5,13 +5,25 @@ import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.state.State;
 
 public class MakeRoomTF implements TerminalFunction {
+	
+	public HasFinishedRoom hasFinishedRoom = new HasFinishedRoom();
 
-	public MakeRoomTF() {
+	protected HRoom goal;
+	
+	public MakeRoomTF(HRoom goal) {
+		this.goal = goal;
+	}
+	
+	public HRoom getGoal() {
+		return goal;
 	}
 	
 	public boolean satisfiesGoal(MakeRoomState state) {
-		HRoom goal = state.getRoom();
-		if ((boolean) goal.get(HRoom.ATT_FINISHED)) {
+//		HRoom goal = state.getRoom();
+//		if ((boolean) goal.get(HRoom.ATT_FINISHED)) {
+//			return true;
+//		}
+		if (hasFinishedRoom.satisfies(state, goal)) {
 			return true;
 		}
 		return false;

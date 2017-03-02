@@ -103,7 +103,7 @@ public class MakeRoom implements DomainGenerator {
 		HRoom goal = new HRoom("goalRoom", corners, false);
 		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory();
-		MakeRoomTF tf = new MakeRoomTF();
+		MakeRoomTF tf = new MakeRoomTF(goal);
 		double rewardGoal = 1.0;
 		double rewardDefault = -rewardGoal / 10000.0;
 		double rewardFailure = rewardDefault * 2;

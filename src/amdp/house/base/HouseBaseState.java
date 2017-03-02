@@ -265,6 +265,7 @@ public class HouseBaseState implements MutableOOState {
 	}
 
 	public HAgent touchAgent() {
+		if (this.agent == null) { return null; }
 		this.agent = (HAgent) agent.copy();
 		return this.agent;
 	}

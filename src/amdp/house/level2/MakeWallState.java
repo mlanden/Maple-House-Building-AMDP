@@ -13,9 +13,8 @@ import utils.IntPair;
 
 public class MakeWallState extends HouseBaseState {
 
-	public MakeWallState(int width, int height, int agentX, int agentY, HWall goalWall) {
+	public MakeWallState(int width, int height, int agentX, int agentY) {
 		super(width, height, agentX, agentY);
-		this.goalWall = goalWall;
 	}
 	
 	public MakeWallState(int width, int height, HAgent agent, Map<IntPair, HPoint> points, Map<IntPair, HBlock> blocks,

@@ -9,7 +9,7 @@ import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
 import burlap.mdp.core.state.State;
 import utils.IntPair;
 
-public class HasFinishedWall implements StateConditionTest {
+public class HasFinishedWall {
 
 	private List<IntPair> others;
 	
@@ -17,11 +17,10 @@ public class HasFinishedWall implements StateConditionTest {
 		this.others = new ArrayList<IntPair>();
 	}
 	
-	@Override
-	public boolean satisfies(State s) {
+	public boolean satisfies(State s, HWall goal) {
 		MakeWallState state = (MakeWallState) s;
-		HPoint start = (HPoint) state.getGoalWall().get(HWall.ATT_START);
-		HPoint end = (HPoint) state.getGoalWall().get(HWall.ATT_END);
+		HPoint start = (HPoint) goal.get(HWall.ATT_START);//state.getGoalWall().get(HWall.ATT_START);
+		HPoint end = (HPoint) goal.get(HWall.ATT_END);//state.getGoalWall().get(HWall.ATT_END);
 		// sort
 		HPoint temp;
         if (start.compareTo(end) > 0) {

@@ -13,8 +13,6 @@ import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.statemodel.FullStateModel;
 
 public class MakeRoomModel implements FullStateModel {
-
-	public HasFinishedRoom hasFinishedRoom = new HasFinishedRoom();
 	
 	@Override
 	public State sample(State s, Action a) {
@@ -38,11 +36,10 @@ public class MakeRoomModel implements FullStateModel {
 		String name = HWall.CLASS_WALL + numWalls;
 		HWall wall = new HWall(name, pointA, pointB, true);
 		state.addObject(wall);
-		if (hasFinishedRoom.satisfies(state)) {
-			HRoom room = state.touchRoom();
-			room.set(HRoom.ATT_FINISHED, true);
-		}
-		
+//		if (hasFinishedRoom.satisfies(state)) {
+//			HRoom room = state.touchRoom();
+//			room.set(HRoom.ATT_FINISHED, true);
+//		}
 		return s;
 	}
 	

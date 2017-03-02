@@ -7,13 +7,12 @@ import amdp.house.objects.HRoom;
 import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
 import burlap.mdp.core.state.State;
 
-public class HasFinishedRoom implements StateConditionTest {
+public class HasFinishedRoom {
 
-	@Override
-	public boolean satisfies(State s) {
+	public boolean satisfies(State s, HRoom goal) {
 		MakeRoomState state = (MakeRoomState) s;
 		
-		List<HPoint> corners = (List<HPoint>) state.getRoom().get(HRoom.ATT_CORNERS);
+		List<HPoint> corners = (List<HPoint>) goal.get(HRoom.ATT_CORNERS);//state.getRoom().get(HRoom.ATT_CORNERS);
 		for (HPoint corner : corners) {
 			if (!state.isWallCorner(corner)) {
 				return false;
