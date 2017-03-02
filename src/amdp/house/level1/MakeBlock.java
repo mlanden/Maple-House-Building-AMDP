@@ -92,8 +92,8 @@ public class MakeBlock implements DomainGenerator{
 	
 	public static void main(String[] args) {
 		
-		int bX = 1;
-		int bY = 1;
+		int bX = 4;
+		int bY = 4;
 		HBlock goalBlock = new HBlock("goalBlock", bX, bY, false, false);
 		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory(true);
@@ -102,22 +102,21 @@ public class MakeBlock implements DomainGenerator{
 		double rewardGoal = 1.0;
 		double rewardDefault = -rewardGoal / goalDefaultRatio;
 		double rewardFailure = rewardDefault * 2;
-		RewardFunction rf = new MakeBlockRF();//tf, rewardGoal, rewardDefault, rewardFailure);
+		RewardFunction rf = new MakeBlockRF(tf, rewardGoal, rewardDefault, rewardFailure);
 		int width = 5;
 		int height = 5;
 		MakeBlock gen = new MakeBlock(rf, tf, width, height);
 		OOSADomain domain = gen.generateDomain();
 		OOState initial = gen.getInitialState(goalBlock);
 
-		for (State s : StateReachability.getReachableStates(initial, domain, hashingFactory)) {
-			System.out.println(s);	
-			MakeBlockState state = (MakeBlockState) s;
-			System.out.println(state.numObjects());
-			System.out.println(state.objects());
-		}
-		
+//		for (State s : StateReachability.getReachableStates(initial, domain, hashingFactory)) {
+//			System.out.println(s);	
+//			MakeBlockState state = (MakeBlockState) s;
+//			System.out.println(state.numObjects());
+//			System.out.println(state.objects());
+//		}
 //		System.out.println(OOStateUtilities.ooStateToString(initial));
-		/*
+		
 		double lowerVInit = 0.;
 		double upperVInit = 1.;
 		double maxDiff = rewardGoal / goalDefaultRatio;
@@ -149,9 +148,9 @@ public class MakeBlock implements DomainGenerator{
 //		System.out.println(OOStateUtilities.ooStateToString((OOState) ea.stateSequence.get(ea.stateSequence.size()-2)));
 		System.out.println(OOStateUtilities.ooStateToString((OOState) ea.stateSequence.get(ea.stateSequence.size()-1)));
 		OOState last = ((OOState) ea.stateSequence.get(ea.stateSequence.size()-1));
-		System.out.println(last.objectsOfClass(HBlock.CLASS_BLOCK).size() + " blocks");
+		System.out.println("finished block: " + ((MakeBlockState)last).getBlock().get(HBlock.ATT_FINISHED));
 		System.out.println(ea.actionSequence);
-		*/
+		/**/
 	}
 	
 }

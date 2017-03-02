@@ -41,4 +41,10 @@ public class HBlock extends HPoint {
 	public HBlock copy() {
 		return copyWithName(name);
 	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + ", finished: " + get(ATT_FINISHED);
+	}
+	
 }

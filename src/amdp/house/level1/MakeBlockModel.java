@@ -79,7 +79,6 @@ public class MakeBlockModel implements FullStateModel {
 //			s = state.addObject((ObjectInstance)newBlock);
 			int goalX = (int) state.getBlock().get(HBlock.ATT_X);
 			int goalY = (int) state.getBlock().get(HBlock.ATT_Y);
-			System.out.println(newX + " " + newY + " " + (newX == goalX && newY == goalY));
 			if (newX == goalX && newY == goalY) {
 				HBlock block = state.touchBlock();
 				block.set(HBlock.ATT_FINISHED, true);
