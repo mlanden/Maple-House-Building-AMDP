@@ -15,13 +15,13 @@ import burlap.mdp.singleagent.model.FactoredModel;
 import burlap.mdp.singleagent.oo.OOSADomain;
 import burlap.statehashing.simple.SimpleHashableStateFactory;
 
-public class MakeRoomPolicyGenerator implements AMDPPolicyGenerator {
+public class PolicyGeneratorMakeRoom implements AMDPPolicyGenerator {
 	
     private OOSADomain domain;
     private MakeRoomStateMapping mapping;
     private double discount = 0.99;
 
-    public MakeRoomPolicyGenerator(OOSADomain domain){
+    public PolicyGeneratorMakeRoom(OOSADomain domain){
         this.domain = domain;
         this.mapping = new MakeRoomStateMapping();
     }
@@ -55,7 +55,6 @@ public class MakeRoomPolicyGenerator implements AMDPPolicyGenerator {
     @Override
     public State generateAbstractState(State s) {
         return mapping.mapState(s);
-//    	throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -71,7 +70,7 @@ public class MakeRoomPolicyGenerator implements AMDPPolicyGenerator {
                 0.01,
                 2000);
 
-        brtdp.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL1);
+        brtdp.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL2);
         brtdp.setMaxRolloutDepth(200);
         brtdp.toggleDebugPrinting(false);
 

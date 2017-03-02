@@ -32,6 +32,10 @@ public class MakeWallState extends HouseBaseState {
 		this.wall = wall;
 	}
 	
+	public MakeWallState(HouseBaseState state) {
+		super(state.getWidth(), state.getHeight(), state.getAgent(), state.getPoints(), state.getBlocks(), state.getWalls(), state.getRooms(), state.getGoal());
+	}
+
 	@Override
 	public int numObjects() {
 		int numObjects = super.numObjects();

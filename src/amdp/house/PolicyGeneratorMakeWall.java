@@ -3,6 +3,7 @@ package amdp.house;
 import amdp.amdpframework.AMDPPolicyGenerator;
 import amdp.amdpframework.GroundedTask;
 import amdp.amdpframework.NonPrimitiveTaskNode;
+import amdp.house.level3.MakeRoomStateMapping;
 import amdp.taxiamdpdomains.testingtools.BoundedRTDPForTests;
 import amdp.taxiamdpdomains.testingtools.GreedyReplan;
 import burlap.behavior.policy.Policy;
@@ -13,12 +14,13 @@ import burlap.mdp.singleagent.model.FactoredModel;
 import burlap.mdp.singleagent.oo.OOSADomain;
 import burlap.statehashing.simple.SimpleHashableStateFactory;
 
-public class MakeWallPolicyGenerator implements AMDPPolicyGenerator {
+public class PolicyGeneratorMakeWall implements AMDPPolicyGenerator {
 	
     private OOSADomain domain;
+    private MakeWallStateMapping mapping;
     private double discount = 0.99;
 
-    public MakeWallPolicyGenerator(OOSADomain domain){
+    public PolicyGeneratorMakeWall(OOSADomain domain){
         this.domain = domain;
     }
 
@@ -44,7 +46,7 @@ public class MakeWallPolicyGenerator implements AMDPPolicyGenerator {
 
     @Override
     public State generateAbstractState(State s) {
-        return null;
+    	return mapping.mapState(s);
     }
 
     @Override
@@ -58,7 +60,7 @@ public class MakeWallPolicyGenerator implements AMDPPolicyGenerator {
                 new ConstantValueFunction(1.),
                 0.01,
                 -1);
-        brtd.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL0);
+        brtd.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL1);
         brtd.setMaxRolloutDepth(100);
         brtd.toggleDebugPrinting(false);
         AMDPAssembler.brtdpList.add(brtd);

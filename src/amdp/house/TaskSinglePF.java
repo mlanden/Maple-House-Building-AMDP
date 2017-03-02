@@ -20,13 +20,13 @@ import burlap.mdp.singleagent.common.GoalBasedRF;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
 
-public class SinglePFTaskNode extends NonPrimitiveTaskNode {
+public class TaskSinglePF extends NonPrimitiveTaskNode {
 	
 	public ActionType[] actionTypes;
 	public PropositionalFunction pf;
 	public String[] constantParameters;
 	
-	public SinglePFTaskNode(String name, ActionType[] actionTypes, OOSADomain source, TaskNode[] children, PropositionalFunction pf) {
+	public TaskSinglePF(String name, ActionType[] actionTypes, OOSADomain source, TaskNode[] children, PropositionalFunction pf) {
 		this.name = name;
 		this.oosaDomain = source;
 		this.actionTypes = actionTypes;

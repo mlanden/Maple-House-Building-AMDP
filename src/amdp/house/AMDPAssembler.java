@@ -6,19 +6,20 @@ import java.util.List;
 import amdp.amdpframework.AMDPAgent;
 import amdp.amdpframework.AMDPPolicyGenerator;
 import amdp.amdpframework.GroundedTask;
-import amdp.amdpframework.NonPrimitiveTaskNode;
 import amdp.amdpframework.TaskNode;
 import amdp.house.base.HouseBase;
-import amdp.house.level1.MakeWall;
-import amdp.house.level1.MakeWallRF;
-import amdp.house.level1.MakeWallTF;
-import amdp.house.level1.TaskLeaf;
-import amdp.house.level2.MakeRoom;
-import amdp.house.level2.MakeRoomRF;
-import amdp.house.level2.MakeRoomTF;
+import amdp.house.level1.MakeBlock;
+import amdp.house.level1.MakeBlockRF;
+import amdp.house.level1.MakeBlockTF;
+import amdp.house.level2.MakeWall;
+import amdp.house.level2.MakeWallRF;
+import amdp.house.level2.MakeWallTF;
+import amdp.house.level2.TaskLeaf;
+import amdp.house.level3.MakeRoom;
+import amdp.house.level3.MakeRoomRF;
+import amdp.house.level3.MakeRoomTF;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
-import amdp.house.objects.HWall;
 import amdp.taxiamdpdomains.testingtools.BoundedRTDPForTests;
 import amdp.taxiamdpdomains.testingtools.MutableGlobalInteger;
 import burlap.behavior.policy.Policy;
@@ -55,32 +56,39 @@ public class AMDPAssembler {
 //		HPoint p3 = new HPoint("p3", 2, 0, false);
 		List<HPoint> corners = new ArrayList<HPoint>();
 		corners.add(p0); corners.add(p1); // corners.add(p2); corners.add(p3);
-		
 		HRoom goalRoom = new HRoom("goalRoom", corners, false);
+		
+		
+		// make the base MDP domain
 		int width = 5;
 		int height = 5;
 		TerminalFunction tfBase = new NullTermination();
 		RewardFunction rfBase = new UniformCostRF();
 		HouseBase genBase = new HouseBase(rfBase, tfBase, width, height);
+		HouseBase genNavigate = genBase;
+		HouseBase genPutBlock = genBase;
+		TerminalFunction tfNavigate = tfBase;
+		RewardFunction rfNavigate = rfBase;
+		TerminalFunction tfPutBlock = tfBase;
+		RewardFunction rfPutBlock = rfBase;
 		OOSADomain domainBase = genBase.generateDomain();
 		OOSADomain domainEnv = genBase.generateDomain();
 		OOState initial = genBase.getInitialState(goalRoom);
-
-		// goal is to build this wall
-//		HPoint start = new HPoint("wallStart", 0, 0, false);
-//		HPoint end = new HPoint("wallEnd", 3, 2, false);
-//		HWall goalWall = new HWall("goalWall", start, end, false);
 		
-		// make wall AMDP
-		TerminalFunction tfWall = new MakeWallTF();
+		// make block AMDP
+		TerminalFunction tfBlock = new MakeBlockTF();
 		double rewardGoal = 1000;
 		double rewardDefault = -.1;
 		double rewardFailure = rewardDefault * 2;
+		RewardFunction rfBlock = new MakeBlockRF((MakeBlockTF) tfBlock, rewardGoal, rewardDefault, rewardFailure);
+		MakeBlock genBlock = new MakeBlock(rfBlock, tfBlock, width, height);
+		OOSADomain domainBlock = genBlock.generateDomain();
+		
+		// make wall AMDP
+		TerminalFunction tfWall = new MakeWallTF();
 		RewardFunction rfWall = new MakeWallRF((MakeWallTF) tfWall, rewardGoal, rewardDefault, rewardFailure);
 		MakeWall genWall = new MakeWall(rfWall, tfWall, width, height);
 		OOSADomain domainWall = genWall.generateDomain();
-//		OOSADomain domainEnv = genWall.generateDomain();
-//		OOState initial = genWall.getInitialState(goalWall);
 
 		// make room AMDP
 		TerminalFunction tfRoom = new MakeRoomTF();
@@ -90,8 +98,9 @@ public class AMDPAssembler {
 		OOState initialStateRoom = genRoom.getInitialState(goalRoom);
 		
 		List<AMDPPolicyGenerator> pgList = new ArrayList<AMDPPolicyGenerator>();
-		pgList.add(0, new MakeWallPolicyGenerator(domainWall));
-		pgList.add(1, new MakeRoomPolicyGenerator(domainRoom));
+		pgList.add(0, new PolicyGeneratorMakeBlock(domainBlock));
+		pgList.add(1, new PolicyGeneratorMakeWall(domainWall));
+		pgList.add(2, new PolicyGeneratorMakeRoom(domainRoom));
 
 		// base actions
 		ActionType aNorth = domainBase.getAction(HouseBase.ACTION_NORTH);
@@ -117,43 +126,44 @@ public class AMDPAssembler {
 		TaskNode westTask = new TaskLeaf(aWest);
 		TaskNode buildTask = new TaskLeaf(aBuild);
 		
-		TaskNode[] navigateSubtasks = new TaskNode[]{northTask, eastTask, southTask, westTask);
+		TaskNode[] navigateSubtasks = new TaskNode[]{northTask, eastTask, southTask, westTask};
 		TaskNode[] putBlockSubtasks = new TaskNode[]{buildTask};
 		
-		TaskNode navigateTaskNode = new NavigateTaskNode(
+		
+		TaskNode navigateTask = new TaskSimpleActions(
 				"navigateAMDP",
 				new ActionType[]{aNavigate},
 				navigateSubtasks,
-				genNavigate.generateDomain(),
-				(NavigateTF) tfNavigate,
-				(NavigateRF) rfNavigate
+				genNavigate.generateDomain()//,
+//				tfNavigate,
+//				rfNavigate
 		);
 		
-		TaskNode putBlockTaskNode = new PutBlockTaskNode(
+		TaskNode putBlockTask = new TaskSimpleActions(
 				"putBlockAMDP",
 				new ActionType[]{aPutBlock},
 				putBlockSubtasks,
-				genPutBlock.generateDomain();
-				(PutBlockTF) tfPutBlock,
-				(PutBlockRF) rfPutBlock
+				genPutBlock.generateDomain()//,
+//				tfPutBlock,
+//				rfPutBlock
 		);
 		
-		TaskNode[] makeBlockSubtasks = new TaskNode[]{navigateTaskNode, putBlockTaskNode};
+		TaskNode[] makeBlockSubtasks = new TaskNode[]{navigateTask, putBlockTask};
 		
-		TaskNode makeBlock = new MakeBlockTaskNode(
+		TaskNode makeBlockTask = new TaskMakeBlock(
 				"makeBlockAMDP",
-				new ActionType[]{makeBlock},
+				new ActionType[]{aMakeBlock},
 				genBlock.generateDomain(),
 				makeBlockSubtasks,
-				(MakeBlockTF) tfWall,
-				(MakeBlockRF) rfWall
+				(MakeBlockTF) tfBlock,
+				(MakeBlockRF) rfBlock
 		);
 				
 		
-		TaskNode[] makeWallSubtasks = new TaskNode[]{makeBlockSubtasks};
+		TaskNode[] makeWallSubtasks = new TaskNode[]{makeBlockTask};
 		
 		
-		TaskNode makeWallTask = new MakeWallTaskNode(
+		TaskNode makeWallTask = new TaskMakeWall(
 				"makeWallAMDP",
 				new ActionType[]{aMakeWall},
 				genWall.generateDomain(),
@@ -164,7 +174,7 @@ public class AMDPAssembler {
 		
 		TaskNode[] makeRoomSubtasks = new TaskNode[]{makeWallTask};
 		
-		TaskNode makeRoomTask = new AbstractTaskNode(
+		TaskNode makeRoomTask = new TaskUnparameterizedSubtasks(
 				"makeRoomAMDP",
 				makeRoomSubtasks,
 				genRoom.generateDomain(),
@@ -198,6 +208,7 @@ public class AMDPAssembler {
             System.out.println(b.getNumberOfBellmanUpdates());
         }
         return makeRoomTask;
+        /**/
 	}
 
 	public static void main(String[] args) {

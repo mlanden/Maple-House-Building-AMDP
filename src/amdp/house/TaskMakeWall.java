@@ -27,13 +27,13 @@ import burlap.mdp.singleagent.common.SingleGoalPFRF;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
 
-public class MakeWallTaskNode extends NonPrimitiveTaskNode {
+public class TaskMakeWall extends NonPrimitiveTaskNode {
 
 	public ActionType[] actionTypes;
 	public MakeWallTF tf;
 	public MakeWallRF rf;
 	
-	public MakeWallTaskNode(String name, ActionType[] actionTypes, OOSADomain oosaDomain,
+	public TaskMakeWall(String name, ActionType[] actionTypes, OOSADomain oosaDomain,
 			TaskNode[] childTaskNodes, MakeWallTF tf, MakeWallRF rf) {
 		this.name = name;
 		this.actionTypes = actionTypes;

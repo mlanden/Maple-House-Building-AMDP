@@ -13,14 +13,15 @@ import burlap.mdp.singleagent.oo.OOSADomain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbstractTaskNode extends NonPrimitiveTaskNode {
+// use this TaskNode for AMDPs that have unparameterized subtasks (e.g. ROOT with get, put subtasks)
+public class TaskUnparameterizedSubtasks extends NonPrimitiveTaskNode {
 
     List<String[]> params = new ArrayList<String[]>();
     List<GroundedTask> groundedTasks = new ArrayList<GroundedTask>();
     TerminalFunction tf;
     RewardFunction rf;
 
-    public AbstractTaskNode(String name, TaskNode[] children, OOSADomain domainIn, TerminalFunction tfIn, RewardFunction rfIn) {
+    public TaskUnparameterizedSubtasks(String name, TaskNode[] children, OOSADomain domainIn, TerminalFunction tfIn, RewardFunction rfIn) {
         this.name = name;
         this.params.add(new String[]{"1"});
         this.childTaskNodes = children;
