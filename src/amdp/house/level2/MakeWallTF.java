@@ -11,6 +11,8 @@ import burlap.mdp.core.state.State;
 
 public class MakeWallTF implements TerminalFunction {
 	
+	public HasFinishedWall hasFinishedWall = new HasFinishedWall();
+	
 	public MakeWallTF() {
 
 	}
