@@ -1,6 +1,5 @@
 package utils;
 
-import amdp.house.level2.MakeWallState;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.state.State;

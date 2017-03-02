@@ -9,7 +9,6 @@ import amdp.taxiamdpdomains.testingtools.GreedyReplan;
 import burlap.behavior.policy.Policy;
 import burlap.behavior.valuefunction.ConstantValueFunction;
 import burlap.behavior.valuefunction.QProvider;
-import burlap.mdp.auxiliary.StateMapping;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.FactoredModel;
 import burlap.mdp.singleagent.oo.OOSADomain;

@@ -11,7 +11,6 @@ import burlap.mdp.auxiliary.common.GoalConditionTF;
 import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.action.ActionType;
-import burlap.mdp.core.action.UniversalActionType;
 import burlap.mdp.core.oo.ObjectParameterizedAction;
 import burlap.mdp.core.oo.propositional.GroundedProp;
 import burlap.mdp.core.oo.propositional.PropositionalFunction;

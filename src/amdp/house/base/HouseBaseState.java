@@ -26,12 +26,14 @@ public class HouseBaseState implements MutableOOState {
 	protected List<HWall> walls;
 	protected List<HRoom> rooms;
 	
-	protected HRoom goal;
+	protected HRoom goalRoom;
+	protected HWall goalWall;
+	protected HBlock goalBlock;
 	
 	protected int width;
 	protected int height;
 	
-	public HouseBaseState(int width, int height, HAgent agent, HRoom goal) {
+	public HouseBaseState(int width, int height, HAgent agent, HRoom goalRoom) {
 		this.width = width;
 		this.height = height;
 		this.agent = agent;
@@ -45,12 +47,14 @@ public class HouseBaseState implements MutableOOState {
 				addObject(new HPoint(name, i, j, false));
 			}
 		}
-		this.goal = goal;
+		this.goalRoom = goalRoom;
+		this.goalWall = null;
+		this.goalBlock = null;
 	}
 	
 	// copy constructor
 	public HouseBaseState(int width, int height, HAgent agent, Map<IntPair,HPoint> points, Map<IntPair, HBlock> blocks,
-			List<HWall> walls, List<HRoom> rooms, HRoom goal) {
+			List<HWall> walls, List<HRoom> rooms, HRoom goalRoom, HWall goalWall, HBlock goalBlock) {
 		this.width = width;
 		this.height = height;
 		this.agent = agent;
@@ -58,7 +62,9 @@ public class HouseBaseState implements MutableOOState {
 		this.blocks = blocks != null ? blocks : new HashMap<IntPair,HBlock>();
 		this.walls = walls != null ? walls : new ArrayList<HWall>();
 		this.rooms = rooms != null ? rooms : new ArrayList<HRoom>();
-		this.goal = goal;
+		this.goalRoom = goalRoom;
+		this.goalWall = goalWall;
+		this.goalBlock = goalBlock;
 	}
 	
 	public HouseBaseState(int width, int height, int agentX, int agentY) {
@@ -136,7 +142,9 @@ public class HouseBaseState implements MutableOOState {
 		numObjects += blocks.size();
 		numObjects += walls.size();
 		numObjects += rooms.size();
-		numObjects += goal != null ? 1 : 0;
+		numObjects += goalRoom != null ? 1 : 0;
+		numObjects += goalWall != null ? 1 : 0;
+		numObjects += goalBlock != null ? 1 : 0;
 		return numObjects;
 	}
 	
@@ -156,7 +164,9 @@ public class HouseBaseState implements MutableOOState {
 		objects.addAll(blocks.values());
 		objects.addAll(walls);
 		objects.addAll(rooms);
-		if (goal != null) { objects.add(goal); }
+		if (goalRoom != null) { objects.add(goalRoom); }
+		if (goalWall != null) { objects.add(goalWall); }
+		if (goalBlock != null) { objects.add(goalBlock); }
 		return objects;
 	}
 	
@@ -203,10 +213,23 @@ public class HouseBaseState implements MutableOOState {
     	rooms.add(index, copy);
     	return copy;
 	}
+
+	public HRoom touchGoalRoom() {
+		if (this.goalRoom == null) { return null; }
+		this.goalRoom = (HRoom) this.goalRoom.copy();
+		return this.goalRoom;
+	}
 	
-	public HRoom touchGoal() {
-		this.goal = (HRoom) this.goal.copy();
-		return this.goal;
+	public HWall touchGoalWall() {
+		if (this.goalWall == null) { return null; }
+		this.goalWall = (HWall) this.goalWall.copy();
+		return this.goalWall;
+	}
+	
+	public HBlock touchGoalBlock() {
+		if (this.goalBlock == null) { return null; }
+		this.goalBlock = (HBlock) this.goalBlock.copy();
+		return this.goalBlock;
 	}
 	
 	public int getNumBlocks() {
@@ -248,7 +271,16 @@ public class HouseBaseState implements MutableOOState {
 
 	public HouseBaseState copy() {
 //		return new HouseBaseState(width, height, touchAgent(), touchBlocks(), touchWall(), touchPoints());
-		return new HouseBaseState(width, height, touchAgent(), touchPoints(), touchBlocks(), touchWalls(), touchRooms(), touchGoal());
+		return new HouseBaseState(width, height,
+				touchAgent(),
+				touchPoints(),
+				touchBlocks(),
+				touchWalls(),
+				touchRooms(),
+				touchGoalRoom(),
+				touchGoalWall(),
+				touchGoalBlock()
+		);
 	}
 
 	@Override
@@ -318,8 +350,16 @@ public class HouseBaseState implements MutableOOState {
 		return out;
 	}
 
-	public HRoom getGoal() {
-		return goal;
+	public HRoom getGoalRoom() {
+		return goalRoom;
+	}
+	
+	public HWall getGoalWall() {
+		return goalWall;
+	}
+	
+	public HBlock getGoalBlock() {
+		return goalBlock;
 	}
 	
 }

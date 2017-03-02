@@ -13,7 +13,6 @@ import burlap.mdp.core.oo.ObjectParameterizedAction;
 import burlap.mdp.core.oo.state.ObjectInstance;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.statemodel.FullStateModel;
-import burlap.mdp.singleagent.oo.ObjectParameterizedActionType;
 
 public class MakeWallModel implements FullStateModel {
 
@@ -73,14 +72,13 @@ public class MakeWallModel implements FullStateModel {
 		if (!state.isOpen(newX, newY)){
 			// do nothing
 		} else {
-//			HBlock newBlock = new HBlock(HBlock.CLASS_BLOCK, newX, newY, true);
 			// the name of the new object should be unique to that object
 			// that is, no two, newly added objects should ever have same name/ID
 			String blockName = HBlock.CLASS_BLOCK + "_" + newX + "_" + newY;
 			HBlock newBlock = new HBlock(blockName, newX, newY, true, false);
 			s = state.addObject((ObjectInstance)newBlock);
 			if(hasFinishedWall.satisfies(state)) {
-				HWall wall = state.touchWall();
+				HWall wall = state.touchGoalWall();
 				wall.set(HWall.ATT_FINISHED, true);
 			}
 		}

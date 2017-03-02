@@ -1,7 +1,5 @@
 package amdp.house.objects;
 
-import burlap.mdp.core.oo.state.ObjectInstance;
-
 public class HAgent extends HPoint {
 
 	public static final String CLASS_AGENT = "agent";

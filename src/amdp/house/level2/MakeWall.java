@@ -15,19 +15,13 @@ import burlap.behavior.singleagent.planning.stochastic.rtdp.BoundedRTDP;
 import burlap.behavior.valuefunction.ConstantValueFunction;
 import burlap.mdp.auxiliary.DomainGenerator;
 import burlap.mdp.core.TerminalFunction;
-import burlap.mdp.core.action.UniversalActionType;
 import burlap.mdp.core.oo.OODomain;
-import burlap.mdp.core.oo.ObjectParameterizedAction;
 import burlap.mdp.core.oo.propositional.PropositionalFunction;
 import burlap.mdp.core.oo.state.OOState;
 import burlap.mdp.core.oo.state.OOStateUtilities;
-import burlap.mdp.core.state.State;
-import burlap.mdp.singleagent.common.GoalBasedRF;
-import burlap.mdp.singleagent.common.UniformCostRF;
 import burlap.mdp.singleagent.model.FactoredModel;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
-import burlap.mdp.singleagent.oo.ObjectParameterizedActionType;
 import burlap.statehashing.HashableStateFactory;
 import burlap.statehashing.simple.SimpleHashableStateFactory;
 
@@ -91,7 +85,7 @@ public class MakeWall implements DomainGenerator{
 	public static void main(String[] args) {
 		
 		HPoint wallStart = new HPoint("pointStart", 0, 0, false);
-		HPoint wallEnd = new HPoint("pointEnd", 2, 2, false);
+		HPoint wallEnd = new HPoint("pointEnd", 1, 1, false);
 		HWall wall = new HWall("goalWall", wallStart, wallEnd, false);
 		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory(true);

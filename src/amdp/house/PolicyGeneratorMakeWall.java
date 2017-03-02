@@ -3,7 +3,7 @@ package amdp.house;
 import amdp.amdpframework.AMDPPolicyGenerator;
 import amdp.amdpframework.GroundedTask;
 import amdp.amdpframework.NonPrimitiveTaskNode;
-import amdp.house.level3.MakeRoomStateMapping;
+import amdp.house.level2.MakeWallStateMapping;
 import amdp.taxiamdpdomains.testingtools.BoundedRTDPForTests;
 import amdp.taxiamdpdomains.testingtools.GreedyReplan;
 import burlap.behavior.policy.Policy;
@@ -22,6 +22,7 @@ public class PolicyGeneratorMakeWall implements AMDPPolicyGenerator {
 
     public PolicyGeneratorMakeWall(OOSADomain domain){
         this.domain = domain;
+        this.mapping = new MakeWallStateMapping();
     }
 
     @Override

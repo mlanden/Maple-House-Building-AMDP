@@ -3,8 +3,6 @@ package amdp.house.objects;
 import java.util.Arrays;
 import java.util.List;
 
-import burlap.mdp.core.oo.state.ObjectInstance;
-
 public class HBlock extends HPoint {
 
 	public static final String CLASS_BLOCK = "block";

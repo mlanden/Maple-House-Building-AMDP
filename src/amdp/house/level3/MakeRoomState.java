@@ -4,48 +4,49 @@ import java.util.List;
 import java.util.Map;
 
 import amdp.house.base.HouseBaseState;
+import amdp.house.objects.HAgent;
+import amdp.house.objects.HBlock;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import amdp.house.objects.HWall;
-import burlap.mdp.core.oo.state.ObjectInstance;
 import utils.IntPair;
 
 public class MakeRoomState extends HouseBaseState {
 	
-	private HRoom room;
-	
-	public MakeRoomState(int width, int height, HRoom room) {
+	public MakeRoomState(int width, int height, HRoom goalRoom) {
 		super(width, height, null, null);
-		this.room = room;
+		this.goalRoom = goalRoom;
 	}
-	
-	public MakeRoomState(int width, int height, Map<IntPair, HPoint> points, List<HWall> walls, HRoom room) {
-		super(width, height, null, points, null, walls, null, null);
-		this.room = room;
+
+	public MakeRoomState(int width, int height, HAgent agent, Map<IntPair, HPoint> points, Map<IntPair, HBlock> blocks,
+			List<HWall> walls, List<HRoom> rooms, HRoom goalRoom, HWall goalWall, HBlock goalBlock) {
+		super(width, height, agent, points, blocks, walls, rooms, goalRoom, goalWall, goalBlock);
 	}
 	
 	public MakeRoomState(HouseBaseState state) {
-		super(state.getWidth(), state.getHeight(), state.getAgent(), state.getPoints(), state.getBlocks(), state.getWalls(), state.getRooms(), state.getGoal());
-		this.room = goal;
+		super(state.getWidth(), state.getHeight(), state.getAgent(), state.getPoints(), state.getBlocks(), state.getWalls(),
+				state.getRooms(), state.getGoalRoom(), state.getGoalWall(), state.getGoalBlock());
 	}
 
-	@Override
-	public int numObjects() {
-		int numObjects = super.numObjects();
-		numObjects += this.room != null ? 1 : 0;
-		return numObjects;
-	}
+//	@Override
+//	public int numObjects() {
+//		int numObjects = super.numObjects();
+//		numObjects += this.goalRoom != null ? 1 : 0;
+//		return numObjects;
+//	}
+//
+//	@Override
+//	public List<ObjectInstance> objects() {
+//		List<ObjectInstance> objects = super.objects();
+//		if (goalRoom != null) { objects.add(goalRoom); }
+//		return objects;
+//	}
 
-	@Override
-	public List<ObjectInstance> objects() {
-		List<ObjectInstance> objects = super.objects();
-		if (room != null) { objects.add(room); }
-		return objects;
-	}
 
 	@Override
 	public MakeRoomState copy() {
-		return new MakeRoomState(width, height, touchPoints(), touchWalls(), touchRoom());
+		return new MakeRoomState(width, height, touchAgent(), touchPoints(), touchBlocks(), touchWalls(), touchRooms(), touchGoalRoom(),
+				touchGoalWall(), touchGoalBlock());
 	}
 
 	public boolean hasWall(HWall wall) {
@@ -67,8 +68,8 @@ public class MakeRoomState extends HouseBaseState {
 	}
 	
 	public HRoom touchRoom() {
-		this.room = (HRoom) this.room.copy();
-		return this.room;
+		this.goalRoom = (HRoom) this.goalRoom.copy();
+		return this.goalRoom;
 	}
 	
 	public String toString() {
@@ -78,7 +79,7 @@ public class MakeRoomState extends HouseBaseState {
 	}
 
 	public HRoom getRoom() {
-		return room;
+		return goalRoom;
 	}
 
 	public boolean isWallCorner(HPoint corner) {

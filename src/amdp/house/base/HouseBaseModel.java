@@ -3,10 +3,8 @@ package amdp.house.base;
 import java.util.ArrayList;
 import java.util.List;
 
-import amdp.house.level2.HasFinishedWall;
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
-import amdp.house.objects.HWall;
 import burlap.mdp.core.StateTransitionProb;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.oo.state.ObjectInstance;
@@ -72,7 +70,7 @@ public class HouseBaseModel implements FullStateModel {
 		if (!state.isOpen(newX, newY)){
 			// do nothing
 		} else {
-			HBlock newBlock = new HBlock(HBlock.CLASS_BLOCK, newX, newY, true);
+			HBlock newBlock = new HBlock(HBlock.CLASS_BLOCK, newX, newY, true, true);
 			s = state.addObject((ObjectInstance)newBlock);
 //			if(hasFinishedWall.satisfies(state)) {
 //				HWall newWall = new HWall(HWall.CLASS_WALL);

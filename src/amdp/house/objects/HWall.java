@@ -3,8 +3,6 @@ package amdp.house.objects;
 import java.util.Arrays;
 import java.util.List;
 
-import burlap.mdp.core.oo.state.ObjectInstance;
-import burlap.mdp.core.state.State;
 import utils.MutableObject;
 import utils.MutableObjectInstance;
 

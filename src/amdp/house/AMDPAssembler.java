@@ -17,6 +17,7 @@ import amdp.house.level2.MakeWallTF;
 import amdp.house.level2.TaskLeaf;
 import amdp.house.level3.MakeRoom;
 import amdp.house.level3.MakeRoomRF;
+import amdp.house.level3.MakeRoomStateMapping;
 import amdp.house.level3.MakeRoomTF;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
@@ -95,7 +96,8 @@ public class AMDPAssembler {
 		RewardFunction rfRoom = new MakeRoomRF((MakeRoomTF) tfRoom, 1000.0, 0.0, 0.0);
 		MakeRoom genRoom = new MakeRoom(rfRoom, tfRoom, width, height);
 		OOSADomain domainRoom = genRoom.generateDomain();
-		OOState initialStateRoom = genRoom.getInitialState(goalRoom);
+//		OOState initialStateRoom = genRoom.getInitialState(goalRoom);
+		OOState initialStateRoom = (OOState) new MakeRoomStateMapping().mapState(initial);
 		
 		List<AMDPPolicyGenerator> pgList = new ArrayList<AMDPPolicyGenerator>();
 		pgList.add(0, new PolicyGeneratorMakeBlock(domainBlock));

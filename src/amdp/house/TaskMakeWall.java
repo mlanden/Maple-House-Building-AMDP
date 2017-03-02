@@ -3,27 +3,14 @@ package amdp.house;
 import java.util.ArrayList;
 import java.util.List;
 
-import amdp.amdpframework.GroundedPropSC;
 import amdp.amdpframework.GroundedTask;
 import amdp.amdpframework.NonPrimitiveTaskNode;
 import amdp.amdpframework.TaskNode;
 import amdp.house.level2.MakeWallRF;
-import amdp.house.level2.MakeWallState;
 import amdp.house.level2.MakeWallTF;
-import amdp.house.level3.MakeRoom;
-import amdp.house.objects.HPoint;
-import amdp.house.objects.HWall;
-import amdp.taxi.TaxiDomain;
-import amdp.taxiamdpdomains.taxiamdplevel1.TaxiL1Domain;
-import burlap.mdp.auxiliary.common.GoalConditionTF;
-import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.action.ActionType;
-import burlap.mdp.core.oo.ObjectParameterizedAction;
-import burlap.mdp.core.oo.propositional.GroundedProp;
 import burlap.mdp.core.state.State;
-import burlap.mdp.singleagent.common.GoalBasedRF;
-import burlap.mdp.singleagent.common.SingleGoalPFRF;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
 

@@ -3,13 +3,10 @@ package amdp.house.level2;
 import java.util.ArrayList;
 import java.util.List;
 
-import amdp.house.level2.MakeWallState;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HWall;
 import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
-import burlap.mdp.core.oo.state.OOStateUtilities;
 import burlap.mdp.core.state.State;
-import burlap.mdp.core.state.StateUtilities;
 import utils.IntPair;
 
 public class HasFinishedWall implements StateConditionTest {
@@ -23,8 +20,8 @@ public class HasFinishedWall implements StateConditionTest {
 	@Override
 	public boolean satisfies(State s) {
 		MakeWallState state = (MakeWallState) s;
-		HPoint start = (HPoint) state.getWall().get(HWall.ATT_START);
-		HPoint end = (HPoint) state.getWall().get(HWall.ATT_END);
+		HPoint start = (HPoint) state.getGoalWall().get(HWall.ATT_START);
+		HPoint end = (HPoint) state.getGoalWall().get(HWall.ATT_END);
 		// sort
 		HPoint temp;
         if (start.compareTo(end) > 0) {
