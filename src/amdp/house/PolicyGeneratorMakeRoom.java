@@ -35,12 +35,12 @@ public class PolicyGeneratorMakeRoom implements AMDPPolicyGenerator {
     		gt.terminalFunction());
         domain.setModel(model);
 
-        SimpleHashableStateFactory shf = new SimpleHashableStateFactory(false);
+        SimpleHashableStateFactory shf = new SimpleHashableStateFactory(true);
         BoundedRTDPForTests brtdp = new BoundedRTDPForTests(domain, discount, shf,
             new ConstantValueFunction(0.),
             new ConstantValueFunction(1.),
-            0.01,
-            2000);
+            AMDPAssembler.BRTDP_MAX_DIFF,
+            -1);
 
         brtdp.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL1);
         brtdp.setMaxRolloutDepth(200);
@@ -66,8 +66,8 @@ public class PolicyGeneratorMakeRoom implements AMDPPolicyGenerator {
         BoundedRTDPForTests brtdp = new BoundedRTDPForTests(domain, discount, shf,
                 new ConstantValueFunction(0.),
                 new ConstantValueFunction(1.),
-                0.01,
-                2000);
+                AMDPAssembler.BRTDP_MAX_DIFF,
+                -1);
 
         brtdp.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL2);
         brtdp.setMaxRolloutDepth(200);

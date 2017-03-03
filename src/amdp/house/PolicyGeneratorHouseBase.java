@@ -32,7 +32,7 @@ public class PolicyGeneratorHouseBase implements AMDPPolicyGenerator {
                 new SimpleHashableStateFactory(true), // perhaps should be false
                 new ConstantValueFunction(0.),
                 new ConstantValueFunction(1.0),
-                0.01,
+                AMDPAssembler.BRTDP_MAX_DIFF,
                 -1);
         brtd.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL0);
         brtd.setMaxRolloutDepth(100);
@@ -56,10 +56,10 @@ public class PolicyGeneratorHouseBase implements AMDPPolicyGenerator {
         domain.setModel(new FactoredModel(((FactoredModel)domain.getModel()).getStateModel(),gt.rewardFunction(), gt.terminalFunction()));
 
         BoundedRTDPForTests brtd = new BoundedRTDPForTests(domain, this.discount,
-                new SimpleHashableStateFactory(false),
+                new SimpleHashableStateFactory(true),
                 new ConstantValueFunction(0.),
                 new ConstantValueFunction(1.),
-                0.01,
+                AMDPAssembler.BRTDP_MAX_DIFF,
                 -1);
         brtd.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL0);
         brtd.setMaxRolloutDepth(100);

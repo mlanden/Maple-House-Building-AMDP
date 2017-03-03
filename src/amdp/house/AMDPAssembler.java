@@ -45,6 +45,8 @@ public class AMDPAssembler {
 	public static MutableGlobalInteger bellmanBudgetL1 = new MutableGlobalInteger(-1);
 	public static MutableGlobalInteger bellmanBudgetL2 = new MutableGlobalInteger(-1);
 
+	public static double BRTDP_MAX_DIFF = 0.0001;
+	
 	public static TaskNode assembleAMDP(){
 		
 //		Random seedGen = new Random();
@@ -67,29 +69,19 @@ public class AMDPAssembler {
 		// make the base MDP domain
 		int width = 5;
 		int height = 5;
-		double rewardGoal = 1000;
-		double rewardDefault = -.1;
+		double goalDefaultRatio = 1000.0;
+		double rewardGoal = 1.0;
+		double rewardDefault = -rewardGoal / goalDefaultRatio;
 		double rewardFailure = rewardDefault * 2;
 		TerminalFunction tfBase = new NullTermination();
 		RewardFunction rfBase = new UniformCostRF();
 		HouseBase genBase = new HouseBase(rfBase, tfBase, width, height);
 		HouseBase genNavigate = genBase;
 		HouseBase genPutBlock = genBase;
-		TerminalFunction tfNavigate = tfBase;
-		RewardFunction rfNavigate = rfBase;
-		TerminalFunction tfPutBlock = tfBase;
-		RewardFunction rfPutBlock = rfBase;
 		OOSADomain domainBase = genBase.generateDomain();
 		OOSADomain domainEnv = genBase.generateDomain();
 		OOState initial = genBase.getInitialState(goalRoom);
 
-		// navigate and putBlock AMDP
-//		TerminalFunction tfNavPut = new NavPutTF();
-//		RewardFunction rfNavPut = new NavPutRF();
-//		NavPut genNavigate = new NavPut(rfNavPut, tfNavPut, width, height);
-//		NavPut genPutBlock = genNavigate;
-		
-		
 		// make block AMDP
 		TerminalFunction tfBlock = new MakeBlockTF(null);
 		RewardFunction rfBlock = new MakeBlockRF((MakeBlockTF) tfBlock, rewardGoal, rewardDefault, rewardFailure);
@@ -107,12 +99,10 @@ public class AMDPAssembler {
 		RewardFunction rfRoom = new MakeRoomRF((MakeRoomTF) tfRoom, 1000.0, 0.0, 0.0);
 		MakeRoom genRoom = new MakeRoom(rfRoom, tfRoom, width, height);
 		OOSADomain domainRoom = genRoom.generateDomain();
-//		OOState initialStateRoom = genRoom.getInitialState(goalRoom);
 		OOState initialStateRoom = (OOState) new MakeRoomStateMapping().mapState(initial);
 		
 		List<AMDPPolicyGenerator> pgList = new ArrayList<AMDPPolicyGenerator>();
 		pgList.add(0, new PolicyGeneratorHouseBase(domainBase));
-//		pgList.add(1, new PolicyGeneratorNavPut(domainBase));
 		pgList.add(1, new PolicyGeneratorMakeBlock(domainBlock));
 		pgList.add(2, new PolicyGeneratorMakeWall(domainWall));
 		pgList.add(3, new PolicyGeneratorMakeRoom(domainRoom));
