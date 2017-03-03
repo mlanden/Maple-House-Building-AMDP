@@ -83,6 +83,7 @@ public class MakeRoomState extends HouseBaseState {
 	}
 
 	public boolean isWallCorner(HPoint corner) {
+//		return blockAt(corner);
 		for (HWall wall : walls) {
 			HPoint start = (HPoint) wall.get(HWall.ATT_START);
 			HPoint end = (HPoint) wall.get(HWall.ATT_END);
@@ -90,6 +91,18 @@ public class MakeRoomState extends HouseBaseState {
 				return true;
 			}
 		}
+		
+		if(blockAt(corner)) {
+//			System.err.println("BLOCK PRESENT");
+//	        try {
+//				Thread.sleep(100);
+//			} catch (InterruptedException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+			return true;
+		}
+		
 		return false;
 	}
 

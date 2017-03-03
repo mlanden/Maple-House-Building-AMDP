@@ -58,11 +58,11 @@ public class AMDPAssembler {
 		
 		// goal is to build this room
 		HPoint p0 = new HPoint("p0", 0, 0, false);
-		HPoint p1 = new HPoint("p1", 1, 1, false);
+		HPoint p1 = new HPoint("p1", 0, 2, false);
 //		HPoint p2 = new HPoint("p2", 2, 2, false);
 //		HPoint p3 = new HPoint("p3", 2, 0, false);
 		List<HPoint> corners = new ArrayList<HPoint>();
-		corners.add(p0); corners.add(p1); // corners.add(p2); corners.add(p3);
+		corners.add(p0); corners.add(p1); // corners.add(p2); // corners.add(p3);
 		HRoom goalRoom = new HRoom("goalRoom", corners, false);
 		
 		
@@ -196,12 +196,6 @@ public class AMDPAssembler {
         Episode e = agent.actUntilTermination(envN, maxTrajectoryLength);
 
         System.out.println("done");
-        try {
-			Thread.sleep(1);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 //        System.out.println(e.stateSequence);
         System.out.println(e.actionSequence);
         

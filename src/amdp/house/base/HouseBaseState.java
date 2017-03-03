@@ -107,6 +107,12 @@ public class HouseBaseState implements MutableOOState {
 		return getBlockAt(nx, ny) != null;
 	}
 	
+	public boolean blockAt(HPoint corner) {
+		int nx = (int) corner.get(HPoint.ATT_X);
+		int ny = (int) corner.get(HPoint.ATT_Y);
+		return blockAt(nx, ny);
+	}
+	
 	public Map<IntPair, HPoint> getPoints() {
 		return points;
 	}

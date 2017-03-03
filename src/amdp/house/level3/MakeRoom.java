@@ -96,10 +96,10 @@ public class MakeRoom implements DomainGenerator {
 		// goal is to build this room
 		HPoint p0 = new HPoint("p0", 0, 0, false);
 		HPoint p1 = new HPoint("p1", 0, 2, false);
-		HPoint p2 = new HPoint("p2", 2, 2, false);
-		HPoint p3 = new HPoint("p3", 2, 0, false);
+//		HPoint p2 = new HPoint("p2", 2, 2, false);
+//		HPoint p3 = new HPoint("p3", 2, 0, false);
 		List<HPoint> corners = new ArrayList<HPoint>();
-		corners.add(p0); corners.add(p1);  corners.add(p2); corners.add(p3);
+		corners.add(p0); corners.add(p1); // corners.add(p2); corners.add(p3);
 		HRoom goal = new HRoom("goalRoom", corners, false);
 		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory();
