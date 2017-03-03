@@ -81,19 +81,19 @@ public class MakeBlock implements DomainGenerator{
 		return pfs;
 	}
 	
-	public MakeBlockState getInitialState(HBlock goalBlock) {
-		MakeBlockState state = new MakeBlockState(width, height, 0, 0, goalBlock);
+	public MakeBlockState getInitialState() {
+		MakeBlockState state = new MakeBlockState(width, height, 0, 0);
 		return state;
 	}
 	
 	public static void main(String[] args) {
 		
-		int bX = 4;
+		int bX = 2;
 		int bY = 4;
-		HBlock goalBlock = new HBlock("goalBlock", bX, bY, false, false);
+		HBlock goal = new HBlock("goalBlock", bX, bY, false, false);
 		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory(true);
-		MakeBlockTF tf = new MakeBlockTF();
+		MakeBlockTF tf = new MakeBlockTF(goal);
 		double goalDefaultRatio = 1000.0;
 		double rewardGoal = 1.0;
 		double rewardDefault = -rewardGoal / goalDefaultRatio;
@@ -103,7 +103,7 @@ public class MakeBlock implements DomainGenerator{
 		int height = 5;
 		MakeBlock gen = new MakeBlock(rf, tf, width, height);
 		OOSADomain domain = gen.generateDomain();
-		OOState initial = gen.getInitialState(goalBlock);
+		OOState initial = gen.getInitialState();
 
 //		for (State s : StateReachability.getReachableStates(initial, domain, hashingFactory)) {
 //			System.out.println(s);	
@@ -143,8 +143,8 @@ public class MakeBlock implements DomainGenerator{
 //		System.out.println(OOStateUtilities.ooStateToString((OOState) ea.stateSequence.get(ea.stateSequence.size()-3)));
 //		System.out.println(OOStateUtilities.ooStateToString((OOState) ea.stateSequence.get(ea.stateSequence.size()-2)));
 		System.out.println(OOStateUtilities.ooStateToString((OOState) ea.stateSequence.get(ea.stateSequence.size()-1)));
-		OOState last = ((OOState) ea.stateSequence.get(ea.stateSequence.size()-1));
-		System.out.println("finished block: " + ((MakeBlockState)last).getBlock().get(HBlock.ATT_FINISHED));
+//		OOState last = ((OOState) ea.stateSequence.get(ea.stateSequence.size()-1));
+//		System.out.println("finished block: " + ((MakeBlockState)last).getBlock().get(HBlock.ATT_FINISHED));
 		System.out.println(ea.actionSequence);
 		/**/
 	}

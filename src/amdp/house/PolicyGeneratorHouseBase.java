@@ -14,20 +14,17 @@ import burlap.mdp.singleagent.model.FactoredModel;
 import burlap.mdp.singleagent.oo.OOSADomain;
 import burlap.statehashing.simple.SimpleHashableStateFactory;
 
-public class PolicyGeneratorMakeBlock implements AMDPPolicyGenerator {
-	
+public class PolicyGeneratorHouseBase implements AMDPPolicyGenerator {
+
     private OOSADomain domain;
-    private MakeBlockStateMapping mapping;
     private double discount = 0.99;
-
-    public PolicyGeneratorMakeBlock(OOSADomain domain){
-        this.domain = domain;
-        this.mapping = new MakeBlockStateMapping();
+    
+    public PolicyGeneratorHouseBase(OOSADomain domain) {
+    	this.domain = domain;
     }
-
-    @Override
-    public Policy generatePolicy(State s, GroundedTask gt) {
-    	
+	
+	@Override
+	public Policy generatePolicy(State s, GroundedTask gt) {
         domain = ((NonPrimitiveTaskNode)gt.getT()).domain();
         domain.setModel(new FactoredModel(((FactoredModel)domain.getModel()).getStateModel(),gt.rewardFunction(), gt.terminalFunction()));
 
@@ -43,15 +40,18 @@ public class PolicyGeneratorMakeBlock implements AMDPPolicyGenerator {
         AMDPAssembler.brtdpList.add(brtd);
         brtd.planFromState(s);
         return new GreedyReplan(brtd);
-    }
+	}
 
-    @Override
-    public State generateAbstractState(State s) {
-    	return mapping.mapState(s);
-    }
+	@Override
+	public State generateAbstractState(State s) {
+		// no abstraction at base level
+		return s;
+//		return null;
+//		throw new RuntimeException("Error: should not call abstractions at base level");
+	}
 
-    @Override
-    public QProvider getQProvider(State s, GroundedTask gt) {
+	@Override
+	public QProvider getQProvider(State s, GroundedTask gt) {
         domain = ((NonPrimitiveTaskNode)gt.getT()).domain();
         domain.setModel(new FactoredModel(((FactoredModel)domain.getModel()).getStateModel(),gt.rewardFunction(), gt.terminalFunction()));
 
@@ -67,6 +67,6 @@ public class PolicyGeneratorMakeBlock implements AMDPPolicyGenerator {
         AMDPAssembler.brtdpList.add(brtd);
         brtd.planFromState(s);
         return brtd;
-    }
+	}
 
 }

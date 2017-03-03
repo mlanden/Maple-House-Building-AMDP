@@ -7,9 +7,13 @@ import amdp.amdpframework.GroundedTask;
 import amdp.amdpframework.NonPrimitiveTaskNode;
 import amdp.amdpframework.TaskNode;
 import amdp.house.level1.MakeBlockRF;
+import amdp.house.level1.MakeBlockState;
 import amdp.house.level1.MakeBlockTF;
+import amdp.house.objects.HBlock;
+import amdp.house.objects.HPoint;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.action.ActionType;
+import burlap.mdp.core.oo.ObjectParameterizedAction;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
@@ -31,7 +35,16 @@ public class TaskMakeBlock extends NonPrimitiveTaskNode {
 	}
 
 	@Override
-	public boolean terminal(State s, Action action) {
+	public boolean terminal(State s, Action a) {
+		MakeBlockState state = (MakeBlockState) s;
+		ObjectParameterizedAction action = (ObjectParameterizedAction) a;
+		String[] params = action.getObjectParameters();
+		String destinationName = params[0];
+		HPoint destination = (HPoint) state.object(destinationName);
+		int bX = (int) destination.get(HPoint.ATT_X);
+		int bY = (int) destination.get(HPoint.ATT_Y);
+		HBlock goal = new HBlock("block_"+bX+"_"+bY, bX, bY, true, false);
+		tf.setGoal(goal);
 		return tf.isTerminal(s);
 	}
 

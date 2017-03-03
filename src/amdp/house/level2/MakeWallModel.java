@@ -6,7 +6,6 @@ import java.util.List;
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
 import amdp.house.objects.HPoint;
-import amdp.house.objects.HWall;
 import burlap.mdp.core.StateTransitionProb;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.oo.ObjectParameterizedAction;

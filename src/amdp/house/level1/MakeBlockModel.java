@@ -9,6 +9,7 @@ import amdp.house.objects.HPoint;
 import burlap.mdp.core.StateTransitionProb;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.oo.ObjectParameterizedAction;
+import burlap.mdp.core.oo.state.ObjectInstance;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.statemodel.FullStateModel;
 
@@ -70,22 +71,11 @@ public class MakeBlockModel implements FullStateModel {
 		if (!state.isOpen(newX, newY)){
 			// do nothing
 		} else {
-//			HBlock newBlock = new HBlock(HBlock.CLASS_BLOCK, newX, newY, true);
 			// the name of the new object should be unique to that object
 			// that is, no two, newly added objects should ever have same name/ID
-//			String blockName = HBlock.CLASS_BLOCK + "_" + newX + "_" + newY;
-//			HBlock newBlock = new HBlock(blockName, newX, newY, false);
-//			s = state.addObject((ObjectInstance)newBlock);
-			int goalX = (int) state.getBlock().get(HBlock.ATT_X);
-			int goalY = (int) state.getBlock().get(HBlock.ATT_Y);
-			if (newX == goalX && newY == goalY) {
-				HBlock block = state.touchBlock();
-				block.set(HBlock.ATT_FINISHED, true);
-			} else {
-//				String blockName = HBlock.CLASS_BLOCK + "_" + newX + "_" + newY;
-//				HBlock newBlock = new HBlock(blockName, newX, newY, false);
-//				s = state.addObject((ObjectInstance)newBlock);
-			}
+			String blockName = HBlock.CLASS_BLOCK + "_" + newX + "_" + newY;
+			HBlock newBlock = new HBlock(blockName, newX, newY, true, false);
+			s = state.addObject((ObjectInstance)newBlock);
 		}
 		return s;
 	}

@@ -22,6 +22,10 @@ public class MakeWallTF implements TerminalFunction {
 	public HWall getGoal() {
 		return goal;
 	}
+
+	public void setGoal(HWall goal) {
+		this.goal = goal;
+	}
 	
 	public double getBudget(MakeWallState state) {
 		HPoint wallStart = (HPoint) getGoal().get(HWall.ATT_START);

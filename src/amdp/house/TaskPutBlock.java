@@ -6,18 +6,22 @@ import java.util.List;
 import amdp.amdpframework.GroundedTask;
 import amdp.amdpframework.NonPrimitiveTaskNode;
 import amdp.amdpframework.TaskNode;
+import amdp.house.base.HouseBaseState;
+import amdp.house.objects.HAgent;
+import amdp.house.objects.HPoint;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.action.ActionType;
+import burlap.mdp.core.oo.ObjectParameterizedAction;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.FactoredModel;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
 
-public class TaskSimpleActions extends NonPrimitiveTaskNode {
+public class TaskPutBlock extends NonPrimitiveTaskNode {
 	
 	public ActionType[] actionTypes;
 	
-	public TaskSimpleActions(String name, ActionType[] actionTypes, TaskNode[] children, OOSADomain source) {
+	public TaskPutBlock(String name, ActionType[] actionTypes, TaskNode[] children, OOSADomain source) {
 		this.name = name;
 		this.oosaDomain = source;
 		this.actionTypes = actionTypes;
@@ -26,12 +30,13 @@ public class TaskSimpleActions extends NonPrimitiveTaskNode {
 	
 	@Override
 	public boolean terminal(State s, Action a) {
-//		FactoredModel model = (FactoredModel) oosaDomain.getModel();
-//		return model.getTf().isTerminal(s);
-		System.out.println("state " + s);
-		System.out.println("action " + a);
-		throw new RuntimeException("");
-//		return true;
+		HouseBaseState state = (HouseBaseState) s;
+		int aX = (int) state.getAgent().get(HAgent.ATT_X);
+		int aY = (int) state.getAgent().get(HAgent.ATT_Y);
+		if (state.blockAt(aX, aY)) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -61,5 +66,5 @@ public class TaskSimpleActions extends NonPrimitiveTaskNode {
 	public String toString() {
 		return getName();
 	}
-
+	
 }

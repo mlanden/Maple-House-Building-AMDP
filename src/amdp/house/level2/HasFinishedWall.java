@@ -5,7 +5,6 @@ import java.util.List;
 
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HWall;
-import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
 import burlap.mdp.core.state.State;
 import utils.IntPair;
 

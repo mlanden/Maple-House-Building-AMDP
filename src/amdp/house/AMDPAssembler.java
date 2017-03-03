@@ -23,14 +23,12 @@ import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import amdp.taxiamdpdomains.testingtools.BoundedRTDPForTests;
 import amdp.taxiamdpdomains.testingtools.MutableGlobalInteger;
-import burlap.behavior.policy.Policy;
-import burlap.behavior.policy.PolicyUtils;
 import burlap.behavior.singleagent.Episode;
+import burlap.debugtools.RandomFactory;
 import burlap.mdp.auxiliary.common.NullTermination;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.action.ActionType;
 import burlap.mdp.core.oo.state.OOState;
-import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.common.UniformCostRF;
 import burlap.mdp.singleagent.environment.SimulatedEnvironment;
 import burlap.mdp.singleagent.model.RewardFunction;
@@ -48,6 +46,12 @@ public class AMDPAssembler {
 	public static MutableGlobalInteger bellmanBudgetL2 = new MutableGlobalInteger(-1);
 
 	public static TaskNode assembleAMDP(){
+		
+//		Random seedGen = new Random();
+		Long seed = 1129712866128848395L;//seedGen.nextLong();
+		System.out.println(seed);
+		RandomFactory.seedMapped(0, seed);
+		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory(true);
 		
 		// goal is to build this room
@@ -63,6 +67,9 @@ public class AMDPAssembler {
 		// make the base MDP domain
 		int width = 5;
 		int height = 5;
+		double rewardGoal = 1000;
+		double rewardDefault = -.1;
+		double rewardFailure = rewardDefault * 2;
 		TerminalFunction tfBase = new NullTermination();
 		RewardFunction rfBase = new UniformCostRF();
 		HouseBase genBase = new HouseBase(rfBase, tfBase, width, height);
@@ -75,24 +82,28 @@ public class AMDPAssembler {
 		OOSADomain domainBase = genBase.generateDomain();
 		OOSADomain domainEnv = genBase.generateDomain();
 		OOState initial = genBase.getInitialState(goalRoom);
+
+		// navigate and putBlock AMDP
+//		TerminalFunction tfNavPut = new NavPutTF();
+//		RewardFunction rfNavPut = new NavPutRF();
+//		NavPut genNavigate = new NavPut(rfNavPut, tfNavPut, width, height);
+//		NavPut genPutBlock = genNavigate;
+		
 		
 		// make block AMDP
-		TerminalFunction tfBlock = new MakeBlockTF();
-		double rewardGoal = 1000;
-		double rewardDefault = -.1;
-		double rewardFailure = rewardDefault * 2;
+		TerminalFunction tfBlock = new MakeBlockTF(null);
 		RewardFunction rfBlock = new MakeBlockRF((MakeBlockTF) tfBlock, rewardGoal, rewardDefault, rewardFailure);
 		MakeBlock genBlock = new MakeBlock(rfBlock, tfBlock, width, height);
 		OOSADomain domainBlock = genBlock.generateDomain();
 		
 		// make wall AMDP
-		TerminalFunction tfWall = new MakeWallTF();
+		TerminalFunction tfWall = new MakeWallTF(null);
 		RewardFunction rfWall = new MakeWallRF((MakeWallTF) tfWall, rewardGoal, rewardDefault, rewardFailure);
 		MakeWall genWall = new MakeWall(rfWall, tfWall, width, height);
 		OOSADomain domainWall = genWall.generateDomain();
 
 		// make room AMDP
-		TerminalFunction tfRoom = new MakeRoomTF();
+		TerminalFunction tfRoom = new MakeRoomTF(goalRoom);
 		RewardFunction rfRoom = new MakeRoomRF((MakeRoomTF) tfRoom, 1000.0, 0.0, 0.0);
 		MakeRoom genRoom = new MakeRoom(rfRoom, tfRoom, width, height);
 		OOSADomain domainRoom = genRoom.generateDomain();
@@ -100,9 +111,11 @@ public class AMDPAssembler {
 		OOState initialStateRoom = (OOState) new MakeRoomStateMapping().mapState(initial);
 		
 		List<AMDPPolicyGenerator> pgList = new ArrayList<AMDPPolicyGenerator>();
-		pgList.add(0, new PolicyGeneratorMakeBlock(domainBlock));
-		pgList.add(1, new PolicyGeneratorMakeWall(domainWall));
-		pgList.add(2, new PolicyGeneratorMakeRoom(domainRoom));
+		pgList.add(0, new PolicyGeneratorHouseBase(domainBase));
+//		pgList.add(1, new PolicyGeneratorNavPut(domainBase));
+		pgList.add(1, new PolicyGeneratorMakeBlock(domainBlock));
+		pgList.add(2, new PolicyGeneratorMakeWall(domainWall));
+		pgList.add(3, new PolicyGeneratorMakeRoom(domainRoom));
 
 		// base actions
 		ActionType aNorth = domainBase.getAction(HouseBase.ACTION_NORTH);
@@ -112,8 +125,8 @@ public class AMDPAssembler {
 		ActionType aBuild = domainBase.getAction(HouseBase.ACTION_BUILD);
 		
 		// makeBlock actions
-		ActionType aNavigate = domainBase.getAction(MakeBlock.ACTION_NAVIGATE);
-		ActionType aPutBlock = domainBase.getAction(MakeBlock.ACTION_PUT_BLOCK);
+		ActionType aNavigate = domainBlock.getAction(MakeBlock.ACTION_NAVIGATE);
+		ActionType aPutBlock = domainBlock.getAction(MakeBlock.ACTION_PUT_BLOCK);
 		
 		// makeWall actions
 		ActionType aMakeBlock = domainWall.getAction(MakeWall.ACTION_MAKE_BLOCK);
@@ -132,7 +145,7 @@ public class AMDPAssembler {
 		TaskNode[] putBlockSubtasks = new TaskNode[]{buildTask};
 		
 		
-		TaskNode navigateTask = new TaskSimpleActions(
+		TaskNode navigateTask = new TaskNavigate(
 				"navigateAMDP",
 				new ActionType[]{aNavigate},
 				navigateSubtasks,
@@ -141,7 +154,7 @@ public class AMDPAssembler {
 //				rfNavigate
 		);
 		
-		TaskNode putBlockTask = new TaskSimpleActions(
+		TaskNode putBlockTask = new TaskPutBlock(
 				"putBlockAMDP",
 				new ActionType[]{aPutBlock},
 				putBlockSubtasks,
@@ -191,24 +204,35 @@ public class AMDPAssembler {
         SimulatedEnvironment envN = new SimulatedEnvironment(domainEnv, initial);
         int maxTrajectoryLength = 101;
         Episode e = agent.actUntilTermination(envN, maxTrajectoryLength);
-        int count = 0;
-        for(int i=0;i<brtdpList.size();i++){
-            int numUpdates = brtdpList.get(i).getNumberOfBellmanUpdates();
-            count+= numUpdates;
-        }
-        Policy bottom = brtdpList.get(1).planFromState(initial);
-        AMDPPolicyGenerator pg1 = pgList.get(1);
-        State absInitial = pg1.generateAbstractState(initial);
-        Policy top = brtdpList.get(0).planFromState(absInitial);
-        System.out.println(PolicyUtils.rollout(bottom, initial, domainEnv.getModel()).actionSequence);
-        System.out.println(PolicyUtils.rollout(top, absInitial, domainRoom.getModel()).actionSequence);
-        System.out.println(e.discountedReturn(1.));
-        System.out.println(count);
-        System.out.println("Total planners used: " + brtdpList.size());
-        System.out.println("House with AMDPs \nBackups by individual planners:");
-        for(BoundedRTDPForTests b:brtdpList){
-            System.out.println(b.getNumberOfBellmanUpdates());
-        }
+
+        System.out.println("done");
+        try {
+			Thread.sleep(1);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+//        System.out.println(e.stateSequence);
+        System.out.println(e.actionSequence);
+        
+//        int count = 0;
+//        for(int i=0;i<brtdpList.size();i++){
+//            int numUpdates = brtdpList.get(i).getNumberOfBellmanUpdates();
+//            count+= numUpdates;
+//        }
+//        Policy bottom = brtdpList.get(1).planFromState(initial);
+//        AMDPPolicyGenerator pg1 = pgList.get(1);
+//        State absInitial = pg1.generateAbstractState(initial);
+//        Policy top = brtdpList.get(0).planFromState(absInitial);
+//        System.out.println(PolicyUtils.rollout(bottom, initial, domainEnv.getModel()).actionSequence);
+//        System.out.println(PolicyUtils.rollout(top, absInitial, domainRoom.getModel()).actionSequence);
+//        System.out.println(e.discountedReturn(1.));
+//        System.out.println(count);
+//        System.out.println("Total planners used: " + brtdpList.size());
+//        System.out.println("House with AMDPs \nBackups by individual planners:");
+//        for(BoundedRTDPForTests b:brtdpList){
+//            System.out.println(b.getNumberOfBellmanUpdates());
+//        }
         return makeRoomTask;
         /**/
 	}

@@ -13,6 +13,11 @@ public class HBlock extends HPoint {
 			HPoint.ATT_Y,
 			HBlock.ATT_FINISHED
 	);
+
+	@Override
+	public List<Object> variableKeys() {
+		return keys;
+	}
 	
 	public HBlock(String name, int x, int y, boolean finished, boolean giveNewID) {
 		super(name, x, y, giveNewID);

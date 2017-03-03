@@ -4,7 +4,6 @@ import java.util.List;
 
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
-import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
 import burlap.mdp.core.state.State;
 
 public class HasFinishedRoom {

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import amdp.house.objects.HPoint;
-import amdp.house.objects.HRoom;
 import amdp.house.objects.HWall;
 import burlap.mdp.core.StateTransitionProb;
 import burlap.mdp.core.action.Action;
