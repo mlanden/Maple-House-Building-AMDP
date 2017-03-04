@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/amdp-1.0-SNAPSHOT.jar" sourcepath="/amdp-Nakul"/>
 	<classpathentry kind="lib" path="lib/burlap-3.0.2-SNAPSHOT-jar-with-dependencies.jar" sourcepath="C:/Users/JW/workspace/testburlap/burlap-master/target/burlap-3.0.2-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="src" path="/amdp-Nakul"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

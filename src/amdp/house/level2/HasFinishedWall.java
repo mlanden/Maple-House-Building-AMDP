@@ -3,6 +3,7 @@ package amdp.house.level2;
 import java.util.ArrayList;
 import java.util.List;
 
+import amdp.house.base.HouseBaseState;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HWall;
 import burlap.mdp.core.state.State;
@@ -45,7 +46,8 @@ public class HasFinishedWall {
 		return a + (degree * (b - a));
 	}
 	
-	public boolean checkLineMinimal(MakeWallState state, int aX, int aY, int bX, int bY) {
+	public boolean checkLineMinimal(HouseBaseState state, int aX, int aY, int bX, int bY) {
+		others.clear(); // uncomment to force it to recalculate every time
 		if (others.size() < 1) {
 			double dX = bX - aX;
 			double dY = bY - aY;
@@ -67,7 +69,7 @@ public class HasFinishedWall {
 	}
 	
 	public boolean checkLineSuperCovered(MakeWallState state, int aX, int aY, int bX, int bY) {
-//		others.clear(); // comment this out to have it not recompute every time
+		others.clear(); // comment this out to have it not recalculate every time
 		if (others.size() < 1) {
 			double dX = bX - aX;
 			double dY = bY - aY;

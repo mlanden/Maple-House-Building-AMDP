@@ -51,6 +51,7 @@ public class MakeWallTF implements TerminalFunction {
 	public boolean satisfiesGoal(MakeWallState state) {
 		HWall goal = getGoal();
 		if (hasFinishedWall.satisfies(state, goal)) {
+//			state.addObject(goal);
 			return true;
 		}
 		return false;

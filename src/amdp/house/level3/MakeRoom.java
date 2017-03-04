@@ -3,6 +3,7 @@ package amdp.house.level3;
 import java.util.ArrayList;
 import java.util.List;
 
+import amdp.house.base.PointParameterizedActionType;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import amdp.house.objects.HWall;
@@ -71,7 +72,7 @@ public class MakeRoom implements DomainGenerator {
 	public class MakeWallActionType extends ObjectParameterizedActionType {
 
 		public MakeWallActionType(String name){
-			super(name, new String[]{HPoint.CLASS_POINT, HPoint.CLASS_POINT});
+			super(name, new String[]{HPoint.CLASS_POINT, HPoint.CLASS_POINT}, new String[]{HPoint.CLASS_POINT, HPoint.CLASS_POINT});
 		}
 		
 		public boolean applicableInState(State state, ObjectParameterizedAction groundedAction){
@@ -93,10 +94,15 @@ public class MakeRoom implements DomainGenerator {
 	
 	public static void main(String[] args) {
 		
+		int width = 5;
+		int height = 5;
+
 		// goal is to build this room
 		List<HPoint> corners = new ArrayList<HPoint>();
 		HPoint p0 = new HPoint("p0", 0, 0, false); corners.add(p0);
 		HPoint p1 = new HPoint("p1", 0, 4, false); corners.add(p1);
+		HPoint p2 = new HPoint("p2", 4, 4, false); corners.add(p2);
+		HPoint p3 = new HPoint("p3", 4, 0, false); corners.add(p3);
 //		HPoint p1 = new HPoint("p1", 0, 1, false); corners.add(p1);
 //		HPoint p2 = new HPoint("p2", 0, 2, false); corners.add(p2);
 //		HPoint p3 = new HPoint("p3", 1, 2, false); corners.add(p3);
@@ -109,28 +115,35 @@ public class MakeRoom implements DomainGenerator {
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory();
 		MakeRoomTF tf = new MakeRoomTF(goal);
 		double rewardGoal = 1.0;
-		double rewardDefault = -rewardGoal / 10.0;
+		double rewardDefault = -rewardGoal / 1000.0;
 		double rewardFailure = rewardDefault * 2;
 		MakeRoomRF rf = new MakeRoomRF(tf, rewardGoal, rewardDefault, rewardFailure);
-		int width = 5;
-		int height = 5;
 		MakeRoom gen = new MakeRoom(rf, tf, width, height);
 		OOSADomain domain = gen.generateDomain();
 		OOState initial = gen.getInitialState(goal);
+		
+		
+//		MakeRoomState extra = (MakeRoomState)initial;
+//		extra.addObject(new HWall("tempdebug",new HPoint("a",0,0,false), new HPoint("b",0,3,false), true));
+//		MakeWallActionType action = (MakeWallActionType) domain.getAction(MakeRoom.ACTION_MAKE_WALL);
+//		System.out.println(action.allApplicableActions(initial).size());
+//		System.exit(-1);
 
 //		System.out.println(OOStateUtilities.ooStateToString(initial));
 		
 		double lowerVInit = 0.;
-		double upperVInit = 1.;
-		double maxDiff = rewardGoal / 10000.0;
+//		double upperVInit = 1.;
+		double maxDiff = rewardGoal / 1000.0;
 		double gamma = 0.99;
-		int maxSteps = 30;
+		int maxSteps = corners.size() + 2;
 		int maxRollouts = -1;//65536;//4096;
-		int maxRolloutDepth = -1;//maxSteps;
+		int maxRolloutDepth = maxSteps;
 		BoundedRTDP brtdp =
 				new BoundedRTDP(domain, gamma, hashingFactory, 
 				new ConstantValueFunction(lowerVInit),
-				new ConstantValueFunction(upperVInit), maxDiff, maxRollouts);
+				//new ConstantValueFunction(upperVInit),
+				new MakeRoomHeuristic(gamma),
+				maxDiff, maxRollouts);
 		brtdp.setMaxRolloutDepth(maxRolloutDepth);
 		brtdp.toggleDebugPrinting(true);
 		long startTime = System.currentTimeMillis();

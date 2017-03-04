@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import amdp.house.base.HouseBaseState;
+import amdp.house.level2.HasFinishedWall;
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
 import amdp.house.objects.HPoint;
@@ -104,6 +105,36 @@ public class MakeRoomState extends HouseBaseState {
 		}
 		
 		return false;
+	}
+
+	public boolean areContiguousInLine(HPoint start, HPoint end) {
+		
+		/// WARNING:
+		// using the if/else below is a really bad hack to circumvent issue of state projection for composite objects
+//		if (walls.size() > 0) {
+		for (HWall wall : walls) {
+			HPoint wallStart = (HPoint) wall.get(HWall.ATT_START);
+			HPoint wallEnd = (HPoint) wall.get(HWall.ATT_END);
+			if ((start.compareTo(wallStart) == 0 && end.compareTo(wallEnd) == 0)
+			 || (start.compareTo(wallEnd) == 0 && end.compareTo(wallStart) == 0)) {
+				return true;
+			}
+		}
+		return false;
+//		}
+//		else {
+//			HasFinishedWall hasFinishedWall = new HasFinishedWall();
+//			int aX = (int) start.get(HPoint.ATT_X);
+//			int aY = (int) start.get(HPoint.ATT_Y);
+//			int bX = (int) end.get(HPoint.ATT_X);
+//			int bY = (int) end.get(HPoint.ATT_Y);
+//			boolean wallExists = hasFinishedWall.checkLineMinimal(this, aX, aY, bX, bY);
+//			return wallExists;
+//		}
+	}
+
+	public int wallsRemaining() {
+		return HasFinishedRoom.getNumWallsRemaining(this, goalRoom);
 	}
 
 }

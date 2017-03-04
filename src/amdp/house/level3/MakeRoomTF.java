@@ -19,11 +19,12 @@ public class MakeRoomTF implements TerminalFunction {
 	}
 	
 	public boolean satisfiesGoal(MakeRoomState state) {
-//		HRoom goal = state.getRoom();
+		HRoom goal = state.getRoom();
 //		if ((boolean) goal.get(HRoom.ATT_FINISHED)) {
 //			return true;
 //		}
 		if (hasFinishedRoom.satisfies(state, goal)) {
+//			state.addObject(goal);
 			return true;
 		}
 		return false;

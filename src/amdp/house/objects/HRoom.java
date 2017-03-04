@@ -61,5 +61,8 @@ public class HRoom extends MutableObject implements MutableObjectInstance {
 		return new HRoom(this.name, (List<HPoint>) this.get(ATT_CORNERS), (Boolean) this.get(ATT_FINISHED));
 	}
 	
-
+	public List<HPoint> getCorners() {
+		return (List<HPoint>) get(ATT_CORNERS);
+	}
+	
 }

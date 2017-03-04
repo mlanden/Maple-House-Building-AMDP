@@ -19,12 +19,15 @@ import amdp.house.level2.MakeWallTF;
 import amdp.house.level2.TaskLeaf;
 import amdp.house.level3.MakeRoom;
 import amdp.house.level3.MakeRoomRF;
+import amdp.house.level3.MakeRoomState;
 import amdp.house.level3.MakeRoomStateMapping;
 import amdp.house.level3.MakeRoomTF;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import amdp.taxiamdpdomains.testingtools.BoundedRTDPForTests;
 import amdp.taxiamdpdomains.testingtools.MutableGlobalInteger;
+import burlap.behavior.policy.Policy;
+import burlap.behavior.policy.PolicyUtils;
 import burlap.behavior.singleagent.Episode;
 import burlap.behavior.singleagent.auxiliary.EpisodeSequenceVisualizer;
 import burlap.debugtools.RandomFactory;
@@ -64,9 +67,9 @@ public class AMDPAssembler {
 		// goal is to build this room
 		List<HPoint> corners = new ArrayList<HPoint>();
 		HPoint p0 = new HPoint("p0", 0, 0, false); corners.add(p0); 
-		HPoint p1 = new HPoint("p1", 4, 0, false); corners.add(p1); 
-//		HPoint p2 = new HPoint("p2", 0, 2, false); corners.add(p2); 
-//		HPoint p3 = new HPoint("p3", 2, 0, false); corners.add(p3); 
+		HPoint p1 = new HPoint("p1", 3, 0, false); corners.add(p1); 
+		HPoint p2 = new HPoint("p2", 3, 3, false); corners.add(p2); 
+		HPoint p3 = new HPoint("p3", 0, 3, false); corners.add(p3); 
 		HRoom goalRoom = new HRoom("goalRoom", corners, false);
 		
 		
@@ -208,6 +211,11 @@ public class AMDPAssembler {
         Visualizer v = HouseBaseVisualizer.getVisualizer(width, height);
         EpisodeSequenceVisualizer esv = new EpisodeSequenceVisualizer(v, domainBase, episodes);
         esv.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        MakeRoomState absInitial = (MakeRoomState) new MakeRoomStateMapping().mapState(initial);
+        Policy top = brtdpList.get(0).planFromState(absInitial);
+        System.out.println(PolicyUtils.rollout(top, absInitial, domainRoom.getModel()).actionSequence);
+
         
 //        int count = 0;
 //        for(int i=0;i<brtdpList.size();i++){

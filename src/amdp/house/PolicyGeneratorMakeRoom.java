@@ -3,7 +3,10 @@ package amdp.house;
 import amdp.amdpframework.AMDPPolicyGenerator;
 import amdp.amdpframework.GroundedTask;
 import amdp.amdpframework.NonPrimitiveTaskNode;
+import amdp.house.level3.MakeRoomHeuristic;
+import amdp.house.level3.MakeRoomState;
 import amdp.house.level3.MakeRoomStateMapping;
+import amdp.house.objects.HWall;
 import amdp.taxiamdpdomains.testingtools.BoundedRTDPForTests;
 import amdp.taxiamdpdomains.testingtools.GreedyReplan;
 import burlap.behavior.policy.Policy;
@@ -29,6 +32,11 @@ public class PolicyGeneratorMakeRoom implements AMDPPolicyGenerator {
     @Override
     public Policy generatePolicy(State s, GroundedTask gt) {
 
+    	System.out.println(s);
+    	for (HWall wall : (((MakeRoomState)s).getWalls())) {
+        	System.out.println(wall);
+    	}
+    	
         domain = ((NonPrimitiveTaskNode)gt.getT()).domain();
         FactoredModel model = new FactoredModel(
     		((FactoredModel)domain.getModel()) .getStateModel(),
@@ -39,13 +47,14 @@ public class PolicyGeneratorMakeRoom implements AMDPPolicyGenerator {
         SimpleHashableStateFactory shf = new SimpleHashableStateFactory(true);
         BoundedRTDPForTests brtdp = new BoundedRTDPForTests(domain, discount, shf,
             new ConstantValueFunction(0.),
-            new ConstantValueFunction(1.),
+//            new ConstantValueFunction(1.),
+			new MakeRoomHeuristic(discount),
             AMDPAssembler.BRTDP_MAX_DIFF,
             -1);
 
         brtdp.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL3);
         brtdp.setMaxRolloutDepth(depth);
-        brtdp.toggleDebugPrinting(true);
+        brtdp.toggleDebugPrinting(false);
 
         Policy p = brtdp.planFromState(s);
         AMDPAssembler.brtdpList.add(brtdp);
@@ -66,13 +75,14 @@ public class PolicyGeneratorMakeRoom implements AMDPPolicyGenerator {
         SimpleHashableStateFactory shf = new SimpleHashableStateFactory(true); // perhaps should be false
         BoundedRTDPForTests brtdp = new BoundedRTDPForTests(domain, discount, shf,
                 new ConstantValueFunction(0.),
-                new ConstantValueFunction(1.),
+//                new ConstantValueFunction(1.),
+				new MakeRoomHeuristic(discount),
                 AMDPAssembler.BRTDP_MAX_DIFF,
                 -1);
 
         brtdp.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL3);
         brtdp.setMaxRolloutDepth(depth);
-        brtdp.toggleDebugPrinting(true);
+        brtdp.toggleDebugPrinting(false);
 
         Policy p = brtdp.planFromState(s);
         AMDPAssembler.brtdpList.add(brtdp);

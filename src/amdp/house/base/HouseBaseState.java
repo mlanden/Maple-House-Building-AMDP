@@ -120,6 +120,10 @@ public class HouseBaseState implements MutableOOState {
 	public Map<IntPair, HBlock> getBlocks() {
 		return blocks;
 	}
+	
+	public List<HBlock> getBlocksList() {
+		return new ArrayList<HBlock>(blocks.values());
+	}
 
 	public List<HWall> getWalls() {
 		return walls;
@@ -160,7 +164,8 @@ public class HouseBaseState implements MutableOOState {
 				return object;
 			}
 		}
-		throw new RuntimeException("not implemented " + oname);
+		return null;
+//		throw new RuntimeException("not implemented " + oname);
 	}
 	
 	public List<ObjectInstance> objects() {
