@@ -63,4 +63,17 @@ public class HWall extends MutableObject implements MutableObjectInstance {
 		);
 	}
 
+	public double getLength() {
+		HPoint a = (HPoint) get(ATT_START);
+		HPoint b = (HPoint) get(ATT_END);
+		int aX = (int) a.get(HPoint.ATT_X);
+		int aY = (int) a.get(HPoint.ATT_Y);
+		int bX = (int) b.get(HPoint.ATT_X);
+		int bY = (int) b.get(HPoint.ATT_Y);
+		double dX = bX - aX;
+		double dY = bY - aY;
+		double length = Math.max(Math.abs(dX), Math.abs(dY));
+		return length;
+	}
+
 }

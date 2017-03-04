@@ -94,18 +94,22 @@ public class MakeRoom implements DomainGenerator {
 	public static void main(String[] args) {
 		
 		// goal is to build this room
-		HPoint p0 = new HPoint("p0", 0, 0, false);
-		HPoint p1 = new HPoint("p1", 0, 2, false);
-//		HPoint p2 = new HPoint("p2", 2, 2, false);
-//		HPoint p3 = new HPoint("p3", 2, 0, false);
 		List<HPoint> corners = new ArrayList<HPoint>();
-		corners.add(p0); corners.add(p1); // corners.add(p2); corners.add(p3);
+		HPoint p0 = new HPoint("p0", 0, 0, false); corners.add(p0);
+		HPoint p1 = new HPoint("p1", 0, 4, false); corners.add(p1);
+//		HPoint p1 = new HPoint("p1", 0, 1, false); corners.add(p1);
+//		HPoint p2 = new HPoint("p2", 0, 2, false); corners.add(p2);
+//		HPoint p3 = new HPoint("p3", 1, 2, false); corners.add(p3);
+//		HPoint p4 = new HPoint("p4", 2, 2, false); corners.add(p4);
+//		HPoint p5 = new HPoint("p5", 2, 1, false); corners.add(p5);
+//		HPoint p6 = new HPoint("p6", 2, 0, false); corners.add(p6);
+//		HPoint p7 = new HPoint("p7", 1, 0, false); corners.add(p7);
 		HRoom goal = new HRoom("goalRoom", corners, false);
 		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory();
 		MakeRoomTF tf = new MakeRoomTF(goal);
 		double rewardGoal = 1.0;
-		double rewardDefault = -rewardGoal / 10000.0;
+		double rewardDefault = -rewardGoal / 10.0;
 		double rewardFailure = rewardDefault * 2;
 		MakeRoomRF rf = new MakeRoomRF(tf, rewardGoal, rewardDefault, rewardFailure);
 		int width = 5;
@@ -121,8 +125,8 @@ public class MakeRoom implements DomainGenerator {
 		double maxDiff = rewardGoal / 10000.0;
 		double gamma = 0.99;
 		int maxSteps = 30;
-		int maxRollouts = 65536;//4096;
-		int maxRolloutDepth = maxSteps;
+		int maxRollouts = -1;//65536;//4096;
+		int maxRolloutDepth = -1;//maxSteps;
 		BoundedRTDP brtdp =
 				new BoundedRTDP(domain, gamma, hashingFactory, 
 				new ConstantValueFunction(lowerVInit),

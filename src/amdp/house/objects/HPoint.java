@@ -72,6 +72,15 @@ public class HPoint extends MutableObject implements MutableObjectInstance, Comp
 		}
 	}
 	
+	public static double distanceChebyshev(HPoint src, HPoint dst) {
+		int aX = (Integer) src.get(HPoint.ATT_X);
+		int aY = (Integer) src.get(HPoint.ATT_Y);
+		int bX = (Integer) dst.get(HPoint.ATT_X);
+		int bY = (Integer) dst.get(HPoint.ATT_Y);
+		double distance = Math.max(Math.abs(bX-aX),Math.abs(bY-aY));
+		return distance;
+	}
+	
 	public String toString() {
 		return name + " (" + get(ATT_X) + ", " + get(ATT_Y) + ")";
 	}

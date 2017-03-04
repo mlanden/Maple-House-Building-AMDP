@@ -3,6 +3,8 @@ package amdp.house;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFrame;
+
 import amdp.amdpframework.AMDPAgent;
 import amdp.amdpframework.AMDPPolicyGenerator;
 import amdp.amdpframework.GroundedTask;
@@ -24,6 +26,7 @@ import amdp.house.objects.HRoom;
 import amdp.taxiamdpdomains.testingtools.BoundedRTDPForTests;
 import amdp.taxiamdpdomains.testingtools.MutableGlobalInteger;
 import burlap.behavior.singleagent.Episode;
+import burlap.behavior.singleagent.auxiliary.EpisodeSequenceVisualizer;
 import burlap.debugtools.RandomFactory;
 import burlap.mdp.auxiliary.common.NullTermination;
 import burlap.mdp.core.TerminalFunction;
@@ -35,6 +38,7 @@ import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
 import burlap.statehashing.HashableStateFactory;
 import burlap.statehashing.simple.SimpleHashableStateFactory;
+import burlap.visualizer.Visualizer;
 
 public class AMDPAssembler { 
 
@@ -44,6 +48,7 @@ public class AMDPAssembler {
 	public static MutableGlobalInteger bellmanBudgetL0 = new MutableGlobalInteger(-1);
 	public static MutableGlobalInteger bellmanBudgetL1 = new MutableGlobalInteger(-1);
 	public static MutableGlobalInteger bellmanBudgetL2 = new MutableGlobalInteger(-1);
+	public static MutableGlobalInteger bellmanBudgetL3 = new MutableGlobalInteger(-1);
 
 	public static double BRTDP_MAX_DIFF = 0.0001;
 	
@@ -57,20 +62,19 @@ public class AMDPAssembler {
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory(true);
 		
 		// goal is to build this room
-		HPoint p0 = new HPoint("p0", 0, 0, false);
-		HPoint p1 = new HPoint("p1", 0, 2, false);
-//		HPoint p2 = new HPoint("p2", 2, 2, false);
-//		HPoint p3 = new HPoint("p3", 2, 0, false);
 		List<HPoint> corners = new ArrayList<HPoint>();
-		corners.add(p0); corners.add(p1); // corners.add(p2); // corners.add(p3);
+		HPoint p0 = new HPoint("p0", 0, 0, false); corners.add(p0); 
+		HPoint p1 = new HPoint("p1", 4, 0, false); corners.add(p1); 
+//		HPoint p2 = new HPoint("p2", 0, 2, false); corners.add(p2); 
+//		HPoint p3 = new HPoint("p3", 2, 0, false); corners.add(p3); 
 		HRoom goalRoom = new HRoom("goalRoom", corners, false);
 		
 		
 		// make the base MDP domain
 		int width = 5;
 		int height = 5;
-		double goalDefaultRatio = 1000.0;
 		double rewardGoal = 1.0;
+		double goalDefaultRatio = 1000.0;
 		double rewardDefault = -rewardGoal / goalDefaultRatio;
 		double rewardFailure = rewardDefault * 2;
 		TerminalFunction tfBase = new NullTermination();
@@ -96,7 +100,7 @@ public class AMDPAssembler {
 
 		// make room AMDP
 		TerminalFunction tfRoom = new MakeRoomTF(goalRoom);
-		RewardFunction rfRoom = new MakeRoomRF((MakeRoomTF) tfRoom, 1000.0, 0.0, 0.0);
+		RewardFunction rfRoom = new MakeRoomRF((MakeRoomTF) tfRoom, rewardGoal, rewardDefault, rewardFailure);
 		MakeRoom genRoom = new MakeRoom(rfRoom, tfRoom, width, height);
 		OOSADomain domainRoom = genRoom.generateDomain();
 		OOState initialStateRoom = (OOState) new MakeRoomStateMapping().mapState(initial);
@@ -194,10 +198,16 @@ public class AMDPAssembler {
         SimulatedEnvironment envN = new SimulatedEnvironment(domainEnv, initial);
         int maxTrajectoryLength = 101;
         Episode e = agent.actUntilTermination(envN, maxTrajectoryLength);
+        List<Episode> episodes = new ArrayList<Episode>();
+        episodes.add(e);
 
         System.out.println("done");
 //        System.out.println(e.stateSequence);
         System.out.println(e.actionSequence);
+        
+        Visualizer v = HouseBaseVisualizer.getVisualizer(width, height);
+        EpisodeSequenceVisualizer esv = new EpisodeSequenceVisualizer(v, domainBase, episodes);
+        esv.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
 //        int count = 0;
 //        for(int i=0;i<brtdpList.size();i++){

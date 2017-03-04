@@ -19,6 +19,7 @@ public class PolicyGeneratorMakeRoom implements AMDPPolicyGenerator {
     private OOSADomain domain;
     private MakeRoomStateMapping mapping;
     private double discount = 0.99;
+    private int depth = 65536;
 
     public PolicyGeneratorMakeRoom(OOSADomain domain){
         this.domain = domain;
@@ -42,9 +43,9 @@ public class PolicyGeneratorMakeRoom implements AMDPPolicyGenerator {
             AMDPAssembler.BRTDP_MAX_DIFF,
             -1);
 
-        brtdp.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL1);
-        brtdp.setMaxRolloutDepth(200);
-        brtdp.toggleDebugPrinting(false);
+        brtdp.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL3);
+        brtdp.setMaxRolloutDepth(depth);
+        brtdp.toggleDebugPrinting(true);
 
         Policy p = brtdp.planFromState(s);
         AMDPAssembler.brtdpList.add(brtdp);
@@ -69,9 +70,9 @@ public class PolicyGeneratorMakeRoom implements AMDPPolicyGenerator {
                 AMDPAssembler.BRTDP_MAX_DIFF,
                 -1);
 
-        brtdp.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL2);
-        brtdp.setMaxRolloutDepth(200);
-        brtdp.toggleDebugPrinting(false);
+        brtdp.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL3);
+        brtdp.setMaxRolloutDepth(depth);
+        brtdp.toggleDebugPrinting(true);
 
         Policy p = brtdp.planFromState(s);
         AMDPAssembler.brtdpList.add(brtdp);

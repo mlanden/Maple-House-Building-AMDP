@@ -22,6 +22,15 @@ public class TaskPutBlock extends NonPrimitiveTaskNode {
 	public TaskPutBlock(String name, ActionType[] actionTypes, TaskNode[] children, OOSADomain source) {
 		this.name = name;
 		this.oosaDomain = source;
+		ActionType[] domainActionTypes = new ActionType[children.length];
+		for (int i = 0; i < children.length; i++) {
+			TaskNode child = children[i];
+			domainActionTypes[i] = this.oosaDomain.getAction(child.getName());
+		}
+		this.oosaDomain.clearActionTypes();
+		for (ActionType domainActionType : domainActionTypes) {
+			this.oosaDomain.addActionType(domainActionType);
+		}
 		this.actionTypes = actionTypes;
 		this.childTaskNodes = children;
 	}

@@ -85,13 +85,13 @@ public class MakeWall implements DomainGenerator{
 	public static void main(String[] args) {
 		
 		HPoint wallStart = new HPoint("pointStart", 0, 0, false);
-		HPoint wallEnd = new HPoint("pointEnd", 2, 2, false);
+		HPoint wallEnd = new HPoint("pointEnd", 0, 4, false);
 		HWall wall = new HWall("goalWall", wallStart, wallEnd, false);
 		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory(true);
 		MakeWallTF tf = new MakeWallTF(wall);
-		double goalDefaultRatio = 1000.0;
 		double rewardGoal = 1.0;
+		double goalDefaultRatio = 1000.0;
 		double rewardDefault = -rewardGoal / goalDefaultRatio;
 		double rewardFailure = rewardDefault * 2;
 		RewardFunction rf = new MakeWallRF(tf, rewardGoal, rewardDefault, rewardFailure);
@@ -107,8 +107,10 @@ public class MakeWall implements DomainGenerator{
 		double upperVInit = 1.;
 		double maxDiff = rewardGoal / goalDefaultRatio;
 		double gamma = 0.99;
-		int maxSteps = width+height;
-		int maxRollouts = 65536;
+		double distance = HPoint.distanceChebyshev(wallStart, wallEnd);
+		distance += 1;
+		int maxSteps = (int) distance + 1;
+		int maxRollouts = -1;
 		int maxRolloutDepth = maxSteps;
 		BoundedRTDP brtdp =
 				new BoundedRTDP(domain, gamma, hashingFactory, 

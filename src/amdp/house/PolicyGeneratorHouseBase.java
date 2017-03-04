@@ -18,6 +18,7 @@ public class PolicyGeneratorHouseBase implements AMDPPolicyGenerator {
 
     private OOSADomain domain;
     private double discount = 0.99;
+    private int depth = 65536;
     
     public PolicyGeneratorHouseBase(OOSADomain domain) {
     	this.domain = domain;
@@ -35,7 +36,7 @@ public class PolicyGeneratorHouseBase implements AMDPPolicyGenerator {
                 AMDPAssembler.BRTDP_MAX_DIFF,
                 -1);
         brtd.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL0);
-        brtd.setMaxRolloutDepth(100);
+        brtd.setMaxRolloutDepth(depth);
         brtd.toggleDebugPrinting(false);
         AMDPAssembler.brtdpList.add(brtd);
         brtd.planFromState(s);
@@ -62,7 +63,7 @@ public class PolicyGeneratorHouseBase implements AMDPPolicyGenerator {
                 AMDPAssembler.BRTDP_MAX_DIFF,
                 -1);
         brtd.setRemainingNumberOfBellmanUpdates(AMDPAssembler.bellmanBudgetL0);
-        brtd.setMaxRolloutDepth(100);
+        brtd.setMaxRolloutDepth(depth);
         brtd.toggleDebugPrinting(false);
         AMDPAssembler.brtdpList.add(brtd);
         brtd.planFromState(s);

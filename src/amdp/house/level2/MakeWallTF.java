@@ -30,22 +30,21 @@ public class MakeWallTF implements TerminalFunction {
 	public double getBudget(MakeWallState state) {
 		HPoint wallStart = (HPoint) getGoal().get(HWall.ATT_START);
 		HPoint wallEnd = (HPoint) getGoal().get(HWall.ATT_END);
-		int aX = (Integer) wallStart.get(HPoint.ATT_X);
-		int aY = (Integer) wallStart.get(HPoint.ATT_Y);
-		int bX = (Integer) wallEnd.get(HPoint.ATT_X);
-		int bY = (Integer) wallEnd.get(HPoint.ATT_Y);
 		// blocks are budgeted to be chebyshev distance * budgetScalar
+		double distance = HPoint.distanceChebyshev(wallStart, wallEnd);
+		distance += 1;
 		double budgetScalar = 1.1;//1.1;
-		double distance = Math.max(Math.abs(bX-aX),Math.abs(bY-aY));
 		double budget = distance * budgetScalar;
 		return budget;
 	}
 	
 	public boolean goesTooFar(MakeWallState state) {
-		List<ObjectInstance> blocks = state.objectsOfClass(HBlock.CLASS_BLOCK);
-		if (blocks.size() > getBudget(state)) {
-			return true;
-		}
+		// buggy when going for more than one wall
+		// so if want to use budget, will need to be w.r.t. total number of blocks
+//		List<ObjectInstance> blocks = state.objectsOfClass(HBlock.CLASS_BLOCK);
+//		if (blocks.size() > getBudget(state)) {
+//			return true;
+//		}
 		return false;
 	}
 	

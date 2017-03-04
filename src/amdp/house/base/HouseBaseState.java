@@ -348,7 +348,7 @@ public class HouseBaseState implements MutableOOState {
 		String out = "";
 		out += this.getClass().getSimpleName();
 		out += ": {";
-		out += agent != null ? "agent at (" + agent.get(HAgent.ATT_X) + ", " + agent.get(HAgent.ATT_Y) + ")" : "";
+		out += agent != null ? "agent at (" + agent.get(HAgent.ATT_X) + ", " + agent.get(HAgent.ATT_Y) + "), " : "";
 		out += "points: " + points.size() + ", ";
 		out += "blocks: " + blocks.size() + ", ";
 		out += "walls: " + walls.size() + ", ";
