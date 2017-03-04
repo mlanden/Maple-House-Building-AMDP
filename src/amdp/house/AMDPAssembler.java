@@ -26,6 +26,7 @@ import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import amdp.taxiamdpdomains.testingtools.BoundedRTDPForTests;
 import amdp.taxiamdpdomains.testingtools.MutableGlobalInteger;
+import amdp.tools.VisualEnvStackObserver;
 import burlap.behavior.policy.Policy;
 import burlap.behavior.policy.PolicyUtils;
 import burlap.behavior.singleagent.Episode;
@@ -37,6 +38,7 @@ import burlap.mdp.core.action.ActionType;
 import burlap.mdp.core.oo.state.OOState;
 import burlap.mdp.singleagent.common.UniformCostRF;
 import burlap.mdp.singleagent.environment.SimulatedEnvironment;
+import burlap.mdp.singleagent.environment.extensions.EnvironmentServer;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
 import burlap.statehashing.HashableStateFactory;
@@ -200,7 +202,14 @@ public class AMDPAssembler {
 
         SimulatedEnvironment envN = new SimulatedEnvironment(domainEnv, initial);
         int maxTrajectoryLength = 101;
-        Episode e = agent.actUntilTermination(envN, maxTrajectoryLength);
+        Visualizer v = HouseBaseVisualizer.getVisualizer(width, height);
+
+		VisualEnvStackObserver so = new VisualEnvStackObserver(v, agent, 100);
+		agent.setOnlineStackObserver(so);
+		so.updateState(envN.currentObservation());
+		EnvironmentServer envServer = new EnvironmentServer(envN, so);
+
+        Episode e = agent.actUntilTermination(envServer, maxTrajectoryLength);
         List<Episode> episodes = new ArrayList<Episode>();
         episodes.add(e);
 
@@ -208,9 +217,9 @@ public class AMDPAssembler {
 //        System.out.println(e.stateSequence);
         System.out.println(e.actionSequence);
         
-        Visualizer v = HouseBaseVisualizer.getVisualizer(width, height);
         EpisodeSequenceVisualizer esv = new EpisodeSequenceVisualizer(v, domainBase, episodes);
         esv.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
         
         MakeRoomState absInitial = (MakeRoomState) new MakeRoomStateMapping().mapState(initial);
         Policy top = brtdpList.get(0).planFromState(absInitial);

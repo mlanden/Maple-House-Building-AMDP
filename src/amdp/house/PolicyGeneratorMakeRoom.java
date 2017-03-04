@@ -31,11 +31,6 @@ public class PolicyGeneratorMakeRoom implements AMDPPolicyGenerator {
     
     @Override
     public Policy generatePolicy(State s, GroundedTask gt) {
-
-    	System.out.println(s);
-    	for (HWall wall : (((MakeRoomState)s).getWalls())) {
-        	System.out.println(wall);
-    	}
     	
         domain = ((NonPrimitiveTaskNode)gt.getT()).domain();
         FactoredModel model = new FactoredModel(
