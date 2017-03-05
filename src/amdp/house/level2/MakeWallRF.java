@@ -10,13 +10,15 @@ public class MakeWallRF extends GoalFailureRF {
 	}
 
 	@Override
-	public boolean satisfiesGoal(State state) {
-		return ((MakeWallTF)tf).satisfiesGoal((MakeWallState) state);
+	public boolean satisfiesGoal(State s) {
+//		return ((MakeWallTF)tf).satisfiesGoal((MakeWallState) state);
+		return tf.isTerminal(s);
 	}
 
 	@Override
-	public boolean satisfiesFailure(State state) {
-		return ((MakeWallTF)tf).goesTooFar((MakeWallState) state);
+	public boolean satisfiesFailure(State s) {
+//		return ((MakeWallTF)tf).goesTooFar((MakeWallState) state);
+		return false;
 	}
 
 }

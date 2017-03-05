@@ -3,12 +3,17 @@ package amdp.house.level2;
 import java.util.List;
 import java.util.Map;
 
+import amdp.amdpframework.GroundedPropSC;
 import amdp.house.base.HouseBaseState;
+import amdp.house.level3.HasFinishedRoom;
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import amdp.house.objects.HWall;
+import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
+import burlap.mdp.core.oo.propositional.GroundedProp;
+import utils.DynamicGroundedPropSC;
 import utils.IntPair;
 
 public class MakeWallState extends HouseBaseState {
@@ -54,6 +59,21 @@ public class MakeWallState extends HouseBaseState {
 //		return new MakeWallState(width, height, touchAgent(), touchPoints(), touchBlocks(), touchGoalWall());
 //		return new MakeWallState(width, height, touchAgent(), touchPoints(), touchBlocks());
 //		return new MakeWallState(width, height, touchAgent(), touchPoints(), touchBlocks(), touchWall());
+	}
+
+	public int blocksRemaining(MakeWallTF tf) {
+		GroundedPropSC goal = (GroundedPropSC) tf.getGoalCondition();
+		GroundedProp gp = goal.gp;
+		String[] params = gp.params;
+		String startName = params[0];
+		String endName = params[1];
+		HPoint start = (HPoint) this.object(startName);
+		HPoint end = (HPoint) this.object(endName);
+		return HasGoalWallPF.getNumBlocksRemaining(this, start, end);
+	}
+
+	public void setGoalWall(HWall wall) {
+		goalWall = wall;
 	}
 
 //	public HWall getWall() {

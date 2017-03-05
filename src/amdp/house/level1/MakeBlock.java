@@ -3,6 +3,7 @@ package amdp.house.level1;
 import java.util.ArrayList;
 import java.util.List;
 
+import amdp.house.base.HouseBase;
 import amdp.house.base.PointParameterizedActionType;
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
@@ -25,34 +26,18 @@ import burlap.mdp.singleagent.oo.OOSADomain;
 import burlap.statehashing.HashableStateFactory;
 import burlap.statehashing.simple.SimpleHashableStateFactory;
 
-public class MakeBlock implements DomainGenerator{
+public class MakeBlock extends HouseBase {
 	
 	//actions
 	public static final String ACTION_NAVIGATE = "navigate";
 	public static final String ACTION_PUT_BLOCK = "putBlock";
 	public static final int NUM_ACTIONS = 2;
-
-	protected RewardFunction rf;
-	protected TerminalFunction tf;
-	
-	private int width;
-	private int height;
 	    
     public MakeBlock(RewardFunction rf, TerminalFunction tf, int width, int height) {
-        this.rf = rf;
-        this.tf = tf;
-        this.width = width;
-        this.height = height;
+    	super(rf, tf, width, height);
     }
     
-    public RewardFunction getRF(){
-    	return rf;
-    }
-    
-    public TerminalFunction getTF(){
-    	return tf;
-    }
-    
+    @Override
 	public OOSADomain generateDomain() {
 		OOSADomain domain = new OOSADomain();
 		
@@ -75,13 +60,7 @@ public class MakeBlock implements DomainGenerator{
 		return domain;
 	}
 	
-	
-	private List<PropositionalFunction> generatePfs(OOSADomain domain) {
-		List<PropositionalFunction> pfs = new ArrayList<PropositionalFunction>();
-		return pfs;
-	}
-	
-	public MakeBlockState getInitialState() {
+	public MakeBlockState getInitialMakeBlockState() {
 		MakeBlockState state = new MakeBlockState(width, height, 0, 0);
 		return state;
 	}
@@ -103,7 +82,7 @@ public class MakeBlock implements DomainGenerator{
 		int height = 5;
 		MakeBlock gen = new MakeBlock(rf, tf, width, height);
 		OOSADomain domain = gen.generateDomain();
-		OOState initial = gen.getInitialState();
+		OOState initial = gen.getInitialMakeBlockState();
 
 //		for (State s : StateReachability.getReachableStates(initial, domain, hashingFactory)) {
 //			System.out.println(s);	

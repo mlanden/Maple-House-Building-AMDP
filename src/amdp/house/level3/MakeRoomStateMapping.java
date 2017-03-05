@@ -3,11 +3,12 @@ package amdp.house.level3;
 import java.util.List;
 
 import amdp.house.base.HouseBaseState;
-import amdp.house.level2.HasFinishedWall;
+import amdp.house.level2.HasGoalWallPF;
 import amdp.house.objects.HBlock;
 import amdp.house.objects.HWall;
 import burlap.mdp.auxiliary.StateMapping;
 import burlap.mdp.core.state.State;
+import utils.DynamicGroundedPropSC;
 
 public class MakeRoomStateMapping implements StateMapping {
 	
@@ -25,7 +26,7 @@ public class MakeRoomStateMapping implements StateMapping {
 				HBlock end = blocks.get(j);
 				int bX = (int) end.get(HBlock.ATT_X);
 				int bY = (int) end.get(HBlock.ATT_Y);
-				boolean wallCouldExist = new HasFinishedWall().checkLineMinimal(state, aX, aY, bX, bY);
+				boolean wallCouldExist = HasGoalWallPF.checkLineMinimal(state, aX, aY, bX, bY);
 				if (wallCouldExist) {
 					String wallName = "wall_"+aX+"_"+aY+"_"+bX+"_"+bY;
 					if (state.object(wallName) == null) {

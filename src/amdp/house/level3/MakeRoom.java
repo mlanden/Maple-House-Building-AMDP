@@ -3,6 +3,7 @@ package amdp.house.level3;
 import java.util.ArrayList;
 import java.util.List;
 
+import amdp.house.base.HouseBase;
 import amdp.house.base.PointParameterizedActionType;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
@@ -24,31 +25,14 @@ import burlap.mdp.singleagent.oo.ObjectParameterizedActionType;
 import burlap.statehashing.HashableStateFactory;
 import burlap.statehashing.simple.SimpleHashableStateFactory;
 
-public class MakeRoom implements DomainGenerator {
+public class MakeRoom extends HouseBase {
 
 	public static final String ACTION_MAKE_WALL = "makeWall";
 	public static final int NUM_ACTIONS = 1;
-
-	protected RewardFunction rf;
-	protected TerminalFunction tf;
-	
-	private int width;
-	private int height;
 	
 	public MakeRoom(RewardFunction rf, TerminalFunction tf, int width, int height) {
-        this.rf = rf;
-        this.tf = tf;
-        this.width = width;
-        this.height = height;
+		super(rf, tf, width, height);
 	}
-	
-	public RewardFunction getRF(){
-    	return rf;
-    }
-    
-    public TerminalFunction getTF(){
-    	return tf;
-    }
 	
 	@Override
 	public OOSADomain generateDomain() {
@@ -87,7 +71,7 @@ public class MakeRoom implements DomainGenerator {
 		}
 	}
 	
-	public MakeRoomState getInitialState(HRoom goal) {
+	public MakeRoomState getInitialMakeRoomState(HRoom goal) {
 		MakeRoomState state = new MakeRoomState(width, height, goal);
 		return state;
 	}
@@ -120,7 +104,7 @@ public class MakeRoom implements DomainGenerator {
 		MakeRoomRF rf = new MakeRoomRF(tf, rewardGoal, rewardDefault, rewardFailure);
 		MakeRoom gen = new MakeRoom(rf, tf, width, height);
 		OOSADomain domain = gen.generateDomain();
-		OOState initial = gen.getInitialState(goal);
+		OOState initial = gen.getInitialMakeRoomState(goal);
 		
 		
 //		MakeRoomState extra = (MakeRoomState)initial;

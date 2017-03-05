@@ -19,8 +19,12 @@ public abstract class GoalFailureRF implements RewardFunction {
 		this.rewardFailure = rewardFailure;
 	}
 	
-	public void setTF(TerminalFunction tf) {
+	public void setTf(TerminalFunction tf) {
 		this.tf = tf;
+	}
+	
+	public TerminalFunction getTf() {
+		return this.tf;
 	}
 
 	@Override

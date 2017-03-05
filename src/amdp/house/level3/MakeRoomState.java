@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import amdp.house.base.HouseBaseState;
-import amdp.house.level2.HasFinishedWall;
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import amdp.house.objects.HWall;
+import utils.DynamicGroundedPropSC;
 import utils.IntPair;
 
 public class MakeRoomState extends HouseBaseState {

@@ -2,7 +2,10 @@ package amdp.house.level2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import amdp.amdpframework.GroundedPropSC;
+import amdp.house.base.HouseBase;
 import amdp.house.base.PointParameterizedActionType;
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
@@ -13,45 +16,34 @@ import burlap.behavior.policy.PolicyUtils;
 import burlap.behavior.singleagent.Episode;
 import burlap.behavior.singleagent.planning.stochastic.rtdp.BoundedRTDP;
 import burlap.behavior.valuefunction.ConstantValueFunction;
+import burlap.debugtools.RandomFactory;
 import burlap.mdp.auxiliary.DomainGenerator;
+import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.oo.OODomain;
+import burlap.mdp.core.oo.propositional.GroundedProp;
 import burlap.mdp.core.oo.propositional.PropositionalFunction;
 import burlap.mdp.core.oo.state.OOState;
 import burlap.mdp.core.oo.state.OOStateUtilities;
+import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.FactoredModel;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
 import burlap.statehashing.HashableStateFactory;
 import burlap.statehashing.simple.SimpleHashableStateFactory;
 
-public class MakeWall implements DomainGenerator{
+public class MakeWall extends HouseBase {
 	
 	//actions
 	public static final String ACTION_MAKE_BLOCK = "makeBlock";
 	public static final int NUM_ACTIONS = 1;
 
-	protected RewardFunction rf;
-	protected TerminalFunction tf;
-	
-	private int width;
-	private int height;
-	    
     public MakeWall(RewardFunction rf, TerminalFunction tf, int width, int height) {
-        this.rf = rf;
-        this.tf = tf;
-        this.width = width;
-        this.height = height;
+    	super(rf, tf, width, height);
     }
     
-    public RewardFunction getRF(){
-    	return rf;
-    }
     
-    public TerminalFunction getTF(){
-    	return tf;
-    }
-    
+    @Override
 	public OOSADomain generateDomain() {
 		OOSADomain domain = new OOSADomain();
 		
@@ -72,34 +64,53 @@ public class MakeWall implements DomainGenerator{
 		return domain;
 	}
 	
-	private List<PropositionalFunction> generatePfs(OOSADomain domain) {
-		List<PropositionalFunction> pfs = new ArrayList<PropositionalFunction>();
-		return pfs;
-	}
-	
-	public MakeWallState getInitialState() {
+	public MakeWallState getInitialMakeWallState() {
 		MakeWallState state = new MakeWallState(width, height, 0, 0);
 		return state;
 	}
 	
 	public static void main(String[] args) {
 		
-		HPoint wallStart = new HPoint("pointStart", 0, 0, false);
-		HPoint wallEnd = new HPoint("pointEnd", 0, 4, false);
+		Random random = new Random();
+		long seed = random.nextLong();
+		System.out.println(seed);
+		RandomFactory.seedMapped(0, seed);
+
+		int width = 5;
+		int height = 5;
+		int sX = 0; int sY = 0;
+		int eX = 4; int eY = 4;
+		final String startName = HPoint.CLASS_POINT+"_"+sX+"_"+sY;
+		final String endName = HPoint.CLASS_POINT+"_"+eX+"_"+eY;
+		HPoint wallStart = new HPoint(startName, sX, sY, false);
+		HPoint wallEnd = new HPoint(endName, eX, eY, false);
 		HWall wall = new HWall("goalWall", wallStart, wallEnd, false);
 		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory(true);
-		MakeWallTF tf = new MakeWallTF(wall);
+		GroundedProp gp = new GroundedProp(new HasGoalWallPF(), new String[]{startName, endName});
+		GroundedPropSC test = new GroundedPropSC(gp);
+//		{
+//
+//			@Override
+//			public boolean satisfies(State s) {
+//				MakeWallState state = (MakeWallState) s;
+//				PropositionalFunction pf = new HasGoalWallPF();
+//				return pf.isTrue(state, new String[]{startName, endName});
+//			}
+//			
+//		};
+		MakeWallTF tf = new MakeWallTF(test);
 		double rewardGoal = 1.0;
 		double goalDefaultRatio = 1000.0;
 		double rewardDefault = -rewardGoal / goalDefaultRatio;
 		double rewardFailure = rewardDefault * 2;
 		RewardFunction rf = new MakeWallRF(tf, rewardGoal, rewardDefault, rewardFailure);
-		int width = 5;
-		int height = 5;
 		MakeWall gen = new MakeWall(rf, tf, width, height);
 		OOSADomain domain = gen.generateDomain();
-		OOState initial = gen.getInitialState();
+		OOState initial = gen.getInitialMakeWallState();
+		
+		// debatable...
+		((MakeWallState)initial).setGoalWall(wall);
 
 //		System.out.println(OOStateUtilities.ooStateToString(initial));
 		
@@ -115,7 +126,9 @@ public class MakeWall implements DomainGenerator{
 		BoundedRTDP brtdp =
 				new BoundedRTDP(domain, gamma, hashingFactory, 
 				new ConstantValueFunction(lowerVInit),
-				new ConstantValueFunction(upperVInit), maxDiff, maxRollouts);
+				new MakeWallHeuristic(gamma, tf),
+//				new ConstantValueFunction(upperVInit),
+				maxDiff, maxRollouts);
 		brtdp.setMaxRolloutDepth(maxRolloutDepth);
 		brtdp.toggleDebugPrinting(true);
 		long startTime = System.currentTimeMillis();
@@ -139,6 +152,9 @@ public class MakeWall implements DomainGenerator{
 		System.out.println(last.objectsOfClass(HBlock.CLASS_BLOCK).size() + " blocks");
 		System.out.println(ea.actionSequence);
 		
+		System.out.println(test.satisfies(last));
+		
+		System.out.println(seed);
 	}
 
 }

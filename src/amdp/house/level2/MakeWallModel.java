@@ -14,8 +14,6 @@ import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.statemodel.FullStateModel;
 
 public class MakeWallModel implements FullStateModel {
-
-	public HasFinishedWall hasFinishedWall = new HasFinishedWall();
 	
 	@Override
 	public State sample(State s, Action a) {
@@ -76,10 +74,6 @@ public class MakeWallModel implements FullStateModel {
 			String blockName = HBlock.CLASS_BLOCK + "_" + newX + "_" + newY;
 			HBlock newBlock = new HBlock(blockName, newX, newY, true, false);
 			s = state.addObject((ObjectInstance)newBlock);
-//			if(hasFinishedWall.satisfies(state)) {
-//				HWall wall = state.touchGoalWall();
-//				wall.set(HWall.ATT_FINISHED, true);
-//			}
 		}
 		return s;
 	}

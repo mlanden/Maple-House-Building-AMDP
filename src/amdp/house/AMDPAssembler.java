@@ -7,12 +7,14 @@ import javax.swing.JFrame;
 
 import amdp.amdpframework.AMDPAgent;
 import amdp.amdpframework.AMDPPolicyGenerator;
+import amdp.amdpframework.GroundedPropSC;
 import amdp.amdpframework.GroundedTask;
 import amdp.amdpframework.TaskNode;
 import amdp.house.base.HouseBase;
 import amdp.house.level1.MakeBlock;
 import amdp.house.level1.MakeBlockRF;
 import amdp.house.level1.MakeBlockTF;
+import amdp.house.level2.HasGoalWallPF;
 import amdp.house.level2.MakeWall;
 import amdp.house.level2.MakeWallRF;
 import amdp.house.level2.MakeWallTF;
@@ -35,6 +37,7 @@ import burlap.debugtools.RandomFactory;
 import burlap.mdp.auxiliary.common.NullTermination;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.action.ActionType;
+import burlap.mdp.core.oo.propositional.GroundedProp;
 import burlap.mdp.core.oo.state.OOState;
 import burlap.mdp.singleagent.common.UniformCostRF;
 import burlap.mdp.singleagent.environment.SimulatedEnvironment;
@@ -89,7 +92,7 @@ public class AMDPAssembler {
 		HouseBase genPutBlock = genBase;
 		OOSADomain domainBase = genBase.generateDomain();
 		OOSADomain domainEnv = genBase.generateDomain();
-		OOState initial = genBase.getInitialState(goalRoom);
+		OOState initial = genBase.getInitialHouseBaseState(goalRoom);
 
 		// make block AMDP
 		TerminalFunction tfBlock = new MakeBlockTF(null);
@@ -98,7 +101,7 @@ public class AMDPAssembler {
 		OOSADomain domainBlock = genBlock.generateDomain();
 		
 		// make wall AMDP
-		TerminalFunction tfWall = new MakeWallTF(null);
+		TerminalFunction tfWall = new MakeWallTF(new GroundedPropSC(new GroundedProp(new HasGoalWallPF(),null)));
 		RewardFunction rfWall = new MakeWallRF((MakeWallTF) tfWall, rewardGoal, rewardDefault, rewardFailure);
 		MakeWall genWall = new MakeWall(rfWall, tfWall, width, height);
 		OOSADomain domainWall = genWall.generateDomain();
@@ -204,12 +207,13 @@ public class AMDPAssembler {
         int maxTrajectoryLength = 101;
         Visualizer v = HouseBaseVisualizer.getVisualizer(width, height);
 
-		VisualEnvStackObserver so = new VisualEnvStackObserver(v, agent, 100);
-		agent.setOnlineStackObserver(so);
-		so.updateState(envN.currentObservation());
-		EnvironmentServer envServer = new EnvironmentServer(envN, so);
+//		VisualEnvStackObserver so = new VisualEnvStackObserver(v, agent, 100);
+//		agent.setOnlineStackObserver(so);
+//		so.updateState(envN.currentObservation());
+//		EnvironmentServer envServer = new EnvironmentServer(envN, so);
+//      Episode e = agent.actUntilTermination(envServer, maxTrajectoryLength);
 
-        Episode e = agent.actUntilTermination(envServer, maxTrajectoryLength);
+        Episode e = agent.actUntilTermination(envN, maxTrajectoryLength);
         List<Episode> episodes = new ArrayList<Episode>();
         episodes.add(e);
 

@@ -3,6 +3,7 @@ package amdp.house.base;
 import java.util.ArrayList;
 import java.util.List;
 
+import amdp.house.level2.HasGoalWallPF;
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
 import amdp.house.objects.HPoint;
@@ -30,8 +31,8 @@ public class HouseBase implements DomainGenerator {
 	protected RewardFunction rf;
 	protected TerminalFunction tf;
 	
-	private int width;
-	private int height;
+	protected int width;
+	protected int height;
 	    
     public HouseBase(RewardFunction rf, TerminalFunction tf, int width, int height) {
         this.rf = rf;
@@ -49,7 +50,18 @@ public class HouseBase implements DomainGenerator {
     }
     
 	public OOSADomain generateDomain() {
-		OOSADomain domain = new OOSADomain();
+		OOSADomain domain = new OOSADomain() {
+			
+			@Override
+			public PropositionalFunction propFunction(String name) {
+				PropositionalFunction pf = super.propFunction(name);
+				if (pf == null) {
+					throw new RuntimeException("Propositional function does not exist in domain: " + name);
+				}
+				return pf;
+			}
+			
+		};
 		
 		domain.addStateClass(HAgent.CLASS_AGENT, HAgent.class);
 		domain.addStateClass(HPoint.CLASS_POINT, HPoint.class);
@@ -74,12 +86,13 @@ public class HouseBase implements DomainGenerator {
 		return domain;
 	}
 	
-	private List<PropositionalFunction> generatePfs(OOSADomain domain) {
+	protected List<PropositionalFunction> generatePfs(OOSADomain domain) {
 		List<PropositionalFunction> pfs = new ArrayList<PropositionalFunction>();
+		pfs.add(new HasGoalWallPF());
 		return pfs;
 	}
 	
-	public HouseBaseState getInitialState(HRoom goal) {
+	public HouseBaseState getInitialHouseBaseState(HRoom goal) {
 		HouseBaseState state = new HouseBaseState(width, height, new HAgent(0, 0), goal);
 		return state;
 	}
