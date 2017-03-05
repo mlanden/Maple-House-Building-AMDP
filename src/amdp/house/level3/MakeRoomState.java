@@ -9,7 +9,6 @@ import amdp.house.objects.HBlock;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import amdp.house.objects.HWall;
-import utils.DynamicGroundedPropSC;
 import utils.IntPair;
 
 public class MakeRoomState extends HouseBaseState {
@@ -28,21 +27,6 @@ public class MakeRoomState extends HouseBaseState {
 		super(state.getWidth(), state.getHeight(), state.getAgent(), state.getPoints(), state.getBlocks(), state.getWalls(),
 				state.getRooms(), state.getGoalRoom(), state.getGoalWall(), state.getGoalBlock());
 	}
-
-//	@Override
-//	public int numObjects() {
-//		int numObjects = super.numObjects();
-//		numObjects += this.goalRoom != null ? 1 : 0;
-//		return numObjects;
-//	}
-//
-//	@Override
-//	public List<ObjectInstance> objects() {
-//		List<ObjectInstance> objects = super.objects();
-//		if (goalRoom != null) { objects.add(goalRoom); }
-//		return objects;
-//	}
-
 
 	@Override
 	public MakeRoomState copy() {
@@ -84,7 +68,6 @@ public class MakeRoomState extends HouseBaseState {
 	}
 
 	public boolean isWallCorner(HPoint corner) {
-//		return blockAt(corner);
 		for (HWall wall : walls) {
 			HPoint start = (HPoint) wall.get(HWall.ATT_START);
 			HPoint end = (HPoint) wall.get(HWall.ATT_END);
@@ -94,13 +77,6 @@ public class MakeRoomState extends HouseBaseState {
 		}
 		
 		if(blockAt(corner)) {
-//			System.err.println("BLOCK PRESENT");
-//	        try {
-//				Thread.sleep(100);
-//			} catch (InterruptedException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
 			return true;
 		}
 		
@@ -108,10 +84,6 @@ public class MakeRoomState extends HouseBaseState {
 	}
 
 	public boolean areContiguousInLine(HPoint start, HPoint end) {
-		
-		/// WARNING:
-		// using the if/else below is a really bad hack to circumvent issue of state projection for composite objects
-//		if (walls.size() > 0) {
 		for (HWall wall : walls) {
 			HPoint wallStart = (HPoint) wall.get(HWall.ATT_START);
 			HPoint wallEnd = (HPoint) wall.get(HWall.ATT_END);
@@ -121,16 +93,6 @@ public class MakeRoomState extends HouseBaseState {
 			}
 		}
 		return false;
-//		}
-//		else {
-//			HasFinishedWall hasFinishedWall = new HasFinishedWall();
-//			int aX = (int) start.get(HPoint.ATT_X);
-//			int aY = (int) start.get(HPoint.ATT_Y);
-//			int bX = (int) end.get(HPoint.ATT_X);
-//			int bY = (int) end.get(HPoint.ATT_Y);
-//			boolean wallExists = hasFinishedWall.checkLineMinimal(this, aX, aY, bX, bY);
-//			return wallExists;
-//		}
 	}
 
 	public int wallsRemaining() {

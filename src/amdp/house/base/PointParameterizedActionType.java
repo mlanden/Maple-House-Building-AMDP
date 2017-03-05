@@ -16,5 +16,4 @@ public class PointParameterizedActionType extends ObjectParameterizedActionType 
 		return true;
 	}
 	
-	
 }

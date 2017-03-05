@@ -1,7 +1,5 @@
 package amdp.house.level2;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import amdp.amdpframework.GroundedPropSC;
@@ -17,15 +15,11 @@ import burlap.behavior.singleagent.Episode;
 import burlap.behavior.singleagent.planning.stochastic.rtdp.BoundedRTDP;
 import burlap.behavior.valuefunction.ConstantValueFunction;
 import burlap.debugtools.RandomFactory;
-import burlap.mdp.auxiliary.DomainGenerator;
-import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.oo.OODomain;
 import burlap.mdp.core.oo.propositional.GroundedProp;
-import burlap.mdp.core.oo.propositional.PropositionalFunction;
 import burlap.mdp.core.oo.state.OOState;
 import burlap.mdp.core.oo.state.OOStateUtilities;
-import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.FactoredModel;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
@@ -41,7 +35,6 @@ public class MakeWall extends HouseBase {
     public MakeWall(RewardFunction rf, TerminalFunction tf, int width, int height) {
     	super(rf, tf, width, height);
     }
-    
     
     @Override
 	public OOSADomain generateDomain() {
@@ -84,21 +77,11 @@ public class MakeWall extends HouseBase {
 		final String endName = HPoint.CLASS_POINT+"_"+eX+"_"+eY;
 		HPoint wallStart = new HPoint(startName, sX, sY, false);
 		HPoint wallEnd = new HPoint(endName, eX, eY, false);
-		HWall wall = new HWall("goalWall", wallStart, wallEnd, false);
+//		HWall wall = new HWall("goalWall", wallStart, wallEnd, false);
 		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory(true);
 		GroundedProp gp = new GroundedProp(new HasGoalWallPF(), new String[]{startName, endName});
 		GroundedPropSC test = new GroundedPropSC(gp);
-//		{
-//
-//			@Override
-//			public boolean satisfies(State s) {
-//				MakeWallState state = (MakeWallState) s;
-//				PropositionalFunction pf = new HasGoalWallPF();
-//				return pf.isTrue(state, new String[]{startName, endName});
-//			}
-//			
-//		};
 		MakeWallTF tf = new MakeWallTF(test);
 		double rewardGoal = 1.0;
 		double goalDefaultRatio = 1000.0;
@@ -109,13 +92,10 @@ public class MakeWall extends HouseBase {
 		OOSADomain domain = gen.generateDomain();
 		OOState initial = gen.getInitialMakeWallState();
 		
-		// debatable...
-		((MakeWallState)initial).setGoalWall(wall);
-
 //		System.out.println(OOStateUtilities.ooStateToString(initial));
 		
 		double lowerVInit = 0.;
-		double upperVInit = 1.;
+//		double upperVInit = 1.;
 		double maxDiff = rewardGoal / goalDefaultRatio;
 		double gamma = 0.99;
 		double distance = HPoint.distanceChebyshev(wallStart, wallEnd);

@@ -3,7 +3,6 @@ package amdp.house;
 import amdp.amdpframework.AMDPPolicyGenerator;
 import amdp.amdpframework.GroundedTask;
 import amdp.amdpframework.NonPrimitiveTaskNode;
-import amdp.house.level1.MakeBlockStateMapping;
 import amdp.taxiamdpdomains.testingtools.BoundedRTDPForTests;
 import amdp.taxiamdpdomains.testingtools.GreedyReplan;
 import burlap.behavior.policy.Policy;

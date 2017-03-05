@@ -1,5 +1,8 @@
 package amdp.house;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import amdp.amdpframework.GroundedTask;
 import amdp.amdpframework.NonPrimitiveTaskNode;
 import amdp.amdpframework.TaskNode;
@@ -9,9 +12,6 @@ import burlap.mdp.core.action.SimpleAction;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
-
-import java.util.ArrayList;
-import java.util.List;
 
 // use this TaskNode for AMDPs that have unparameterized subtasks (e.g. ROOT with get, put subtasks)
 public class TaskUnparameterizedSubtasks extends NonPrimitiveTaskNode {

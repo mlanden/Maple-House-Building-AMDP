@@ -11,6 +11,7 @@ import amdp.amdpframework.GroundedPropSC;
 import amdp.amdpframework.GroundedTask;
 import amdp.amdpframework.TaskNode;
 import amdp.house.base.HouseBase;
+import amdp.house.base.HouseBaseVisualizer;
 import amdp.house.level1.MakeBlock;
 import amdp.house.level1.MakeBlockRF;
 import amdp.house.level1.MakeBlockTF;
@@ -18,7 +19,6 @@ import amdp.house.level2.HasGoalWallPF;
 import amdp.house.level2.MakeWall;
 import amdp.house.level2.MakeWallRF;
 import amdp.house.level2.MakeWallTF;
-import amdp.house.level2.TaskLeaf;
 import amdp.house.level3.MakeRoom;
 import amdp.house.level3.MakeRoomRF;
 import amdp.house.level3.MakeRoomState;
@@ -71,16 +71,15 @@ public class AMDPAssembler {
 		
 		// goal is to build this room
 		List<HPoint> corners = new ArrayList<HPoint>();
-		HPoint p0 = new HPoint("p0", 0, 0, false); corners.add(p0); 
-		HPoint p1 = new HPoint("p1", 3, 0, false); corners.add(p1); 
-		HPoint p2 = new HPoint("p2", 3, 3, false); corners.add(p2); 
-		HPoint p3 = new HPoint("p3", 0, 3, false); corners.add(p3); 
+		HPoint p0 = new HPoint("p0", 1, 1, false); corners.add(p0); 
+		HPoint p1 = new HPoint("p1", 5, 1, false); corners.add(p1); 
+		HPoint p2 = new HPoint("p2", 5, 5, false); corners.add(p2); 
+		HPoint p3 = new HPoint("p3", 1, 5, false); corners.add(p3); 
 		HRoom goalRoom = new HRoom("goalRoom", corners, false);
 		
-		
 		// make the base MDP domain
-		int width = 5;
-		int height = 5;
+		int width = 7;
+		int height = 7;
 		double rewardGoal = 1.0;
 		double goalDefaultRatio = 1000.0;
 		double rewardDefault = -rewardGoal / goalDefaultRatio;
@@ -151,18 +150,14 @@ public class AMDPAssembler {
 				"navigateAMDP",
 				new ActionType[]{aNavigate},
 				navigateSubtasks,
-				genNavigate.generateDomain()//,
-//				tfNavigate,
-//				rfNavigate
+				genNavigate.generateDomain()
 		);
 		
 		TaskNode putBlockTask = new TaskPutBlock(
 				"putBlockAMDP",
 				new ActionType[]{aPutBlock},
 				putBlockSubtasks,
-				genPutBlock.generateDomain()//,
-//				tfPutBlock,
-//				rfPutBlock
+				genPutBlock.generateDomain()
 		);
 		
 		TaskNode[] makeBlockSubtasks = new TaskNode[]{navigateTask, putBlockTask};
@@ -207,13 +202,12 @@ public class AMDPAssembler {
         int maxTrajectoryLength = 101;
         Visualizer v = HouseBaseVisualizer.getVisualizer(width, height);
 
-//		VisualEnvStackObserver so = new VisualEnvStackObserver(v, agent, 100);
-//		agent.setOnlineStackObserver(so);
-//		so.updateState(envN.currentObservation());
-//		EnvironmentServer envServer = new EnvironmentServer(envN, so);
-//      Episode e = agent.actUntilTermination(envServer, maxTrajectoryLength);
-
-        Episode e = agent.actUntilTermination(envN, maxTrajectoryLength);
+		VisualEnvStackObserver so = new VisualEnvStackObserver(v, agent, 100);
+		agent.setOnlineStackObserver(so);
+		so.updateState(envN.currentObservation());
+		EnvironmentServer envServer = new EnvironmentServer(envN, so);
+		Episode e = agent.actUntilTermination(envServer, maxTrajectoryLength);
+//		Episode e = agent.actUntilTermination(envN, maxTrajectoryLength);
         List<Episode> episodes = new ArrayList<Episode>();
         episodes.add(e);
 
@@ -230,24 +224,6 @@ public class AMDPAssembler {
         System.out.println(PolicyUtils.rollout(top, absInitial, domainRoom.getModel()).actionSequence);
 
         
-//        int count = 0;
-//        for(int i=0;i<brtdpList.size();i++){
-//            int numUpdates = brtdpList.get(i).getNumberOfBellmanUpdates();
-//            count+= numUpdates;
-//        }
-//        Policy bottom = brtdpList.get(1).planFromState(initial);
-//        AMDPPolicyGenerator pg1 = pgList.get(1);
-//        State absInitial = pg1.generateAbstractState(initial);
-//        Policy top = brtdpList.get(0).planFromState(absInitial);
-//        System.out.println(PolicyUtils.rollout(bottom, initial, domainEnv.getModel()).actionSequence);
-//        System.out.println(PolicyUtils.rollout(top, absInitial, domainRoom.getModel()).actionSequence);
-//        System.out.println(e.discountedReturn(1.));
-//        System.out.println(count);
-//        System.out.println("Total planners used: " + brtdpList.size());
-//        System.out.println("House with AMDPs \nBackups by individual planners:");
-//        for(BoundedRTDPForTests b:brtdpList){
-//            System.out.println(b.getNumberOfBellmanUpdates());
-//        }
         return makeRoomTask;
         /**/
 	}

@@ -5,15 +5,12 @@ import java.util.Map;
 
 import amdp.amdpframework.GroundedPropSC;
 import amdp.house.base.HouseBaseState;
-import amdp.house.level3.HasFinishedRoom;
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import amdp.house.objects.HWall;
-import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
 import burlap.mdp.core.oo.propositional.GroundedProp;
-import utils.DynamicGroundedPropSC;
 import utils.IntPair;
 
 public class MakeWallState extends HouseBaseState {
@@ -32,33 +29,10 @@ public class MakeWallState extends HouseBaseState {
 				state.getRooms(), state.getGoalRoom(), state.getGoalWall(), state.getGoalBlock());
 	}
 
-	
-//	@Override
-//	public int numObjects() {
-//		int numObjects = super.numObjects();
-//		numObjects += wall != null ? 1 : 0;
-//		return numObjects;
-//	}
-	
-//	@Override
-//	public List<ObjectInstance> objects() {
-//		List<ObjectInstance> objects = super.objects();
-//		objects.add(wall);
-//		return objects;
-//	}
-	
-//	public HWall touchWall() {
-//		this.wall = this.wall.copy();
-//		return this.wall;
-//	}
-
 	@Override
 	public MakeWallState copy() {
 		return new MakeWallState(width, height, touchAgent(), touchPoints(), touchBlocks(), touchWalls(), touchRooms(), touchGoalRoom(),
 				touchGoalWall(), touchGoalBlock());
-//		return new MakeWallState(width, height, touchAgent(), touchPoints(), touchBlocks(), touchGoalWall());
-//		return new MakeWallState(width, height, touchAgent(), touchPoints(), touchBlocks());
-//		return new MakeWallState(width, height, touchAgent(), touchPoints(), touchBlocks(), touchWall());
 	}
 
 	public int blocksRemaining(MakeWallTF tf) {
@@ -76,15 +50,4 @@ public class MakeWallState extends HouseBaseState {
 		goalWall = wall;
 	}
 
-//	public HWall getWall() {
-//		return wall;
-//	}
-	
-//	@Override
-//	public String toString() {
-//		String out = "";
-//		out += "blocks: " + blocks.size() + ", wall finished: " + wall.get(HWall.ATT_FINISHED);
-//		return out;
-//	}
-	
 }

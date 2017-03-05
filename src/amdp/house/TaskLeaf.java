@@ -1,4 +1,4 @@
-package amdp.house.level2;
+package amdp.house;
 
 import amdp.amdpframework.PrimitiveTaskNode;
 import burlap.mdp.core.action.ActionType;

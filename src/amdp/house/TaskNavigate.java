@@ -76,8 +76,6 @@ public class TaskNavigate extends NonPrimitiveTaskNode {
 
 	@Override
 	public RewardFunction rewardFunction(Action a) {
-//		FactoredModel model = (FactoredModel) oosaDomain.getModel();
-//		return model.getRf();
 		ObjectParameterizedAction action = (ObjectParameterizedAction) a;
 		String[] params = action.getObjectParameters();
 		final String destinationName = params[0];

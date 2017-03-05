@@ -1,6 +1,5 @@
 package amdp.house.level2;
 
-import amdp.house.objects.HWall;
 import burlap.behavior.valuefunction.ValueFunction;
 import burlap.mdp.core.state.State;
 

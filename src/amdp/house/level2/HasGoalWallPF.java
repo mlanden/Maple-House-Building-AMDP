@@ -5,7 +5,6 @@ import java.util.List;
 
 import amdp.house.base.HouseBaseState;
 import amdp.house.objects.HPoint;
-import amdp.house.objects.HWall;
 import burlap.mdp.core.oo.propositional.PropositionalFunction;
 import burlap.mdp.core.oo.state.OOState;
 import utils.IntPair;

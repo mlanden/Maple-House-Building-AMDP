@@ -9,6 +9,7 @@ import burlap.mdp.core.state.State;
 public class HasFinishedRoom {
 
 	public static int getNumWallsRemaining(MakeRoomState state, HRoom goal) {
+		@SuppressWarnings("unchecked")
 		List<HPoint> corners = (List<HPoint>) goal.get(HRoom.ATT_CORNERS);//state.getRoom().get(HRoom.ATT_CORNERS);
 		int wallsRemaining = corners.size();
 		if (corners.size() == 2) { wallsRemaining = 1; } // two corners, only one wall
@@ -24,12 +25,7 @@ public class HasFinishedRoom {
 	public boolean satisfies(State s, HRoom goal) {
 		MakeRoomState state = (MakeRoomState) s;
 
-//		for (HPoint corner : goal.getCorners()) {
-//			if (!state.isWallCorner(corner)) {
-//				return false;
-//			}
-//		}
-		
+		@SuppressWarnings("unchecked")
 		List<HPoint> corners = (List<HPoint>) goal.get(HRoom.ATT_CORNERS);//state.getRoom().get(HRoom.ATT_CORNERS);
 //		int wallsRemaining = corners.size();
 //		if (corners.size() == 2) { wallsRemaining = 1; } // two corners, only one wall
@@ -39,20 +35,6 @@ public class HasFinishedRoom {
 				return false;
 			}
 		}
-
-		
-		/*
-		System.err.println("Warning: using MakeRoom version of TF");
-		if (state.getWalls().size() < goal.getCorners().size()) {
-			return false;
-		}
-		
-		if (getNumWallsRemaining(state, goal) != 0) {
-			return false;
-		}
-		*/
-		
-		
 		return true;
 	}
 

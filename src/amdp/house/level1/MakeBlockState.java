@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import amdp.house.base.HouseBaseState;
-import amdp.house.level2.MakeWallState;
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
 import amdp.house.objects.HPoint;
@@ -28,25 +27,6 @@ public class MakeBlockState extends HouseBaseState {
 		super(width, height, agent, points, blocks, null, null, null, null, goalBlock);
 	}
 	
-//	@Override
-//	public int numObjects() {
-//		int numObjects = super.numObjects();
-//		numObjects += block != null ? 1 : 0;
-//		return numObjects;
-//	}
-//	
-//	@Override
-//	public List<ObjectInstance> objects() {
-//		List<ObjectInstance> objects = super.objects();
-//		objects.add(block);
-//		return objects;
-//	}
-//	
-//	public HBlock touchBlock() {
-//		this.block = this.block.copy();
-//		return this.block;
-//	}
-	
 	public MakeBlockState(HouseBaseState state) {
 		super(state.getWidth(), state.getHeight(), state.getAgent(), state.getPoints(), state.getBlocks(), state.getWalls(),
 				state.getRooms(), state.getGoalRoom(), state.getGoalWall(), state.getGoalBlock());
@@ -57,9 +37,5 @@ public class MakeBlockState extends HouseBaseState {
 		return new MakeBlockState(width, height, touchAgent(), touchPoints(), touchBlocks(), touchWalls(), touchRooms(), touchGoalRoom(),
 				touchGoalWall(), touchGoalBlock());
 	}
-
-//	public HBlock getBlock() {
-//		return block;
-//	}
 	
 }

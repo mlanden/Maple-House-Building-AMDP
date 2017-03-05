@@ -1,4 +1,4 @@
-package amdp.house;
+package amdp.house.base;
 
 
 import java.awt.Color;
@@ -32,9 +32,9 @@ public class HouseBaseVisualizer {
 	public static StateRenderLayer getRenderLayer(int width, int height){
 		StateRenderLayer r = new StateRenderLayer();
 		OOStatePainter oopainter = new OOStatePainter();
-		oopainter.addObjectClassPainter(HPoint.CLASS_POINT, new PointPainter(width, height, Color.gray, 0));
-		oopainter.addObjectClassPainter(HBlock.CLASS_BLOCK, new PointPainter(width, height, Color.blue, 0));
-		oopainter.addObjectClassPainter(HAgent.CLASS_AGENT, new PointPainter(width, height, Color.red, 1));
+		oopainter.addObjectClassPainter(HPoint.CLASS_POINT, new PointPainter(width, height, Color.WHITE, 0));
+		oopainter.addObjectClassPainter(HBlock.CLASS_BLOCK, new PointPainter(width, height, Color.BLUE, 0));
+		oopainter.addObjectClassPainter(HAgent.CLASS_AGENT, new PointPainter(width, height, Color.RED, 1));
 		r.addStatePainter(oopainter);
 		return r;
 	}

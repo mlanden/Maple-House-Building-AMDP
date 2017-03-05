@@ -8,7 +8,6 @@ import amdp.house.objects.HBlock;
 import amdp.house.objects.HWall;
 import burlap.mdp.auxiliary.StateMapping;
 import burlap.mdp.core.state.State;
-import utils.DynamicGroundedPropSC;
 
 public class MakeRoomStateMapping implements StateMapping {
 	

@@ -1,8 +1,5 @@
 package amdp.house.level1;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import amdp.house.base.HouseBase;
 import amdp.house.base.PointParameterizedActionType;
 import amdp.house.objects.HAgent;
@@ -13,11 +10,9 @@ import burlap.behavior.policy.PolicyUtils;
 import burlap.behavior.singleagent.Episode;
 import burlap.behavior.singleagent.planning.stochastic.rtdp.BoundedRTDP;
 import burlap.behavior.valuefunction.ConstantValueFunction;
-import burlap.mdp.auxiliary.DomainGenerator;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.action.UniversalActionType;
 import burlap.mdp.core.oo.OODomain;
-import burlap.mdp.core.oo.propositional.PropositionalFunction;
 import burlap.mdp.core.oo.state.OOState;
 import burlap.mdp.core.oo.state.OOStateUtilities;
 import burlap.mdp.singleagent.model.FactoredModel;
@@ -84,14 +79,6 @@ public class MakeBlock extends HouseBase {
 		OOSADomain domain = gen.generateDomain();
 		OOState initial = gen.getInitialMakeBlockState();
 
-//		for (State s : StateReachability.getReachableStates(initial, domain, hashingFactory)) {
-//			System.out.println(s);	
-//			MakeBlockState state = (MakeBlockState) s;
-//			System.out.println(state.numObjects());
-//			System.out.println(state.objects());
-//		}
-//		System.out.println(OOStateUtilities.ooStateToString(initial));
-		
 		double lowerVInit = 0.;
 		double upperVInit = 1.;
 		double maxDiff = rewardGoal / goalDefaultRatio;

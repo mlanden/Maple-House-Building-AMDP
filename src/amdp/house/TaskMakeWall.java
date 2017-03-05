@@ -11,8 +11,6 @@ import amdp.house.level2.HasGoalWallPF;
 import amdp.house.level2.MakeWallRF;
 import amdp.house.level2.MakeWallState;
 import amdp.house.level2.MakeWallTF;
-import amdp.house.objects.HPoint;
-import amdp.house.objects.HWall;
 import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
 import burlap.mdp.core.action.Action;
 import burlap.mdp.core.action.ActionType;
@@ -22,7 +20,6 @@ import burlap.mdp.core.oo.propositional.PropositionalFunction;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.RewardFunction;
 import burlap.mdp.singleagent.oo.OOSADomain;
-import utils.DynamicGroundedPropSC;
 
 public class TaskMakeWall extends NonPrimitiveTaskNode {
 

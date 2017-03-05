@@ -1,6 +1,5 @@
 package amdp.house.level1;
 
-import amdp.house.level3.MakeRoomState;
 import amdp.house.objects.HBlock;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.state.State;

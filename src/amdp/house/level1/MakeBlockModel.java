@@ -15,8 +15,6 @@ import burlap.mdp.singleagent.model.statemodel.FullStateModel;
 
 public class MakeBlockModel implements FullStateModel {
 
-//	public HasFinishedBlock hasFinishedBlock = new HasFinishedBlock();
-	
 	@Override
 	public State sample(State s, Action a) {
 		s = s.copy();

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import amdp.house.base.HouseBase;
-import amdp.house.base.PointParameterizedActionType;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import amdp.house.objects.HWall;
@@ -13,7 +12,6 @@ import burlap.behavior.policy.PolicyUtils;
 import burlap.behavior.singleagent.Episode;
 import burlap.behavior.singleagent.planning.stochastic.rtdp.BoundedRTDP;
 import burlap.behavior.valuefunction.ConstantValueFunction;
-import burlap.mdp.auxiliary.DomainGenerator;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.oo.ObjectParameterizedAction;
 import burlap.mdp.core.oo.state.OOState;

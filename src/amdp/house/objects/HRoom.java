@@ -46,6 +46,7 @@ public class HRoom extends MutableObject implements MutableObjectInstance {
 		return name;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public ObjectInstance copyWithName(String objectName) {
 		return new HRoom(objectName, (List<HPoint>) this.get(ATT_CORNERS), (Boolean) this.get(ATT_FINISHED));
@@ -56,11 +57,13 @@ public class HRoom extends MutableObject implements MutableObjectInstance {
 		return keys;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public State copy() {
 		return new HRoom(this.name, (List<HPoint>) this.get(ATT_CORNERS), (Boolean) this.get(ATT_FINISHED));
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<HPoint> getCorners() {
 		return (List<HPoint>) get(ATT_CORNERS);
 	}
