@@ -24,12 +24,6 @@ public class HRoom extends MutableObject implements MutableObjectInstance {
 		ATT_FINISHED
 	);
 	
-	public HRoom(String name) {
-//		corners = new ArrayList<HPoint>();
-		this.set(ATT_CORNERS, new ArrayList<HPoint>());
-		this.set(ATT_FINISHED, (Boolean) false);
-	}
-	
 	public HRoom(String name, List<HPoint> corners, Boolean finished) {
 		this.name = name;
 		this.set(ATT_CORNERS, corners);

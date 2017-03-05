@@ -92,8 +92,8 @@ public class HouseBase implements DomainGenerator {
 		return pfs;
 	}
 	
-	public HouseBaseState getInitialHouseBaseState(HRoom goal) {
-		HouseBaseState state = new HouseBaseState(width, height, new HAgent(0, 0), goal);
+	public HouseBaseState getInitialHouseBaseState() {
+		HouseBaseState state = new HouseBaseState(width, height, new HAgent(0, 0), null);
 		return state;
 	}
 	

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
+import amdp.house.objects.HHouse;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import amdp.house.objects.HWall;
@@ -26,14 +27,15 @@ public class HouseBaseState implements MutableOOState {
 	protected List<HWall> walls;
 	protected List<HRoom> rooms;
 	
-	protected HRoom goalRoom;
-	protected HWall goalWall;
-	protected HBlock goalBlock;
+	protected HHouse goalHouse;
+//	protected HRoom goalRoom;
+//	protected HWall goalWall;
+//	protected HBlock goalBlock;
 	
 	protected int width;
 	protected int height;
 	
-	public HouseBaseState(int width, int height, HAgent agent, HRoom goalRoom) {
+	public HouseBaseState(int width, int height, HAgent agent, HHouse goalHouse) {
 		this.width = width;
 		this.height = height;
 		this.agent = agent;
@@ -47,14 +49,16 @@ public class HouseBaseState implements MutableOOState {
 				addObject(new HPoint(name, i, j, false));
 			}
 		}
-		this.goalRoom = goalRoom;
-		this.goalWall = null;
-		this.goalBlock = null;
+		this.goalHouse = goalHouse;
+//		this.goalRoom = goalRoom;
+//		this.goalWall = null;
+//		this.goalBlock = null;
 	}
 	
 	// copy constructor
 	public HouseBaseState(int width, int height, HAgent agent, Map<IntPair,HPoint> points, Map<IntPair, HBlock> blocks,
-			List<HWall> walls, List<HRoom> rooms, HRoom goalRoom, HWall goalWall, HBlock goalBlock) {
+			List<HWall> walls, List<HRoom> rooms, HHouse goalHouse) {
+//			HRoom goalRoom, HWall goalWall, HBlock goalBlock) {
 		this.width = width;
 		this.height = height;
 		this.agent = agent;
@@ -62,17 +66,14 @@ public class HouseBaseState implements MutableOOState {
 		this.blocks = blocks != null ? blocks : new HashMap<IntPair,HBlock>();
 		this.walls = walls != null ? walls : new ArrayList<HWall>();
 		this.rooms = rooms != null ? rooms : new ArrayList<HRoom>();
-		this.goalRoom = goalRoom;
-		this.goalWall = goalWall;
-		this.goalBlock = goalBlock;
+		this.goalHouse = goalHouse;
+//		this.goalRoom = goalRoom;
+//		this.goalWall = goalWall;
+//		this.goalBlock = goalBlock;
 	}
 	
 	public HouseBaseState(int width, int height, int agentX, int agentY) {
 		this(width, height, new HAgent(agentX, agentY), null);
-	}
-
-	public HouseBaseState(int width, int height) {
-		this(width, height, null, null);
 	}
 
 	// assumes that 0,0 is the lower left corner
@@ -86,7 +87,6 @@ public class HouseBaseState implements MutableOOState {
 
 	public boolean isBlocked(int nx, int ny) {
 		return blockAt(nx, ny);
-//		return blockAt(nx, ny) || doorAt(nx, ny);
 	}
 
 	public HBlock getBlockAt(int nx, int ny) {
@@ -152,9 +152,10 @@ public class HouseBaseState implements MutableOOState {
 		numObjects += blocks.size();
 		numObjects += walls.size();
 		numObjects += rooms.size();
-		numObjects += goalRoom != null ? 1 : 0;
-		numObjects += goalWall != null ? 1 : 0;
-		numObjects += goalBlock != null ? 1 : 0;
+		numObjects += goalHouse != null ? 1 : 0;
+//		numObjects += goalRoom != null ? 1 : 0;
+//		numObjects += goalWall != null ? 1 : 0;
+//		numObjects += goalBlock != null ? 1 : 0;
 		return numObjects;
 	}
 	
@@ -175,9 +176,10 @@ public class HouseBaseState implements MutableOOState {
 		objects.addAll(blocks.values());
 		objects.addAll(walls);
 		objects.addAll(rooms);
-		if (goalRoom != null) { objects.add(goalRoom); }
-		if (goalWall != null) { objects.add(goalWall); }
-		if (goalBlock != null) { objects.add(goalBlock); }
+		if (goalHouse != null) { objects.add(goalHouse); }
+//		if (goalRoom != null) { objects.add(goalRoom); }
+//		if (goalWall != null) { objects.add(goalWall); }
+//		if (goalBlock != null) { objects.add(goalBlock); }
 		return objects;
 	}
 	
@@ -192,15 +194,13 @@ public class HouseBaseState implements MutableOOState {
 			return new ArrayList<ObjectInstance>(walls);
 		} else if(HRoom.CLASS_ROOM.equals(oclass)) {
 			return new ArrayList<ObjectInstance>(rooms);
+		} else if(HHouse.CLASS_HOUSE.equals(oclass)) {
+			return Arrays.<ObjectInstance>asList(goalHouse);
 		} else {
 			throw new RuntimeException("not implemented");
 		}
 	}
 	
-//	public int getNumWalls() {
-//		return walls.size();
-//	}
-
 	public List<HWall> touchWalls() {
     	this.walls = new ArrayList<HWall>(this.walls);
     	return this.walls;
@@ -224,24 +224,30 @@ public class HouseBaseState implements MutableOOState {
     	rooms.add(index, copy);
     	return copy;
 	}
+	
+	public HHouse touchGoalHouse() {
+		if (this.goalHouse == null) { return null; }
+		this.goalHouse = (HHouse) this.goalHouse.copy();
+		return this.goalHouse;
+	}
 
-	public HRoom touchGoalRoom() {
-		if (this.goalRoom == null) { return null; }
-		this.goalRoom = (HRoom) this.goalRoom.copy();
-		return this.goalRoom;
-	}
-	
-	public HWall touchGoalWall() {
-		if (this.goalWall == null) { return null; }
-		this.goalWall = (HWall) this.goalWall.copy();
-		return this.goalWall;
-	}
-	
-	public HBlock touchGoalBlock() {
-		if (this.goalBlock == null) { return null; }
-		this.goalBlock = (HBlock) this.goalBlock.copy();
-		return this.goalBlock;
-	}
+//	public HRoom touchGoalRoom() {
+//		if (this.goalRoom == null) { return null; }
+//		this.goalRoom = (HRoom) this.goalRoom.copy();
+//		return this.goalRoom;
+//	}
+//	
+//	public HWall touchGoalWall() {
+//		if (this.goalWall == null) { return null; }
+//		this.goalWall = (HWall) this.goalWall.copy();
+//		return this.goalWall;
+//	}
+//	
+//	public HBlock touchGoalBlock() {
+//		if (this.goalBlock == null) { return null; }
+//		this.goalBlock = (HBlock) this.goalBlock.copy();
+//		return this.goalBlock;
+//	}
 	
 	public int getNumBlocks() {
 		return blocks.size();
@@ -289,9 +295,10 @@ public class HouseBaseState implements MutableOOState {
 				touchBlocks(),
 				touchWalls(),
 				touchRooms(),
-				touchGoalRoom(),
-				touchGoalWall(),
-				touchGoalBlock()
+				touchGoalHouse()
+//				touchGoalRoom(),
+//				touchGoalWall(),
+//				touchGoalBlock()
 		);
 	}
 
@@ -358,20 +365,25 @@ public class HouseBaseState implements MutableOOState {
 		out += "blocks: " + blocks.size() + ", ";
 		out += "walls: " + walls.size() + ", ";
 		out += "rooms: " + rooms.size() + ", ";
+		out += "house: " + (goalHouse == null ? "does not exist" : "exists");
 		out += "}";
 		return out;
 	}
 
-	public HRoom getGoalRoom() {
-		return goalRoom;
+	public HHouse getGoalHouse() {
+		return goalHouse;
 	}
-	
-	public HWall getGoalWall() {
-		return goalWall;
-	}
-	
-	public HBlock getGoalBlock() {
-		return goalBlock;
-	}
+
+//	public HRoom getGoalRoom() {
+//		return goalRoom;
+//	}
+//	
+//	public HWall getGoalWall() {
+//		return goalWall;
+//	}
+//	
+//	public HBlock getGoalBlock() {
+//		return goalBlock;
+//	}
 	
 }

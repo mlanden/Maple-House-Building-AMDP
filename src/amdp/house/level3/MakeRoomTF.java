@@ -1,42 +1,18 @@
 package amdp.house.level3;
 
-import amdp.house.objects.HRoom;
-import burlap.mdp.core.TerminalFunction;
+import burlap.mdp.auxiliary.stateconditiontest.StateConditionTest;
 import burlap.mdp.core.state.State;
+import utils.GoalFailureTF;
 
-public class MakeRoomTF implements TerminalFunction {
-	
-	public HasFinishedRoom hasFinishedRoom = new HasFinishedRoom();
+public class MakeRoomTF extends GoalFailureTF {
 
-	protected HRoom goal;
-	
-	public MakeRoomTF(HRoom goal) {
-		this.goal = goal;
+	public MakeRoomTF(StateConditionTest goalCondition) {
+		super(goalCondition);
 	}
-	
-	public HRoom getGoal() {
-		return goal;
-	}
-	
-	public boolean satisfiesGoal(MakeRoomState state) {
-		HRoom goal = state.getRoom();
-//		if ((boolean) goal.get(HRoom.ATT_FINISHED)) {
-//			return true;
-//		}
-		if (hasFinishedRoom.satisfies(state, goal)) {
-//			state.addObject(goal);
-			return true;
-		}
+
+	@Override
+	public boolean satisfiesFailure(State s) {
 		return false;
 	}
 	
-	@Override
-	public boolean isTerminal(State s) {
-		MakeRoomState state = (MakeRoomState) s;
-		
-		// here is where other termination conditions (for penalizing failure, early termination) go
-		
-		return satisfiesGoal(state);
-	}
-
 }

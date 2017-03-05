@@ -4,10 +4,21 @@ import java.util.List;
 
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
+import burlap.mdp.core.oo.propositional.PropositionalFunction;
+import burlap.mdp.core.oo.state.OOState;
 import burlap.mdp.core.state.State;
 
-public class HasFinishedRoom {
+public class HasGoalRoomPF  extends PropositionalFunction {
 
+	public static final String PF_HAS_GOAL_ROOM = "pfHasGoalRoom";
+
+	public HRoom goal;
+	
+	public HasGoalRoomPF(HRoom goal) {
+		super(PF_HAS_GOAL_ROOM, new String[]{});
+		this.goal = goal;
+	}
+	
 	public static int getNumWallsRemaining(MakeRoomState state, HRoom goal) {
 		@SuppressWarnings("unchecked")
 		List<HPoint> corners = (List<HPoint>) goal.get(HRoom.ATT_CORNERS);//state.getRoom().get(HRoom.ATT_CORNERS);
@@ -22,7 +33,7 @@ public class HasFinishedRoom {
 		return Math.max(0, wallsRemaining);
 	}
 	
-	public boolean satisfies(State s, HRoom goal) {
+	public boolean satisfies(State s) {
 		MakeRoomState state = (MakeRoomState) s;
 
 		@SuppressWarnings("unchecked")
@@ -36,6 +47,11 @@ public class HasFinishedRoom {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public boolean isTrue(OOState s, String... params) {
+		return satisfies(s);
 	}
 
 }

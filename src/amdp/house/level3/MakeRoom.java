@@ -3,7 +3,9 @@ package amdp.house.level3;
 import java.util.ArrayList;
 import java.util.List;
 
+import amdp.amdpframework.GroundedPropSC;
 import amdp.house.base.HouseBase;
+import amdp.house.level2.HasGoalWallPF;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import amdp.house.objects.HWall;
@@ -14,6 +16,7 @@ import burlap.behavior.singleagent.planning.stochastic.rtdp.BoundedRTDP;
 import burlap.behavior.valuefunction.ConstantValueFunction;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.oo.ObjectParameterizedAction;
+import burlap.mdp.core.oo.propositional.GroundedProp;
 import burlap.mdp.core.oo.state.OOState;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.FactoredModel;
@@ -69,8 +72,8 @@ public class MakeRoom extends HouseBase {
 		}
 	}
 	
-	public MakeRoomState getInitialMakeRoomState(HRoom goal) {
-		MakeRoomState state = new MakeRoomState(width, height, goal);
+	public MakeRoomState getInitialMakeRoomState() {
+		MakeRoomState state = new MakeRoomState(width, height);
 		return state;
 	}
 	
@@ -94,15 +97,18 @@ public class MakeRoom extends HouseBase {
 //		HPoint p7 = new HPoint("p7", 1, 0, false); corners.add(p7);
 		HRoom goal = new HRoom("goalRoom", corners, false);
 		
+		GroundedProp gp = new GroundedProp(new HasGoalRoomPF(goal), new String[]{});
+		GroundedPropSC test = new GroundedPropSC(gp);
+
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory();
-		MakeRoomTF tf = new MakeRoomTF(goal);
+		MakeRoomTF tf = new MakeRoomTF(test);
 		double rewardGoal = 1.0;
 		double rewardDefault = -rewardGoal / 1000.0;
 		double rewardFailure = rewardDefault * 2;
 		MakeRoomRF rf = new MakeRoomRF(tf, rewardGoal, rewardDefault, rewardFailure);
 		MakeRoom gen = new MakeRoom(rf, tf, width, height);
 		OOSADomain domain = gen.generateDomain();
-		OOState initial = gen.getInitialMakeRoomState(goal);
+		OOState initial = gen.getInitialMakeRoomState();
 		
 		
 //		MakeRoomState extra = (MakeRoomState)initial;
@@ -124,7 +130,7 @@ public class MakeRoom extends HouseBase {
 				new BoundedRTDP(domain, gamma, hashingFactory, 
 				new ConstantValueFunction(lowerVInit),
 				//new ConstantValueFunction(upperVInit),
-				new MakeRoomHeuristic(gamma),
+				new MakeRoomHeuristic(gamma, tf),
 				maxDiff, maxRollouts);
 		brtdp.setMaxRolloutDepth(maxRolloutDepth);
 		brtdp.toggleDebugPrinting(true);

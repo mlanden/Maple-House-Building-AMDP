@@ -3,35 +3,40 @@ package amdp.house.level3;
 import java.util.List;
 import java.util.Map;
 
+import amdp.amdpframework.GroundedPropSC;
 import amdp.house.base.HouseBaseState;
+import amdp.house.level2.HasGoalWallPF;
 import amdp.house.objects.HAgent;
 import amdp.house.objects.HBlock;
+import amdp.house.objects.HHouse;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import amdp.house.objects.HWall;
+import burlap.mdp.core.oo.propositional.GroundedProp;
 import utils.IntPair;
 
 public class MakeRoomState extends HouseBaseState {
 	
-	public MakeRoomState(int width, int height, HRoom goalRoom) {
+	public MakeRoomState(int width, int height) {
 		super(width, height, null, null);
-		this.goalRoom = goalRoom;
 	}
 
 	public MakeRoomState(int width, int height, HAgent agent, Map<IntPair, HPoint> points, Map<IntPair, HBlock> blocks,
-			List<HWall> walls, List<HRoom> rooms, HRoom goalRoom, HWall goalWall, HBlock goalBlock) {
-		super(width, height, agent, points, blocks, walls, rooms, goalRoom, goalWall, goalBlock);
+			List<HWall> walls, List<HRoom> rooms, HHouse goalHouse) {
+			//HRoom goalRoom, HWall goalWall, HBlock goalBlock) {
+		super(width, height, agent, points, blocks, walls, rooms, goalHouse);//, goalRoom, goalWall, goalBlock);
 	}
 	
 	public MakeRoomState(HouseBaseState state) {
 		super(state.getWidth(), state.getHeight(), state.getAgent(), state.getPoints(), state.getBlocks(), state.getWalls(),
-				state.getRooms(), state.getGoalRoom(), state.getGoalWall(), state.getGoalBlock());
+				state.getRooms(), state.getGoalHouse());//, state.getGoalRoom(), state.getGoalWall(), state.getGoalBlock());
 	}
 
 	@Override
 	public MakeRoomState copy() {
-		return new MakeRoomState(width, height, touchAgent(), touchPoints(), touchBlocks(), touchWalls(), touchRooms(), touchGoalRoom(),
-				touchGoalWall(), touchGoalBlock());
+		return new MakeRoomState(width, height, touchAgent(), touchPoints(), touchBlocks(), touchWalls(), touchRooms(),
+				touchGoalHouse());
+//				touchGoalRoom(), touchGoalWall(), touchGoalBlock());
 	}
 
 	public boolean hasWall(HWall wall) {
@@ -52,21 +57,11 @@ public class MakeRoomState extends HouseBaseState {
 		return walls.size();
 	}
 	
-	public HRoom touchRoom() {
-		this.goalRoom = (HRoom) this.goalRoom.copy();
-		return this.goalRoom;
-	}
+//	public HRoom touchRoom() {
+//		this.goalRoom = (HRoom) this.goalRoom.copy();
+//		return this.goalRoom;
+//	}
 	
-	public String toString() {
-		String out = "MakeRoomState, has walls: ";
-		out += walls.size();
-		return out;
-	}
-
-	public HRoom getRoom() {
-		return goalRoom;
-	}
-
 	public boolean isWallCorner(HPoint corner) {
 		for (HWall wall : walls) {
 			HPoint start = (HPoint) wall.get(HWall.ATT_START);
@@ -95,8 +90,17 @@ public class MakeRoomState extends HouseBaseState {
 		return false;
 	}
 
-	public int wallsRemaining() {
-		return HasFinishedRoom.getNumWallsRemaining(this, goalRoom);
+	public int wallsRemaining(MakeRoomTF tf) {
+		GroundedPropSC goal = (GroundedPropSC) tf.getGoalCondition();
+		GroundedProp gp = goal.gp;
+		HasGoalRoomPF pf = (HasGoalRoomPF) gp.pf;
+		HRoom goalRoom = pf.goal;
+//		String[] params = gp.params;
+//		String startName = params[0];
+//		String endName = params[1];
+//		HPoint start = (HPoint) this.object(startName);
+//		HPoint end = (HPoint) this.object(endName);
+		return HasGoalRoomPF.getNumWallsRemaining(this, goalRoom);
 	}
 
 }

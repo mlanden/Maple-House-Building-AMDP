@@ -19,6 +19,7 @@ import amdp.house.level2.HasGoalWallPF;
 import amdp.house.level2.MakeWall;
 import amdp.house.level2.MakeWallRF;
 import amdp.house.level2.MakeWallTF;
+import amdp.house.level3.HasGoalRoomPF;
 import amdp.house.level3.MakeRoom;
 import amdp.house.level3.MakeRoomRF;
 import amdp.house.level3.MakeRoomState;
@@ -91,7 +92,7 @@ public class AMDPAssembler {
 		HouseBase genPutBlock = genBase;
 		OOSADomain domainBase = genBase.generateDomain();
 		OOSADomain domainEnv = genBase.generateDomain();
-		OOState initial = genBase.getInitialHouseBaseState(goalRoom);
+		OOState initial = genBase.getInitialHouseBaseState();
 
 		// make block AMDP
 		TerminalFunction tfBlock = new MakeBlockTF(null);
@@ -106,7 +107,9 @@ public class AMDPAssembler {
 		OOSADomain domainWall = genWall.generateDomain();
 
 		// make room AMDP
-		TerminalFunction tfRoom = new MakeRoomTF(goalRoom);
+		GroundedProp gp = new GroundedProp(new HasGoalRoomPF(goalRoom), new String[]{});
+		GroundedPropSC test = new GroundedPropSC(gp);
+		TerminalFunction tfRoom = new MakeRoomTF(test);
 		RewardFunction rfRoom = new MakeRoomRF((MakeRoomTF) tfRoom, rewardGoal, rewardDefault, rewardFailure);
 		MakeRoom genRoom = new MakeRoom(rfRoom, tfRoom, width, height);
 		OOSADomain domainRoom = genRoom.generateDomain();
