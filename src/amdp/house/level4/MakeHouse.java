@@ -3,7 +3,10 @@ package amdp.house.level4;
 import java.util.ArrayList;
 import java.util.List;
 
+import amdp.amdpframework.GroundedPropSC;
 import amdp.house.base.HouseBase;
+import amdp.house.level3.HasGoalRoomPF;
+import amdp.house.objects.HHouse;
 import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import amdp.house.objects.HWall;
@@ -14,6 +17,7 @@ import burlap.behavior.singleagent.planning.stochastic.rtdp.BoundedRTDP;
 import burlap.behavior.valuefunction.ConstantValueFunction;
 import burlap.mdp.core.TerminalFunction;
 import burlap.mdp.core.oo.ObjectParameterizedAction;
+import burlap.mdp.core.oo.propositional.GroundedProp;
 import burlap.mdp.core.oo.state.OOState;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.FactoredModel;
@@ -25,7 +29,7 @@ import burlap.statehashing.simple.SimpleHashableStateFactory;
 
 public class MakeHouse extends HouseBase {
 
-	public static final String ACTION_MAKE_WALL = "makeWall";
+	public static final String ACTION_MAKE_ROOM = "makeRoom";
 	public static final int NUM_ACTIONS = 1;
 	
 	public MakeHouse(RewardFunction rf, TerminalFunction tf, int width, int height) {
@@ -52,17 +56,19 @@ public class MakeHouse extends HouseBase {
 	public class MakeRoomActionType extends ObjectParameterizedActionType {
 
 		public MakeRoomActionType(String name){
-			super(name, new String[]{HPoint.CLASS_POINT, HPoint.CLASS_POINT}, new String[]{HPoint.CLASS_POINT, HPoint.CLASS_POINT});
+			super(name, new String[]{}, new String[]{});
+//					new String[]{HPoint.CLASS_POINT, HPoint.CLASS_POINT},
+//					new String[]{HPoint.CLASS_POINT, HPoint.CLASS_POINT});
 		}
 		
 		public boolean applicableInState(State state, ObjectParameterizedAction groundedAction){
 			MakeHouseState s = (MakeHouseState) state;
 			String [] params = groundedAction.getObjectParameters();
-			HPoint pointA = (HPoint)s.object(params[0]);
-			HPoint pointB = (HPoint)s.object(params[1]);
-			if (pointA == null || pointB == null) {
-				return false;
-			}
+//			HPoint pointA = (HPoint)s.object(params[0]);
+//			HPoint pointB = (HPoint)s.object(params[1]);
+//			if (pointA == null || pointB == null) {
+//				return false;
+//			}
 			return true;
 		}
 	}
@@ -77,12 +83,12 @@ public class MakeHouse extends HouseBase {
 		int width = 5;
 		int height = 5;
 
-		// goal is to build this room
-		List<HPoint> corners = new ArrayList<HPoint>();
-		HPoint p0 = new HPoint("p0", 0, 0, false); corners.add(p0);
-		HPoint p1 = new HPoint("p1", 0, 4, false); corners.add(p1);
-		HPoint p2 = new HPoint("p2", 4, 4, false); corners.add(p2);
-		HPoint p3 = new HPoint("p3", 4, 0, false); corners.add(p3);
+		// goal is to build house with this room
+//		List<HPoint> corners = new ArrayList<HPoint>();
+//		HPoint p0 = new HPoint("p0", 0, 0, false); corners.add(p0);
+//		HPoint p1 = new HPoint("p1", 0, 4, false); corners.add(p1);
+//		HPoint p2 = new HPoint("p2", 4, 4, false); corners.add(p2);
+//		HPoint p3 = new HPoint("p3", 4, 0, false); corners.add(p3);
 //		HPoint p1 = new HPoint("p1", 0, 1, false); corners.add(p1);
 //		HPoint p2 = new HPoint("p2", 0, 2, false); corners.add(p2);
 //		HPoint p3 = new HPoint("p3", 1, 2, false); corners.add(p3);
@@ -90,10 +96,14 @@ public class MakeHouse extends HouseBase {
 //		HPoint p5 = new HPoint("p5", 2, 1, false); corners.add(p5);
 //		HPoint p6 = new HPoint("p6", 2, 0, false); corners.add(p6);
 //		HPoint p7 = new HPoint("p7", 1, 0, false); corners.add(p7);
-		HRoom goal = new HRoom("goalRoom", corners, false);
+//		HRoom room = new HRoom("goalRoom", corners, false);
+		
+		HHouse goal = null;
 		
 		HashableStateFactory hashingFactory = new SimpleHashableStateFactory();
-		MakeHouseTF tf = new MakeHouseTF(goal);
+		GroundedProp gp = new GroundedProp(new HasGoalHousePF(goal), new String[]{});
+		GroundedPropSC test = new GroundedPropSC(gp);
+		MakeHouseTF tf = new MakeHouseTF(test);
 		double rewardGoal = 1.0;
 		double rewardDefault = -rewardGoal / 1000.0;
 		double rewardFailure = rewardDefault * 2;
@@ -115,7 +125,7 @@ public class MakeHouse extends HouseBase {
 		double upperVInit = 1.;
 		double maxDiff = rewardGoal / 1000.0;
 		double gamma = 0.99;
-		int maxSteps = corners.size() + 2;
+		int maxSteps = 100; //corners.size() + 2;
 		int maxRollouts = -1;//65536;//4096;
 		int maxRolloutDepth = maxSteps;
 		BoundedRTDP brtdp =
@@ -139,6 +149,8 @@ public class MakeHouse extends HouseBase {
 		System.out.println("total actions: " + ea.actionSequence.size());
 		System.out.println("number Bellman: " + brtdp.getNumberOfBellmanUpdates());
 		System.out.println(ea.actionSequence);
+		State last = ea.stateSequence.get(ea.stateSequence.size()-1);
+		System.out.println(last);
 		
 	}
 }

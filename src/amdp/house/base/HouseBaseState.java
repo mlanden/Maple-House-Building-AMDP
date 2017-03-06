@@ -365,7 +365,7 @@ public class HouseBaseState implements MutableOOState {
 		out += "blocks: " + blocks.size() + ", ";
 		out += "walls: " + walls.size() + ", ";
 		out += "rooms: " + rooms.size() + ", ";
-		out += "house: " + (goalHouse == null ? "does not exist" : "exists");
+		out += "house: " + (goalHouse != null ? 1 : 0);
 		out += "}";
 		return out;
 	}
