@@ -7,6 +7,7 @@ import amdp.house.objects.HPoint;
 import amdp.house.objects.HRoom;
 import burlap.mdp.core.StateTransitionProb;
 import burlap.mdp.core.action.Action;
+import burlap.mdp.core.oo.ObjectParameterizedAction;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.statemodel.FullStateModel;
 
@@ -16,20 +17,25 @@ public class MakeHouseModel implements FullStateModel {
 	public State sample(State s, Action a) {
 		s = s.copy();
 		String name = a.actionName();
-		if (name.equals(MakeHouse.ACTION_MAKE_ROOM)) {
+		if (name.equals(MakeHouse.ACTION_MAKE_ROOM_TYPE)) {
 			return makeRoom(s, a);
+		} else if (name.equals(MakeHouse.ACTION_LINK_SPACE)) {
+			return linkSpace(s, a);
 		}
 		throw new RuntimeException("Unknown action " + name);
+	}
+	
+	public State linkSpace(State s, Action a) {
+		MakeHouseState state = (MakeHouseState) s;
+		ObjectParameterizedAction action = (ObjectParameterizedAction) a;
+		HRoom spaceA = (HRoom) state.object(action.getObjectParameters()[0]);
+		HRoom spaceB = (HRoom) state.object(action.getObjectParameters()[1]);
+		return s;
 	}
 	
 	public State makeRoom(State s, Action a) {
 		MakeHouseState state = (MakeHouseState) s;
 //		ObjectParameterizedAction action = (ObjectParameterizedAction) a;
-//		if (action.actionName() != MakeRoom.ACTION_MAKE_WALL) {
-//			throw new RuntimeException("incorrect action passed to makeWall");
-//		}
-//		HPoint pointA = (HPoint) state.object(action.getObjectParameters()[0]);
-//		HPoint pointB = (HPoint) state.object(action.getObjectParameters()[1]);
 		int numRooms = state.getRooms().size();
 		String name = HRoom.CLASS_ROOM + numRooms;
 		
@@ -86,7 +92,7 @@ public class MakeHouseModel implements FullStateModel {
 
 
 	protected int actionInd(String name){
-		if(name.equals(MakeHouse.ACTION_MAKE_ROOM)){
+		if(name.equals(MakeHouse.ACTION_MAKE_ROOM_TYPE)){
 			return 0;
 		}
 		throw new RuntimeException("Unknown action " + name);

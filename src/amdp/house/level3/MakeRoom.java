@@ -84,10 +84,10 @@ public class MakeRoom extends HouseBase {
 
 		// goal is to build this room
 		List<HPoint> corners = new ArrayList<HPoint>();
-		HPoint p0 = new HPoint("p0", 0, 0, false); corners.add(p0);
-		HPoint p1 = new HPoint("p1", 0, 4, false); corners.add(p1);
+		HPoint p0 = new HPoint("p0", 1, 1, false); corners.add(p0);
+		HPoint p1 = new HPoint("p1", 1, 4, false); corners.add(p1);
 		HPoint p2 = new HPoint("p2", 4, 4, false); corners.add(p2);
-		HPoint p3 = new HPoint("p3", 4, 0, false); corners.add(p3);
+		HPoint p3 = new HPoint("p3", 4, 1, false); corners.add(p3);
 //		HPoint p1 = new HPoint("p1", 0, 1, false); corners.add(p1);
 //		HPoint p2 = new HPoint("p2", 0, 2, false); corners.add(p2);
 //		HPoint p3 = new HPoint("p3", 1, 2, false); corners.add(p3);

@@ -29,8 +29,9 @@ import burlap.statehashing.simple.SimpleHashableStateFactory;
 
 public class MakeHouse extends HouseBase {
 
-	public static final String ACTION_MAKE_ROOM = "makeRoom";
-	public static final int NUM_ACTIONS = 1;
+	public static final String ACTION_MAKE_ROOM_TYPE = "makeRoomType";
+	public static final String ACTION_LINK_SPACE = "linkSpace";
+	public static final int NUM_ACTIONS = 2;
 	
 	public MakeHouse(RewardFunction rf, TerminalFunction tf, int width, int height) {
 		super(rf, tf, width, height);
@@ -47,11 +48,12 @@ public class MakeHouse extends HouseBase {
 		domain.setModel(fmodel);
 		
 		//actions
-		domain.addActionType(new MakeRoomActionType(ACTION_MAKE_ROOM));
+		domain.addActionType(new MakeRoomActionType(ACTION_MAKE_ROOM_TYPE));
+		domain.addActionType(new LinkSpaceActionType(ACTION_LINK_SPACE));
 		
 		return domain;
 	}
-	
+
 
 	public class MakeRoomActionType extends ObjectParameterizedActionType {
 
@@ -59,6 +61,24 @@ public class MakeHouse extends HouseBase {
 			super(name, new String[]{}, new String[]{});
 //					new String[]{HPoint.CLASS_POINT, HPoint.CLASS_POINT},
 //					new String[]{HPoint.CLASS_POINT, HPoint.CLASS_POINT});
+		}
+		
+		public boolean applicableInState(State state, ObjectParameterizedAction groundedAction){
+			MakeHouseState s = (MakeHouseState) state;
+			String [] params = groundedAction.getObjectParameters();
+//			HPoint pointA = (HPoint)s.object(params[0]);
+//			HPoint pointB = (HPoint)s.object(params[1]);
+//			if (pointA == null || pointB == null) {
+//				return false;
+//			}
+			return true;
+		}
+	}
+
+	public class LinkSpaceActionType extends ObjectParameterizedActionType {
+
+		public LinkSpaceActionType(String name){
+			super(name, new String[]{HRoom.CLASS_ROOM}, new String[]{HRoom.CLASS_ROOM});
 		}
 		
 		public boolean applicableInState(State state, ObjectParameterizedAction groundedAction){

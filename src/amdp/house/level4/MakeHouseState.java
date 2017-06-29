@@ -1,5 +1,6 @@
 package amdp.house.level4;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,8 @@ import amdp.house.objects.HWall;
 import utils.IntPair;
 
 public class MakeHouseState  extends HouseBaseState {
+	
+	public HRoom outside = new HRoom("outside", new ArrayList<HPoint>(), true);
 	
 	public MakeHouseState(int width, int height, HHouse goalHouse) {
 		super(width, height, null, null);
@@ -33,6 +36,10 @@ public class MakeHouseState  extends HouseBaseState {
 	public MakeHouseState copy() {
 		return new MakeHouseState(width, height, touchAgent(), touchPoints(), touchBlocks(), touchWalls(), touchRooms(), 
 				touchGoalHouse());
+	}
+
+	public boolean spacesLinked(HRoom room, HRoom outside) {
+		
 	}
 
 }

@@ -148,7 +148,6 @@ public class AMDPAssembler {
 		TaskNode[] navigateSubtasks = new TaskNode[]{northTask, eastTask, southTask, westTask};
 		TaskNode[] putBlockSubtasks = new TaskNode[]{buildTask};
 		
-		
 		TaskNode navigateTask = new TaskNavigate(
 				"navigateAMDP",
 				new ActionType[]{aNavigate},
